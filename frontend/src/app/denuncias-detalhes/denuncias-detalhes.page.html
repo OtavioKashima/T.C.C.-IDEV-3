@@ -1,0 +1,58 @@
+<ion-content [scrollY]="true">
+
+  <div class="floating-buttons">
+    <button class="float-btn" (click)="goBack()">
+      <ion-icon name="arrow-back-outline" class="seta-voltar"></ion-icon>
+    </button>
+    <button class="float-btn" (click)="compartilhar()">
+      <ion-icon name="arrow-redo-outline" class="seta-voltar"></ion-icon>
+    </button>
+  </div>
+
+  <div class="hero-image-wrapper">
+    <img *ngIf="denuncia.fotosArray && denuncia.fotosArray.length > 0"
+      [src]="'http://localhost:3000/uploads/' + denuncia.fotosArray[0]" [alt]="denuncia.titulo" class="hero-image">
+
+    <div *ngIf="!denuncia.fotosArray || denuncia.fotosArray.length === 0" class="sem-foto-hero">
+      <ion-icon name="camera-outline"></ion-icon>
+    </div>
+
+    <div class="hero-overlay">
+      <div class="hero-badge hero-badge--denuncia">Denúncia</div>
+      <h1 class="hero-title">{{ denuncia.titulo }}</h1>
+    </div>
+  </div>
+
+  <div class="content-body">
+
+    <div class="owner-card" (click)="verPerfilUsuario()" *ngIf="denuncia.usuario as usuario">
+
+      <img [src]="usuario.avatar" onerror="this.src='https://ionicframework.com/docs/img/demos/avatar.svg'" [alt]="usuario.nome"
+        class="owner-avatar">
+
+      <div class="owner-info">
+        <span class="owner-label">Publicado por</span>
+        <span class="owner-name">{{ usuario.nome }}</span>
+      </div>
+      <ion-icon name="chevron-forward-outline" class="owner-arrow"></ion-icon>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Descrição da Denúncia</h2>
+      <p class="section-text">{{ denuncia.descricaoCompleta || denuncia.descricao }}</p>
+
+      <div class="local-row">
+        <div class="local-item" *ngIf="denuncia.dataFormatada || denuncia.created_at">
+          <ion-icon name="time-outline"></ion-icon>
+          <span>{{ denuncia.dataFormatada || (denuncia.created_at | date:'dd/MM/yyyy') }}</span>
+        </div>
+        <div class="local-item" *ngIf="denuncia.local || denuncia.localizacao">
+          <ion-icon name="location-outline"></ion-icon>
+          <span>{{ denuncia.local || denuncia.localizacao }}</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</ion-content>

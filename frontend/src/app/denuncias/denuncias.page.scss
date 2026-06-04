@@ -1,0 +1,362 @@
+// Estilo para o fundo da página
+ion-content {
+  --background: #f8f9fa;
+}
+
+ion-toolbar.custom-toolbar {
+  --background: #3ecf8e;
+  --color: white;
+  --min-height: auto;
+  padding-bottom: 0;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+}
+
+.title-section {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.header-title {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: white;
+  line-height: 1;
+}
+
+.header-icon {
+  font-size: 1.6rem;
+  color: white;
+  cursor: pointer;
+}
+
+.header-icon-small {
+  font-size: 1.7rem;
+  color: white;
+  display: flex;
+  align-items: center;
+  line-height: 1;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.search-bar-wrapper {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+  padding: 0 16px;
+
+  &.visible {
+    max-height: 60px;
+    padding: 0 16px 10px;
+  }
+}
+
+.search-input-wrapper {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 10px;
+  padding: 0 10px;
+  height: 38px;
+  gap: 8px;
+}
+
+.search-input-icon {
+  font-size: 1rem;
+  color: white;
+  flex-shrink: 0;
+}
+
+.search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: white;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+  }
+}
+
+.search-clear-icon {
+  font-size: 1.1rem;
+  color: white;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+ion-content {
+  --background: #f0fdf6;
+}
+
+.filtros-painel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+  background: #f0fdf6;
+  border-bottom: 1px solid #d0eedd;
+
+  &.aberto {
+    max-height: 200px;
+  }
+}
+
+.filtros-inner {
+  padding: 16px 16px 20px;
+}
+
+.filtros-titulo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+
+  span {
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: #66d9a6;
+  }
+}
+
+.btn-limpar-todos {
+  background: #d6f5e8;
+  border: none;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #66d9a6;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+.filtros-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filtro-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  border: 1.5px solid #3ecf8e;
+  border-radius: 50px;
+  padding: 6px 28px 6px 14px;
+  background: white;
+  width: 140px;
+
+  select {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #66d9a6;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    width: 100%;
+
+    option {
+      color: #333;
+    }
+  }
+
+  &::after {
+    content: '▾';
+    position: absolute;
+    right: 10px;
+    font-size: 0.7rem;
+    color: #66d9a6;
+    pointer-events: none;
+  }
+
+  &--input {
+    padding: 6px 14px;
+    gap: 0;
+    width: 140px;
+
+    &::after {
+      display: none;
+    }
+  }
+}
+
+.filtro-input-date {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #66d9a6;
+  cursor: pointer;
+  width: 100%;
+
+  &::-webkit-calendar-picker-indicator {
+    filter: invert(65%) sepia(60%) saturate(400%) hue-rotate(100deg);
+    cursor: pointer;
+  }
+}
+
+.filtros-badge-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  background: #d6f5e8;
+  border-bottom: 1px solid #d0eedd;
+  gap: 8px;
+
+  .chips-scroll {
+    flex: 1;
+  }
+}
+
+// Estilo do Card mais compacto
+.pet-card {
+  border-radius: 12px;
+  background: #fff;
+  border: 2px solid var(--ion-color-primary, #eb445a);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  margin: 6px 0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  overflow: hidden;
+
+  &:hover {
+    box-shadow: 0 6px 16px rgba(56, 128, 255, 0.2);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  ion-card-header {
+    padding: 10px 12px 4px 12px !important;
+  }
+
+  ion-card-content {
+    padding: 0 12px 8px 12px !important;
+  }
+}
+
+// CONTAINER DE IMAGEM ÚNICA (Estilo Adoção)
+.image-container {
+  width: 100%;
+  position: relative;
+  background: #f0f0f0;
+  overflow: hidden;
+
+  // 🟢 Estilo adicionado para imagem única fixa em 16:9
+  .single-pet-image {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    display: block;
+  }
+
+  // Fallback visual (sem foto)
+  .sem-foto {
+    width: 100%;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ccc;
+    font-size: 3rem;
+  }
+}
+
+// TEXTOS
+.pet-subtitle {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.pet-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #222;
+  margin-top: 0;
+}
+
+.pet-description {
+  color: #444;
+  font-size: 0.85rem;
+  line-height: 1.3;
+  margin: 0;
+  word-break: break-word;
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: 2.4rem;
+}
+
+// RODAPÉ E EMPTY STATE
+.card-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 4px 8px;
+  border-top: 1px solid #eee;
+
+  ion-button {
+    margin: 0;
+    min-height: 32px;
+  }
+}
+
+.empty-state {
+  text-align: center;
+  margin-top: 50px;
+  color: #999;
+
+  ion-icon {
+    font-size: 64px;
+    margin-bottom: 10px;
+  }
+}
+
+.busca-customizada {
+  background-color: #ffffff;
+  height: 38px;
+  margin: 6px 10px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+
+  ion-input {
+    --padding-start: 12px;
+    --padding-top: 0;
+    --padding-bottom: 0;
+    --background: transparent;
+    --color: #333333;
+    width: 100%;
+    font-size: 15px;
+  }
+}

@@ -1,0 +1,73 @@
+<ion-header [translucent]="true">
+  <ion-toolbar class="toolbar-transparente">
+    <ion-buttons slot="start">
+      <ion-button (click)="goToRecuperar()" fill="clear" class="btn-voltar">
+        <ion-icon name="arrow-back-outline" class="seta-voltar"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" scroll-y="false">
+  <div class="login-container">
+    <div class="content-wrapper">
+
+      <div class="logo-container">
+        <div class="logo-circle">
+          <ion-icon name="paw" class="logo-icon"></ion-icon>
+        </div>
+      </div>
+
+      <h1 class="login-title">Verificação</h1>
+      <p class="descricao">Digite o código enviado para o seu e-mail</p>
+
+      <div class="form-container">
+
+        <div class="input-group">
+
+          <div class="input-wrapper">
+            <ion-icon name="key-outline" class="input-icon"></ion-icon>
+
+            <ion-input
+              class="custom-input"
+              placeholder="Código de verificação"
+              type="text"
+              maxlength="6"
+              [(ngModel)]="codigo">
+            </ion-input>
+
+          </div>
+
+          <!-- mensagem erro -->
+          <div *ngIf="mensagemErro" class="error-message">
+            {{ mensagemErro }}
+          </div>
+
+          <!-- mensagem sucesso -->
+          <div *ngIf="mensagemSucesso" class="success-message">
+            {{ mensagemSucesso }}
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="button-container">
+        <ion-button
+          class="login-button"
+          expand="block"
+          (click)="verificarCodigo()">
+
+          enviar
+
+        </ion-button>
+      </div>
+
+      <div class="reenviar">
+        Não recebeu o código?
+        <span (click)="reenviarCodigo()">Reenviar</span>
+      </div>
+
+    </div>
+  </div>
+</ion-content>

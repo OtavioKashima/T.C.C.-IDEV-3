@@ -1,0 +1,284 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+
+/* =============================================
+Toolbar transparente
+============================================= */
+
+ion-toolbar.toolbar-transparente {
+  --background: transparent;
+  --border-style: none;
+  --box-shadow: none;
+}
+
+.btn-voltar {
+  --color: #4eca88;
+  margin-left: 8px;
+}
+
+.seta-voltar {
+  font-size: 22px;
+  color: #4eca88;
+  border: 2px solid #4eca88;
+  border-radius: 50%;
+  padding: 5px;
+  background: white;
+  box-shadow: 0 2px 10px rgba(78, 202, 136, 0.2);
+  transition: all 0.2s ease;
+}
+
+.seta-voltar:hover {
+  background: #3ecf8e;
+  color: white;
+}
+
+/* =============================================
+Container principal
+============================================= */
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  min-height: calc(100vh - 56px);
+  background: #f0f4f2;
+  font-family: 'Nunito', sans-serif;
+}
+
+.content-wrapper {
+  width: 100%;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: -180px;
+}
+
+/* =============================================
+Logo
+============================================= */
+
+.logo-container {
+  margin-bottom: 0.5rem;
+  animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes popIn {
+  from { transform: scale(0.5); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+.logo-circle {
+  width: 82px;
+  height: 82px;
+  background: linear-gradient(145deg, #5ad9a3, #3ecf8e);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 28px rgba(78, 202, 136, 0.4);
+  margin: 0 auto;
+}
+
+.logo-icon {
+  font-size: 2.5rem;
+  color: white;
+}
+
+/* =============================================
+Título
+============================================= */
+
+.login-title {
+  font-size: 1.65rem;
+  font-weight: 600;
+  color: #1e2d28;
+  margin-top: 0.5rem;
+  margin-bottom: 10px;
+  letter-spacing: -0.5px;
+  width: 100%;
+  text-align: center;
+  animation: slideUp 0.5s 0.1s ease both;
+}
+
+/* =============================================
+Descrição
+============================================= */
+
+.descricao {
+  font-size: 0.85rem;
+  color: #6b7c75;
+  text-align: center;
+  margin-bottom: 16px;
+  line-height: 1.4;
+  animation: slideUp 0.5s 0.15s ease both;
+}
+
+/* =============================================
+Formulário
+============================================= */
+
+.form-container {
+  width: 100%;
+  background: transparent;
+  padding: 0;
+  margin-bottom: 4px; /* diminui espaço */
+  animation: slideUp 0.5s 0.2s ease both;
+}
+
+.input-group {
+  margin-bottom: 6px; /* deixa mais junto */
+}
+
+/* wrapper do input */
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 12px;
+  border: 1.5px solid #e4ebe7;
+  height: 52px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* ícone */
+
+.input-icon {
+  position: absolute;
+  left: 14px;
+  font-size: 1.1rem;
+  color: #aab5b0;
+}
+
+/* input */
+
+.custom-input {
+  --background: transparent;
+  --border-style: none;
+  --box-shadow: none;
+  --color: #2d3d36;
+  --placeholder-color: #aab5b0;
+
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.86rem;
+  font-weight: 600;
+
+  width: 100%;
+  text-align: center;
+}
+
+/* centralizar texto digitado */
+
+ion-input::part(native) {
+  text-align: center;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* =============================================
+Botão
+============================================= */
+
+.button-container {
+  width: 100%;
+  margin-top: 2px; /* aproxima do input */
+  animation: slideUp 0.5s 0.35s ease both;
+}
+
+.login-button {
+  --background: linear-gradient(135deg, #5ad9a3, #3ecf8e);
+  --color: white;
+  --border-radius: 12px;
+  --box-shadow: 0 6px 24px rgba(78, 202, 136, 0.4);
+  height: 52px;
+
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.86rem;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.login-button:hover {
+  transform: translateY(-2px);
+}
+
+/* =============================================
+Reenviar código
+============================================= */
+
+.reenviar {
+  margin-top: 14px;
+  font-size: 0.85rem;
+  color: #6b7c75;
+  font-weight: 600;
+}
+
+.reenviar span {
+  color: #4eca88;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.reenviar span:hover {
+  opacity: 0.75;
+  text-decoration: underline;
+}
+
+/* =============================================
+Animação
+============================================= */
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+/* =============================================
+Responsivo
+============================================= */
+
+@media (max-width: 480px) {
+
+  .logo-circle {
+    width: 70px;
+    height: 70px;
+  }
+
+  .logo-icon {
+    font-size: 2rem;
+  }
+
+  .login-title {
+    font-size: 1.45rem;
+  }
+
+  .input-wrapper {
+    height: 46px;
+  }
+
+  .login-button {
+    height: 46px;
+    font-size: 0.84rem;
+  }
+
+}
+.error-message {
+color: #e05555;
+font-size: 0.72rem;
+text-align: center;
+margin-top: 6px;
+font-weight: 600;
+}
+
+.success-message {
+color: #38b87a;
+font-size: 0.72rem;
+text-align: center;
+margin-top: 6px;
+font-weight: 600;
+}

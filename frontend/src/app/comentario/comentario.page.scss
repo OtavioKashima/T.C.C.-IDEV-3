@@ -1,0 +1,184 @@
+/* =====================
+   HEADER
+   ===================== */
+
+   .custom-toolbar {
+    --background: #5ecfa0;
+    --color: white;
+    --min-height: 56px;
+  }
+  
+  .custom-toolbar ion-title {
+    color: white;
+    font-size: 17px;
+    font-weight: 700;
+    text-align: center;
+  }
+  
+  .back-btn {
+    --color: white;
+  }
+  
+  /* =====================
+     CONTENT
+     ===================== */
+  
+  .page-content {
+    --background: #f5f5f5;
+    --padding-bottom: 80px;
+  }
+  
+  /* =====================
+     LISTA DE COMENTÁRIOS
+     ===================== */
+  
+  .comments-list {
+    padding: 12px 0;
+  }
+  
+  .comment-item {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 10px;
+    background: #ffffff;
+    margin: 0 12px 10px 12px;
+    padding: 12px;
+    border-radius: 14px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+  }
+  
+  .comment-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 2px solid #e8e8e8;
+  }
+  
+  .comment-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .comment-author {
+    font-size: 13px;
+    font-weight: 700;
+    color: #222;
+  }
+  
+  .comment-text {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.5;
+    margin: 0;
+  }
+  
+  .comment-time {
+    font-size: 11px;
+    color: #aaa;
+    margin-top: 2px;
+  }
+  
+  /* =====================
+     ESTADO VAZIO
+     ===================== */
+  
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+  }
+  
+  .empty-icon {
+    font-size: 52px;
+    margin-bottom: 12px;
+    color: #ccc;
+  }
+  
+  .empty-state p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #aaa;
+  }
+  
+  /* =====================
+     FOOTER - CAMPO DE COMENTÁRIO
+     ===================== */
+  
+  .comment-footer {
+    background: #fff;
+    border-top: 1px solid #ebebeb;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.06);
+  }
+  
+  .input-area {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px 12px 14px;
+    background: #fff;
+  }
+  
+  .input-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 2px solid #e0e0e0;
+  }
+  
+  .input-wrapper {
+    flex: 1;
+    background: #f2f2f2;
+    border-radius: 22px;
+    padding: 0 14px;
+    display: flex;
+    align-items: center;
+    height: 40px;
+  }
+  
+  .comment-input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 14px;
+    color: #333;
+  
+    &::placeholder {
+      color: #bbb;
+    }
+  }
+  
+  .send-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #5ecfa0;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: opacity 0.2s;
+  
+    ion-icon {
+      font-size: 18px;
+      color: white;
+    }
+  
+    &:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+  }

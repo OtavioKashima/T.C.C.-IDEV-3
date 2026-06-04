@@ -1,0 +1,64 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="custom-toolbar">
+    <ion-buttons slot="start">
+      <ion-button disabled="true" class="header-icon-btn">
+        <ion-icon name="paw" class="header-icon"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Início</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding custom-content">
+
+  <div class="sessao-header">
+    <h2 class="sessao-titulo">Comunicados</h2>
+    <ion-icon name="notifications-outline" class="sessao-icon text-orange"></ion-icon>
+  </div>
+
+  <div class="comunicados-scroll">
+    <div class="comunicado-card" *ngFor="let aviso of comunicados" (click)="abrirComunicado(aviso)">
+      <div class="comunicado-header">
+        <ion-icon name="megaphone-outline"></ion-icon>
+        <span>{{ aviso.data_criacao | date:'dd/MM/yyyy' }}</span>
+      </div>
+      <h3 class="linha-unica">{{ aviso.titulo }}</h3>
+      <p class="multi-linhas">{{ aviso.texto }}</p>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sessao-header">
+    <div>
+      <h2 class="sessao-titulo">Apoie uma ONG</h2>
+      <p class="sessao-sub">Selecione uma ONG para doar via PIX</p>
+    </div>
+    <ion-icon name="heart-outline" class="sessao-icon text-green"></ion-icon>
+  </div>
+
+  <ion-searchbar placeholder="Buscar ONG por nome ou cidade..." [(ngModel)]="termoBuscaOng" (ionInput)="filtrarOngs()"
+    style="padding: 0 16px 10px 16px; --box-shadow: none; --background: #f4f5f8; --border-radius: 12px;">
+  </ion-searchbar>
+
+  <div class="donation-card" *ngFor="let ong of ongsFiltradas" (click)="abrirPerfilOng(ong)">
+    <div class="donation-content">
+      <img [src]="getFotoUrl(ong.foto_perfil)" [alt]="ong.nome" class="donation-image">
+      <div class="donation-info">
+        <strong>{{ ong.nome }}</strong>
+        <p class="cidade-txt">
+          <ion-icon name="location-outline"></ion-icon>
+          {{ ong.cidade || 'Local não informado' }} - {{ ong.estado }}
+        </p>
+        <p class="bio-txt">{{ ong.bio || 'Ajude a nossa causa com qualquer valor!' }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="ongsFiltradas.length === 0" style="text-align: center; padding: 30px 20px; color: #888;">
+    <ion-icon name="search-outline" style="font-size: 3rem; color: #ccc; margin-bottom: 10px;"></ion-icon>
+    <p style="margin: 0; font-weight: 600; color: #666;">Nenhuma ONG encontrada</p>
+    <p style="font-size: 0.9rem; margin-top: 5px;">Tente buscar por outro nome ou cidade.</p>
+  </div>
+
+</ion-content>

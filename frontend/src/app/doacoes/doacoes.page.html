@@ -1,0 +1,56 @@
+<ion-header [translucent]="true">
+  <ion-toolbar class="custom-toolbar">
+    <div class="header-content">
+      <div class="title-section">
+        <ion-icon name="arrow-back-outline" size="large" class="header-icon" (click)="goBack()"></ion-icon>
+        <span class="header-title">Voltar</span>
+      </div>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="hero-banner">
+    <div class="paw-bg">🐾</div>
+
+    <div class="hero-text">
+      <span class="hero-tag">ONG {{ ong?.nome | uppercase }}</span>
+      <h2>Doe qualquer valor</h2>
+      <p>
+        Sua contribuição vai direto para a ONG, que decide como melhor ajudar os animais.
+      </p>
+    </div>
+  </div>
+
+  <div class="donate-block">
+    <p class="donate-subtitle">Escolha ou insira o valor que deseja doar:</p>
+
+    <div class="valor-rapido">
+      <button *ngFor="let v of valoresRapidos" [class.ativo]="valorSelecionado === v" (click)="setValor(v)">
+        R$ {{ v }}
+      </button>
+    </div>
+
+    <div class="input-wrap">
+      <span class="input-prefix">R$</span>
+      <input type="number" [(ngModel)]="valorDoacao" placeholder="Outro valor" class="input-valor" min="1"
+        (input)="valorSelecionado = null">
+    </div>
+
+    <div class="qrcode-container">
+
+      <button class="copiar-pix-btn" (click)="copiarPix()">
+        <ion-icon name="copy-outline"></ion-icon>
+        Copiar chave Pix
+      </button>
+
+      <small style="margin-top: 10px; color: #888; word-break: break-all;">
+        {{ ong?.chave_pix || 'Chave não cadastrada' }}
+      </small>
+    </div>
+
+    <button class="adopt-btn" (click)="processarDoacao()" [disabled]="processando || !ong?.chave_pix">
+      <ion-icon name="paw"></ion-icon>
+      {{ processando ? 'Aguarde...' : 'Realizar Pagamento' }}
+    </button>
+  </div>

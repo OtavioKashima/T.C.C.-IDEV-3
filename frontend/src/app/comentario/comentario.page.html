@@ -1,0 +1,61 @@
+<ion-header>
+  <ion-toolbar class="custom-toolbar">
+
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()" class="back-btn">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title>Comentários</ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="page-content">
+
+  <div class="comments-list">
+
+    <div class="comment-item" *ngFor="let comment of comments">
+      <img [src]="comment.avatar" class="comment-avatar" alt="avatar" />
+      <div class="comment-body">
+        <span class="comment-author">{{ comment.author }}</span>
+        <p class="comment-text">{{ comment.text }}</p>
+        <span class="comment-time">{{ comment.time }}</span>
+      </div>
+    </div>
+
+    <div class="empty-state" *ngIf="comments.length === 0">
+      <ion-icon name="chatbubbles-outline" class="empty-icon"></ion-icon>
+      <p>Nenhum comentário ainda.<br>Seja o primeiro a comentar!</p>
+    </div>
+
+  </div>
+
+</ion-content>
+
+<ion-footer class="comment-footer">
+  <div class="input-area">
+
+    <img
+      src="https://randomuser.me/api/portraits/men/32.jpg"
+      class="input-avatar"
+      alt="Você"
+    />
+
+    <div class="input-wrapper">
+      <input
+        class="comment-input"
+        type="text"
+        placeholder="Escreva um comentário..."
+        [(ngModel)]="newComment"
+        (keyup.enter)="addComment()"
+      />
+    </div>
+
+    <button class="send-btn" (click)="addComment()" [disabled]="!newComment.trim()">
+      <ion-icon name="send"></ion-icon>
+    </button>
+
+  </div>
+</ion-footer>

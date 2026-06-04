@@ -1,0 +1,515 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+
+ion-content {
+  --background: #f0fdf6;
+}
+
+// ==========================
+// TOOLBAR & POPOVER
+// ==========================
+ion-toolbar.custom-toolbar {
+  --background: #66d9a6;
+  --color: white;
+}
+
+.toolbar-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin: 4px 10px;
+  transition: background 0.2s ease;
+
+  ion-icon {
+    font-size: 1.3rem;
+    color: white;
+  }
+
+  &:active {
+    background: rgba(255, 255, 255, 0.35);
+  }
+}
+
+ion-popover {
+  --background: white;
+  --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Nunito', sans-serif;
+
+  ion-item {
+    font-size: 15px;
+    font-weight: 600;
+  }
+}
+
+// ==========================
+// HERO DO PERFIL
+// ==========================
+.perfil-hero {
+  position: relative;
+  background: white;
+  padding: 0 20px 20px;
+  text-align: center;
+  border-bottom-left-radius: 28px;
+  border-bottom-right-radius: 28px;
+  box-shadow: 0 4px 20px rgba(102, 217, 166, 0.15);
+  margin-bottom: 16px;
+}
+
+.hero-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 90px;
+  background: linear-gradient(135deg, #66d9a6 0%, #3ecf8e 100%);
+  border-bottom-left-radius: 32px;
+  border-bottom-right-radius: 32px;
+  z-index: 0;
+}
+
+.perfil-avatar-wrapper {
+  position: relative;
+  display: inline-block;
+  margin-top: 28px;
+  z-index: 1;
+}
+
+.perfil-foto {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid white;
+  box-shadow: 0 4px 16px rgba(102, 217, 166, 0.4);
+  display: block;
+}
+
+.perfil-nome {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 800; // Reforçado para destaque
+  color: #3ecf8e;
+  letter-spacing: 0.02em;
+  margin: 14px 0 4px 0;
+}
+
+.perfil-telefone {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem;
+  color: #88c8a8;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+// ==========================
+// FILTROS (Busca e Abas)
+// ==========================
+.filtros-container {
+  padding: 0 16px;
+  margin-bottom: 15px;
+
+  ion-searchbar {
+    --background: white;
+    --box-shadow: 0 4px 10px rgba(102, 217, 166, 0.1);
+    --border-radius: 14px;
+    padding: 0;
+    font-family: 'Nunito', sans-serif;
+  }
+
+  ion-segment {
+    background: transparent;
+    margin-top: 12px;
+
+    ion-segment-button {
+      --color: #88c8a8;
+      --color-checked: #3ecf8e;
+      --indicator-color: #3ecf8e;
+      font-family: 'Nunito', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+  }
+}
+
+// ==========================
+// CABEÇALHOS E EMPTY STATE
+// ==========================
+.secao-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px 5px;
+}
+
+.secao-titulo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #3ecf8e;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+
+  ion-icon {
+    font-size: 1.1rem;
+  }
+}
+
+.secao-count {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #99cbb8;
+}
+
+.sem-resultados {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+
+  .sem-resultados-icon {
+    font-size: 3.5rem;
+    color: #aae0c7;
+    margin-bottom: 12px;
+  }
+
+  p {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #52c994;
+    margin: 0 0 4px;
+  }
+}
+
+.sem-resultados-sub {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #7dddb0;
+}
+
+// ==========================
+// FEED DE POSTAGENS (Cards)
+// ==========================
+.feed {
+  padding: 5px 0 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.denuncia-card {
+  margin: 10px 16px;
+  border-radius: 16px;
+  background: white;
+
+  // 🟢 O CONTORNO DESTACADO AQUI:
+  border: 2px solid #3ecf8e; // Borda de 2px com a cor principal do app
+
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(102, 217, 166, 0.08);
+  animation: fadeIn 0.3s ease both;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+
+  &:hover {
+    border-color: #2db376; // O contorno fica ligeiramente mais escuro ao passar o mouse
+    box-shadow: 0 6px 20px rgba(102, 217, 166, 0.2);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: scale(0.99); // Efeito de clique físico
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.denuncia-header {
+  background: #66d9a6;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  span {
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #ffffff;
+  }
+}
+
+.denuncia-acoes {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.acao-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: background 0.15s ease;
+
+  ion-icon {
+    font-size: 1.15rem;
+    color: #ffffff;
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.35);
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+}
+
+.denuncia-content {
+  display: flex;
+  flex-direction: column; // 🌟 A MÁGICA: Força a imagem e a descrição a ficarem uma embaixo da outra
+  gap: 14px;
+  padding: 14px;
+}
+
+.denuncia-image {
+  width: 82px;
+  height: 82px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1.5px solid #d0eedd;
+}
+
+.denuncia-info {
+  width: 100%; // Ocupa toda a largura restante
+}
+
+.denuncia-badge {
+  display: inline-block;
+  background: #e6f9f0;
+  color: #3ecf8e;
+  font-family: 'Nunito', sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 8px;
+  margin-bottom: 8px; // Empurra a descrição um pouquinho para baixo
+}
+
+.denuncia-descricao {
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #54a792;
+  line-height: 1.55;
+  margin: 0;
+
+  // 🌟 ADICIONE ESTAS 5 LINHAS ABAIXO:
+  display: -webkit-box;
+  -webkit-line-clamp: 2; // 📝 Altere para 3 se quiser mostrar até 3 linhas antes de cortar
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis; // Coloca o "..." automaticamente no final
+}
+
+// ==========================
+// PAGINAÇÃO E EXTRAS
+// ==========================
+.paginacao-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px 20px;
+
+  ion-button {
+    --color: #3ecf8e;
+    --border-color: #3ecf8e;
+    --border-radius: 8px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+  }
+
+  .paginacao-texto {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    color: #88c8a8;
+    font-size: 0.9rem;
+  }
+}
+
+ion-fab-button {
+  --background: #3ecf8e;
+  --background-hover: #2db376;
+  --color: white;
+  box-shadow: 0 4px 14px rgba(62, 207, 142, 0.5);
+}
+
+.bottom-space {
+  height: 80px;
+}
+
+// 🟢 IMAGEM DA POSTAGEM
+.post-imagem-container {
+  position: relative;
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f0fdf6; // Fundo suave para não contrastar muito antes da foto carregar
+
+  // Imagem quando a postagem não tem foto nenhuma
+  .post-imagem-padrao {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+  }
+
+  // Imagem principal única da postagem
+  .post-imagem-unica {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.badge-multi-fotos {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 6px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ion-icon {
+    font-size: 16px;
+  }
+}
+
+// ==========================
+// BLOCOS DE INFORMAÇÃO ONG
+// ==========================
+.ong-info-container {
+  padding: 10px 20px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.ong-card {
+  background: #f8f9fa;
+  border-radius: 16px;
+  padding: 16px;
+  border: 1px solid #edf0f2;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+
+  .info-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+
+    ion-icon {
+      font-size: 1.2rem;
+      color: var(--ion-color-primary, #3ecf8e);
+    }
+
+    .coracao-icone {
+      color: #ff4961; // Um vermelho/rosa para chamar atenção pra doação
+    }
+
+    h3 {
+      margin: 0;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #333;
+    }
+  }
+
+  .ong-text {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.5;
+  }
+}
+
+// Estilos específicos para o bloco do PIX
+.pix-card {
+  background: rgba(62, 207, 142, 0.05);
+  border-color: rgba(62, 207, 142, 0.2);
+
+  .pix-label {
+    margin: 10px 0 6px;
+    font-size: 0.9rem;
+    color: #555;
+  }
+
+  .pix-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px dashed #3ecf8e;
+    cursor: pointer;
+    transition: background 0.2s;
+
+    &:active {
+      background: #f0fdf6;
+    }
+
+    .pix-chave {
+      font-weight: 600;
+      color: #2db376;
+      word-break: break-all;
+      margin-right: 10px;
+    }
+
+    ion-icon {
+      font-size: 1.4rem;
+      color: #3ecf8e;
+    }
+  }
+
+  .pix-dica {
+    display: block;
+    text-align: center;
+    margin-top: 8px;
+    color: #888;
+    font-size: 0.8rem;
+  }
+}

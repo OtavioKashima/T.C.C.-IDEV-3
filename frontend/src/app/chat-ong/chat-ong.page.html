@@ -1,0 +1,59 @@
+<ion-header [translucent]="true">
+  <ion-toolbar class="custom-toolbar">
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon name="arrow-back-outline" style="color:white; font-size:1.4rem;"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <div class="chat-header-info">
+      <img
+        [src]="(ong?.avatar && ong?.avatar !== 'null') ? ong.avatar : 'https://ionicframework.com/docs/img/demos/avatar.svg'"
+        (error)="$any($event.target).src = 'https://ionicframework.com/docs/img/demos/avatar.svg'"
+        class="chat-header-avatar">
+      <div class="chat-header-texts">
+        <span class="chat-header-nome">{{ ong?.nome || 'ONG' }}</span>
+        <span class="chat-header-status">Online agora</span>
+      </div>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content #scrollArea [scrollY]="true">
+  <div class="chat-messages">
+
+    <div class="msg-row msg-deles">
+      <img
+        [src]="(ong?.avatar && ong?.avatar !== 'null') ? ong.avatar : 'https://ionicframework.com/docs/img/demos/avatar.svg'"
+        (error)="$any($event.target).src = 'https://ionicframework.com/docs/img/demos/avatar.svg'" class="msg-avatar">
+      <div class="msg-bubble msg-bubble--deles">
+        <p>Olá! 😊 Vi que você tem interesse em adotar <strong>{{ pet?.titulo || 'um de nossos pets' }}</strong>. Fico
+          feliz!</p>
+        <p>Pode me contar um pouco sobre você e seu ambiente? Tem quintal? Mora sozinho(a)?</p>
+        <span class="msg-hora">agora</span>
+      </div>
+    </div>
+
+    <ng-container *ngFor="let msg of mensagens">
+      <div class="msg-row" [class.msg-meus]="msg.deMim" [class.msg-deles]="!msg.deMim">
+
+        <img *ngIf="!msg.deMim"
+          [src]="(ong?.avatar && ong?.avatar !== 'null') ? ong.avatar : 'https://ionicframework.com/docs/img/demos/avatar.svg'"
+          (error)="$any($event.target).src = 'https://ionicframework.com/docs/img/demos/avatar.svg'" class="msg-avatar">
+
+        <div class="msg-bubble" [class.msg-bubble--meus]="msg.deMim" [class.msg-bubble--deles]="!msg.deMim">
+          {{ msg.texto }}
+          <span class="msg-hora">{{ msg.hora }}</span>
+        </div>
+      </div>
+    </ng-container>
+
+  </div>
+</ion-content>
+
+<div class="chat-input-bar">
+  <input class="chat-input" placeholder="Digite uma mensagem..." [(ngModel)]="novaMensagem" (keyup.enter)="enviar()">
+  <button class="btn-enviar" (click)="enviar()" [disabled]="!novaMensagem.trim()">
+    <ion-icon name="send"></ion-icon>
+  </button>
+</div>

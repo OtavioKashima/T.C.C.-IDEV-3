@@ -1,0 +1,77 @@
+<ion-header [translucent]="true">
+  <ion-toolbar class="toolbar-transparente">
+    <ion-buttons slot="start">
+      <ion-button (click)="goToLogin()" fill="clear" class="btn-voltar">
+        <ion-icon name="arrow-back-outline" class="seta-voltar"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" scroll-y="false">
+  <div class="login-container">
+    <div class="content-wrapper">
+
+      <div class="logo-container">
+        <div class="logo-circle">
+          <ion-icon name="paw" class="logo-icon"></ion-icon>
+        </div>
+      </div>
+
+      <h1 class="login-title">Recuperar Senha</h1>
+
+      <p class="descricao-recuperar">
+        Digite seu email para receber um código de recuperação de senha.
+      </p>
+
+      <div class="form-container">
+
+        <div class="input-group">
+          <div class="input-wrapper">
+
+            <ion-icon name="mail-outline" class="input-icon"></ion-icon>
+
+            <ion-input
+              class="custom-input"
+              placeholder="Email"
+              type="email"
+              [(ngModel)]="email"
+              (ionInput)="validarEmail()">
+            </ion-input>
+
+          </div>
+
+          
+          <div *ngIf="emailInvalido" class="error-message">
+            O e-mail deve conter '@' e um domínio válido
+          </div>
+
+        
+          <div *ngIf="mensagemErro" class="error-message">
+            {{ mensagemErro }}
+          </div>
+
+          
+          <div *ngIf="mensagemSucesso" class="success-message">
+            {{ mensagemSucesso }}
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="button-container">
+        <ion-button
+          class="login-button"
+          expand="block"
+          (click)="recuperarSenha()"
+          [disabled]="emailInvalido">
+
+          enviar
+
+        </ion-button>
+      </div>
+
+    </div>
+  </div>
+</ion-content>

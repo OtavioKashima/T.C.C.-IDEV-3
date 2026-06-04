@@ -1,0 +1,149 @@
+<ion-header [translucent]="true">
+  <ion-toolbar class="toolbar-transparente">
+    <ion-buttons slot="start">
+      <ion-button (click)="goToHome()" fill="clear" class="btn-voltar">
+        <ion-icon name="arrow-back-outline" class="seta-voltar"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" [scrollY]="true">
+
+  <div class="login-container">
+    <div class="content-wrapper">
+
+      <div class="logo-container">
+        <div class="logo-circle">
+          <ion-icon name="paw" class="logo-icon"></ion-icon>
+        </div>
+      </div>
+
+      <h1 class="login-title">Cadastro</h1>
+
+      <div class="form-container">
+
+        <!-- Usuário -->
+        <div class="input-group">
+          <div class="input-wrapper">
+            <ion-icon name="person-outline" class="input-icon"></ion-icon>
+            <ion-input
+              class="custom-input"
+              placeholder="Usuário"
+              type="text"
+              [(ngModel)]="nome"
+              maxlength="50">
+            </ion-input>
+            <ion-icon name="eye-outline" class="input-icon-right" style="opacity: 0; pointer-events: none;"></ion-icon>
+          </div>
+        </div>
+
+        <!-- CPF -->
+        <div class="input-group">
+          <div class="input-wrapper">
+            <ion-icon name="card-outline" class="input-icon"></ion-icon>
+            <ion-input
+              class="custom-input"
+              placeholder="CPF"
+              type="text"
+              [(ngModel)]="cpf"
+              (ionInput)="maskCPF()"
+              (keypress)="somenteNumeros($event)"
+              maxlength="14">
+            </ion-input>
+            <ion-icon name="eye-outline" class="input-icon-right" style="opacity: 0; pointer-events: none;"></ion-icon>
+          </div>
+        </div>
+
+        <!-- Telefone -->
+        <div class="input-group">
+          <div class="input-wrapper">
+            <ion-icon name="call-outline" class="input-icon"></ion-icon>
+            <ion-input
+              class="custom-input"
+              placeholder="Telefone"
+              type="text"
+              [(ngModel)]="telefone"
+              (ionInput)="maskTelefone()"
+              (keypress)="somenteNumeros($event)"
+              maxlength="15">
+            </ion-input>
+            <ion-icon name="eye-outline" class="input-icon-right" style="opacity: 0; pointer-events: none;"></ion-icon>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="input-group">
+          <div class="input-wrapper">
+            <ion-icon name="mail-outline" class="input-icon"></ion-icon>
+            <ion-input
+              class="custom-input"
+              placeholder="Email"
+              type="email"
+              [(ngModel)]="email"
+              (ionInput)="validarEmail()">
+            </ion-input>
+            <ion-icon name="eye-outline" class="input-icon-right" style="opacity: 0; pointer-events: none;"></ion-icon>
+          </div>
+          <div *ngIf="emailInvalido" class="error-message">
+            O e-mail deve conter '@' e um domínio válido
+          </div>
+        </div>
+
+        <!-- Senha -->
+        <div class="input-group">
+          <div class="input-wrapper">
+            <ion-icon name="lock-closed-outline" class="input-icon"></ion-icon>
+            <ion-input
+              class="custom-input"
+              placeholder="Senha"
+              [type]="showSenha ? 'text' : 'password'"
+              [(ngModel)]="senha">
+            </ion-input>
+            <ion-icon
+              [name]="showSenha ? 'eye-off-outline' : 'eye-outline'"
+              class="input-icon-right"
+              (click)="showSenha = !showSenha">
+            </ion-icon>
+          </div>
+        </div>
+
+        <!-- Confirmar senha -->
+        <div class="input-group">
+          <div class="input-wrapper">
+            <ion-icon name="lock-closed-outline" class="input-icon"></ion-icon>
+            <ion-input
+              class="custom-input"
+              placeholder="Confirmar senha"
+              [type]="showConfirmarSenha ? 'text' : 'password'"
+              [(ngModel)]="confirmarSenha">
+            </ion-input>
+            <ion-icon
+              [name]="showConfirmarSenha ? 'eye-off-outline' : 'eye-outline'"
+              class="input-icon-right"
+              (click)="showConfirmarSenha = !showConfirmarSenha">
+            </ion-icon>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Botão -->
+      <div class="button-container">
+        <ion-button
+          class="login-button"
+          expand="block"
+          (click)="registrar()"
+          [disabled]="emailInvalido">
+          Cadastrar
+        </ion-button>
+
+        <div class="no-account">
+          <span (click)="goToLoginPage()">Já tenho conta</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</ion-content>

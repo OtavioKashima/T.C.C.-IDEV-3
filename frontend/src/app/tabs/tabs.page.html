@@ -1,0 +1,38 @@
+<ion-fab vertical="bottom" horizontal="center" slot="fixed" class="fab-container">
+
+  <div class="fab-notch-outline"></div>
+
+  <ion-fab-button class="fab-add-button" (click)="adicionar()">
+    <ion-icon name="add-outline"></ion-icon>
+  </ion-fab-button>
+
+</ion-fab>
+
+<ion-tabs>
+  <ion-tab-bar slot="bottom" class="custom-tab-bar">
+
+    <ion-tab-button tab="inicio">
+      <ion-icon name="home-outline"></ion-icon>
+      <ion-label>Inicio</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="adocoes">
+      <ion-icon name="heart-outline"></ion-icon>
+      <ion-label>Adoções</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button class="fab-spacer">
+    </ion-tab-button>
+
+    <ion-tab-button tab="denuncias">
+      <ion-icon name="alert-circle-outline"></ion-icon>
+      <ion-label>Denúncias</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="perfil">
+      <ion-icon name="person-outline"></ion-icon>
+      <ion-label>Perfil</ion-label>
+    </ion-tab-button>
+
+  </ion-tab-bar>
+</ion-tabs>

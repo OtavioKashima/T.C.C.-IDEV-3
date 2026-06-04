@@ -1,0 +1,137 @@
+<ion-header [translucent]="true">
+  <ion-toolbar class="custom-toolbar">
+    <div class="header-content">
+      <div class="title-section">
+        <ion-icon name="alert-circle-outline" class="header-icon-small"></ion-icon>
+        <span class="header-title">Denuncie</span>
+      </div>
+      <div class="header-actions">
+        <ion-icon name="options-outline" class="header-icon" (click)="toggleFiltros()">
+        </ion-icon>
+        <ion-icon [name]="showSearch ? 'close-outline' : 'search-outline'" class="header-icon" (click)="toggleSearch()">
+        </ion-icon>
+      </div>
+    </div>
+
+    <div class="search-bar-wrapper" [class.visible]="showSearch">
+      <div class="search-input-wrapper">
+        <ion-icon name="search-outline" class="search-input-icon"></ion-icon>
+        <input class="search-input" placeholder="Buscar denúncia..." [(ngModel)]="termoBusca" (input)="filtrar()">
+        <ion-icon *ngIf="termoBusca" name="close-circle-outline" class="search-clear-icon" (click)="limparBusca()">
+        </ion-icon>
+      </div>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [scrollY]="true" class="ion-padding">
+
+  <div class="filtros-painel" [class.aberto]="showFiltros">
+    <div class="filtros-inner">
+      <div class="filtros-titulo">
+        <span>Filtrar por</span>
+        <button class="btn-limpar-todos" (click)="limparTodosFiltros()" *ngIf="temFiltroAtivo()">
+          Limpar tudo
+        </button>
+      </div>
+      <div class="filtros-row">
+
+        <div class="filtro-pill filtro-pill--input">
+          <input type="date" [(ngModel)]="filtros.data" (change)="filtrar()" class="filtro-input-date">
+        </div>
+
+        <div class="filtro-pill">
+          <select [(ngModel)]="filtros.tipoAnimal" (change)="filtrar()">
+            <option value="" disabled selected hidden>Tipo de animal</option>
+            <option value="">Todos os animais</option>
+            <option value="gato">Gato</option>
+            <option value="cachorro">Cachorro</option>
+            <option value="coelho">Coelho</option>
+            <option value="ave">Ave</option>
+          </select>
+        </div>
+
+        <div class="filtro-pill">
+          <select [(ngModel)]="filtros.cidade" (change)="filtrar()">
+            <option value="" disabled selected hidden>Cidade</option>
+            <option value="">Todas as cidades</option>
+            <option *ngFor="let c of cidadesDisponiveis" [value]="c">{{ c }}</option>
+          </select>
+        </div>
+
+        <div class="filtro-pill">
+          <select [(ngModel)]="filtros.estado" (change)="filtrar()">
+            <option value="" disabled selected hidden>Estado</option>
+            <option value="">Todos os estados</option>
+            <option *ngFor="let e of estadosDisponiveis" [value]="e">{{ e }}</option>
+          </select>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="filtros-badge-bar" *ngIf="temFiltroAtivo()">
+    <div class="chips-scroll">
+      <span class="badge-chip" *ngIf="filtros.data">
+        {{ filtros.data | date:'dd/MM/yyyy' }}
+        <ion-icon name="close-outline" (click)="limparCampo('data')"></ion-icon>
+      </span>
+      <span class="badge-chip" *ngIf="filtros.tipoAnimal">
+        {{ filtros.tipoAnimal | titlecase }}
+        <ion-icon name="close-outline" (click)="limparCampo('tipoAnimal')"></ion-icon>
+      </span>
+      <span class="badge-chip" *ngIf="filtros.cidade">
+        {{ filtros.cidade }}
+        <ion-icon name="close-outline" (click)="limparCampo('cidade')"></ion-icon>
+      </span>
+      <span class="badge-chip" *ngIf="filtros.estado">
+        {{ filtros.estado }}
+        <ion-icon name="close-outline" (click)="limparCampo('estado')"></ion-icon>
+      </span>
+    </div>
+    <span class="resultado-count">{{ denunciasFiltradas.length }} resultado{{ denunciasFiltradas.length !== 1 ? 's' : ''
+      }}</span>
+  </div>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12" size-md="6" size-lg="4" *ngFor="let denuncia of denunciasFiltradas">
+        <ion-card class="pet-card" (click)="irParaDetalhes(denuncia)">
+
+          <div class="image-container">
+            <img *ngIf="denuncia.fotosArray && denuncia.fotosArray.length > 0"
+              [src]="'http://localhost:3000/uploads/' + denuncia.fotosArray[0]" [alt]="denuncia.titulo"
+              class="single-pet-image">
+
+            <div *ngIf="!denuncia.fotosArray || denuncia.fotosArray.length === 0" class="sem-foto">
+              <ion-icon name="camera-outline"></ion-icon>
+            </div>
+          </div>
+
+          <ion-card-header>
+            <ion-card-subtitle class="pet-subtitle" style="display: flex; align-items: center; gap: 4px;">
+              <ion-icon name="location-outline"></ion-icon>
+              {{ denuncia.localizacao || 'Localização não informada' }}
+            </ion-card-subtitle>
+            <ion-card-title class="pet-title">{{ denuncia.titulo }}</ion-card-title>
+          </ion-card-header>
+
+          <ion-card-content class="pet-description">
+            {{ denuncia.descricao }}
+          </ion-card-content>
+
+          <div class="card-footer">
+            <ion-button fill="clear" size="small">Ver Detalhes</ion-button>
+          </div>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <div class="empty-state" *ngIf="denunciasFiltradas.length === 0">
+    <ion-icon name="alert-circle-outline"></ion-icon>
+    <p>Nenhuma denúncia encontrada por aqui...</p>
+  </div>
+
+</ion-content>

@@ -1,0 +1,40 @@
+.fab-container {
+  transform: translateY(-12px);
+  z-index: 10;
+}
+
+.fab-add-button {
+  --background: #ffffff;
+  --color: #3ecf8e;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 50%;
+  --ripple-color: transparent;
+}
+
+.fab-notch-outline {
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(135deg, #5ad9a3 0%, #3ecf8e 100%);
+  border-radius: 50%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+}
+
+.custom-tab-bar {
+  --background: linear-gradient(135deg, #5ad9a3 0%, #3ecf8e 100%);
+  --color: #ffffff;
+  --color-selected: #ffffff;
+  border-top: none;
+
+  ion-tab-button {
+    --background: transparent;
+    --ripple-color: rgba(255, 255, 255, 0.2);
+  }
+}
+
+.fab-spacer {
+  pointer-events: none;
+}

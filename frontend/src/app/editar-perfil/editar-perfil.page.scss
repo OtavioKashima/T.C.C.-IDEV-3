@@ -1,0 +1,275 @@
+// ==========================================
+// BOTÃO VOLTAR FLUTUANTE
+// ==========================================
+.floating-buttons {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 100;
+
+  .float-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    transition: transform 0.2s ease;
+
+    .seta-voltar {
+      font-size: 22px;
+      color: #3ecf8e; // Cor principal
+    }
+
+    &:active {
+      transform: scale(0.9);
+    }
+  }
+}
+
+// ==========================================
+// CABEÇALHO HERO E ÁREA DO AVATAR
+// ==========================================
+.hero-image-wrapper {
+  position: relative;
+  width: 100%;
+  background: linear-gradient(135deg, #3ecf8e 0%, #2db376 100%);
+  padding-top: 60px; // Espaço para não bater no botão voltar
+  padding-bottom: 40px;
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+  box-shadow: 0 6px 20px rgba(62, 207, 142, 0.25);
+  margin-bottom: 20px;
+}
+
+.hero-avatar-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+// O Container da Foto
+.avatar-wrapper {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  background: #f0fdf6; // Pode manter a cor que você já usava
+
+  // 🟢 CORREÇÃO 1: A borda branca é aplicada APENAS no container
+  border: 4px solid white;
+  border-radius: 50%;
+  box-shadow: 0 4px 16px rgba(102, 217, 166, 0.3);
+
+  // 🟢 CORREÇÃO 2: Permite que o botão da câmera vaze para fora sem ser cortado
+  overflow: visible;
+  margin: 0 auto;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+
+  // 🟢 CORREÇÃO 3: Força a remoção de qualquer borda na tag img (evita a borda dupla)
+  border: none !important;
+  display: block;
+}
+
+// Botão de Câmera por cima da foto
+.trocar-foto-btn {
+  position: absolute;
+  bottom: 0px;
+  right: -4px; // Faz o botão ficar um pouquinho para fora do círculo principal
+
+  background: var(--ion-color-primary, #3ecf8e);
+  color: white;
+
+  // Borda branca no botão para destacá-lo da foto
+  border: 3px solid white;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  // 🟢 CORREÇÃO 4: Z-index alto para garantir que fique sempre por cima da imagem
+  z-index: 10;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.1s ease;
+
+  ion-icon {
+    font-size: 1.2rem;
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+}
+
+.hero-nome {
+  color: white;
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.hero-sub {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+
+// ==========================================
+// CORPO DO FORMULÁRIO (INPUTS E BOTÃO)
+// ==========================================
+.content-body {
+  padding: 10px 24px 30px;
+}
+
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  background: #f4f5f8;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 14px;
+  padding: 0 16px;
+  height: 56px;
+  box-sizing: border-box !important;
+  /* 🟢 CORREÇÃO: Garante que largura/altura incluam padding e borda */
+  transition: all 0.3s ease;
+
+  &:focus-within {
+    border-color: #3ecf8e;
+    background: white;
+    box-shadow: 0 0 0 4px rgba(62, 207, 142, 0.15);
+  }
+}
+
+.input-icon {
+  font-size: 22px;
+  color: #999;
+  margin-right: 12px;
+  transition: color 0.3s ease;
+}
+
+// Muda a cor do ícone quando o input está em foco
+.input-wrapper:focus-within .input-icon {
+  color: #3ecf8e;
+}
+
+.field-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 1rem;
+  color: #333;
+  height: 100%;
+  font-family: inherit;
+
+  &::placeholder {
+    color: #a0a0a0;
+  }
+}
+
+// ==========================================
+// BOTÃO DE SALVAR
+// ==========================================
+.salvar-btn {
+  width: 100%;
+  height: 56px;
+  background: #3ecf8e;
+  color: white;
+  font-size: 1.05rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 36px;
+  box-shadow: 0 6px 16px rgba(62, 207, 142, 0.3);
+  transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+
+  ion-icon {
+    font-size: 1.4rem;
+    margin-right: 8px;
+  }
+
+  &:active {
+    transform: translateY(2px) scale(0.98);
+    background: #2db376;
+    box-shadow: 0 2px 8px rgba(62, 207, 142, 0.3);
+  }
+}
+
+// ==========================================
+// GRUPO DE INPUTS LADO A LADO (CIDADE / UF)
+// ==========================================
+.row-inputs {
+  display: flex !important;
+  gap: 12px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.input-cidade {
+  flex: 1 !important;
+  width: auto !important;
+  /* 🟢 CORREÇÃO: Cancela o 'width: 100%' padrão que fazia ele nascer gigante */
+  min-width: 0 !important;
+  /* 🟢 CORREÇÃO: Força o Flexbox a ter permissão de encolher o campo */
+  box-sizing: border-box !important;
+}
+
+.input-uf {
+  width: 75px !important;
+  /* 🟢 Largura fixa perfeita para o quadradinho do estado */
+  flex-shrink: 0 !important;
+  /* Impede o estado de ser esmagado de qualquer forma */
+  flex-grow: 0 !important;
+  /* Impede o estado de tentar crescer */
+  padding: 0 !important;
+  /* Remove paddings laterais para centralizar perfeitamente o texto */
+  justify-content: center !important;
+  box-sizing: border-box !important;
+}
+
+.texto-uf {
+  width: 100% !important;
+  height: 100% !important;
+  text-align: center !important;
+  /* Centraliza o placeholder 'UF' e o texto digitado */
+  text-transform: uppercase !important;
+  /* Força letras maiúsculas automaticamente */
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  background: transparent !important;
+  outline: none !important;
+  font-size: 1rem !important;
+  color: #333 !important;
+  box-sizing: border-box !important;
+
+  &::placeholder {
+    color: #a0a0a0 !important;
+  }
+}

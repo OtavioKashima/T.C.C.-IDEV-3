@@ -1,0 +1,361 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+
+
+ion-content {
+  --background: #f5f7f6;
+}
+
+
+
+.floating-buttons {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 12px 0;
+}
+
+.float-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border: 2px solid #3ecf8e;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(62, 207, 142, 0.2);
+  transition: all 0.2s ease;
+  padding: 0;
+
+  &:active {
+    background: #3ecf8e;
+
+    .seta-voltar {
+      color: white;
+    }
+  }
+}
+
+.seta-voltar {
+  font-size: 20px;
+  color: #3ecf8e;
+  transition: color 0.2s ease;
+}
+
+
+.hero-image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 360px;
+  /* Altura fixa do carrossel */
+  overflow: hidden;
+  background-color: #f5f7f6;
+}
+
+/* A imagem dentro do carrossel */
+.hero-image {
+  width: 100%;
+  height: 100%;
+  /* 🟢 ALTERADO: 'cover' faz a imagem preencher todo o espaço do carrossel sem distorcer, cortando as sobras */
+  object-fit: cover;
+  display: block;
+}
+
+.hero-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 60px 20px 20px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.65), transparent);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+
+
+.hero-title {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: white;
+  margin: 0;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.hero-age {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-left: 2px;
+}
+
+.hero-age-icon {
+  font-size: 1rem;
+  margin-left: 2px;
+}
+
+
+.content-body {
+  padding: 16px 16px 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+
+.owner-card {
+  background: white;
+  border-radius: 16px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:active {
+    transform: scale(0.98);
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+  }
+}
+
+.owner-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  /* 🟢 ALTERADO: Removida a borda verde para preencher tudo */
+  border: none;
+  flex-shrink: 0;
+}
+
+.owner-avatar--ong {
+  border-radius: 10px;
+  /* 🟢 ALTERADO: 'cover' faz a imagem preencher 100% do espaço */
+  object-fit: cover;
+  /* 🟢 ALTERADO: Fundo transparente e padding zero para remover a "moldura" branca */
+  background: transparent;
+  padding: 0;
+}
+
+.owner-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.owner-label {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #aab5b0;
+}
+
+.owner-name {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #1a1a1a;
+}
+
+.ong-arrow {
+  font-size: 1.1rem;
+  color: #3ecf8e;
+  flex-shrink: 0;
+}
+
+
+.section {
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.section-title {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 900;
+  color: #1a1a1a;
+  margin: 0 0 10px;
+}
+
+.section-text {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #5a6e66;
+  line-height: 1.7;
+  margin: 0;
+}
+
+
+.animal-details {
+  display: flex;
+  gap: 10px;
+}
+
+.detail-card {
+  flex: 1;
+  background: white;
+  border-radius: 14px;
+  padding: 14px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  text-align: center;
+}
+
+.detail-label {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #3ecf8e;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.detail-value {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #1a1a1a;
+}
+
+
+.chips-row {
+  display: flex;
+  gap: 10px;
+}
+
+.chip {
+  flex: 1;
+  background: white;
+  border-radius: 20px;
+  padding: 10px 14px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #4a5e56;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+  ion-icon {
+    font-size: 1rem;
+    color: #3ecf8e;
+  }
+}
+
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 12px 20px 28px;
+  background: white;
+  border-top: 1px solid #f0f4f2;
+  z-index: 100;
+}
+
+.adopt-btn {
+  width: 100%;
+  height: 52px;
+  background: linear-gradient(135deg, #5ad9a3, #3ecf8e);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(78, 202, 136, 0.4);
+  transition: all 0.2s ease;
+
+  ion-icon {
+    font-size: 1.3rem;
+  }
+
+  &:active {
+    transform: scale(0.97);
+    box-shadow: 0 3px 10px rgba(78, 202, 136, 0.3);
+  }
+}
+
+.carousel-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  /* Faz a imagem "grudar" na tela */
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+
+  /* Esconde a barra de rolagem nativa para ficar elegante */
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.carousel-slide {
+  flex: 0 0 100%;
+  /* Cada imagem ocupa 100% da largura exata */
+  scroll-snap-align: start;
+  /* Ponto de ancoragem do slide */
+}
+
+/* Bolinhas de Navegação */
+.carousel-dots {
+  position: absolute;
+  top: 70px;
+  /* Fica abaixo dos botões flutuantes */
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  z-index: 50;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  /* Bolinha inativa translúcida */
+  transition: all 0.3s ease;
+
+  &.active {
+    background: #ffffff;
+    /* Bolinha ativa branca e maior */
+    transform: scale(1.3);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  }
+}

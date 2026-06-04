@@ -1,0 +1,145 @@
+.custom-toolbar {
+    --background: #5ecfa0;
+    --color: white;
+    --min-height: 56px;
+  }
+  
+  .custom-toolbar ion-title {
+    color: white;
+    font-size: 17px;
+    font-weight: 700;
+    text-align: center;
+  }
+  
+  .back-btn {
+    --color: white;
+  }
+  
+  .page-content {
+    --background: #ffffff;
+  }
+  
+  .layout-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    width: 100%;
+    padding-top: 14px;
+    padding-bottom: 30px;
+  }
+  
+  .side-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    padding: 8px 10px 0 12px;
+    flex-shrink: 0;
+  }
+  
+  .action-icon {
+    font-size: 22px;
+    color: #aaa;
+    cursor: pointer;
+    transition: color 0.2s;
+  
+    &:hover {
+      color: #5ecfa0;
+    }
+  }
+  
+  .post-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-right: 12px;
+  }
+  
+  .user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  
+  .user-avatar {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ddd;
+  }
+  
+  .user-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #222;
+  }
+  
+  .pet-image-container {
+    width: 100%;
+    margin-bottom: 14px;
+  }
+  
+  .pet-image-large {
+    width: 100%;
+    max-width: 320px;
+    height: 320px;
+    border-radius: 14px;
+    object-fit: cover;
+  }
+  
+  .pet-description {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.6;
+    text-align: left;
+    width: 100%;
+    padding-bottom: 30px;
+  }
+  
+  .bottom-tabs {
+    background: #5ecfa0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    padding: 8px 0 10px 0;
+    height: 60px;
+  }
+  
+  .tab-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    color: white;
+    font-size: 11px;
+    cursor: pointer;
+    flex: 1;
+  
+    ion-icon {
+      font-size: 22px;
+    }
+  }
+  
+  .fab-center {
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    margin-top: -28px;
+    flex-shrink: 0;
+    cursor: pointer;
+  
+    ion-icon {
+      font-size: 28px;
+      color: #5ecfa0;
+    }
+  }

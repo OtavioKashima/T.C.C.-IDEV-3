@@ -1,0 +1,152 @@
+<ion-header [translucent]="true">
+  <ion-toolbar class="custom-toolbar">
+    <div class="header-content">
+      <div class="title-section">
+        <ion-icon name="heart" size="large" class="header-icon"></ion-icon>
+        <span class="header-title">Adote</span>
+      </div>
+      <div class="header-actions">
+        <ion-icon name="options-outline" class="header-icon" (click)="toggleFiltros()">
+        </ion-icon>
+        <ion-icon [name]="showSearch ? 'close-outline' : 'search-outline'" class="header-icon" (click)="toggleSearch()">
+        </ion-icon>
+      </div>
+    </div>
+
+    <div class="search-bar-wrapper" [class.visible]="showSearch">
+      <div class="search-input-wrapper">
+        <ion-icon name="search-outline" class="search-input-icon"></ion-icon>
+        <input class="search-input" placeholder="Buscar animal..." [(ngModel)]="termoBusca" (input)="filtrar()">
+        <ion-icon *ngIf="termoBusca" name="close-circle-outline" class="search-clear-icon" (click)="limparBusca()">
+        </ion-icon>
+      </div>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+
+<ion-content [fullscreen]="true" class="ion-padding" [scrollY]="true">
+
+  <div class="filtros-painel" [class.aberto]="showFiltros">
+    <div class="filtros-inner">
+      <div class="filtros-titulo">
+        <span>Filtrar por</span>
+        <button class="btn-limpar-todos" (click)="limparTodosFiltros()" *ngIf="temFiltroAtivo()">
+          Limpar tudo
+        </button>
+      </div>
+      <div class="filtros-row">
+
+        <div class="filtro-pill">
+          <select [(ngModel)]="filtros.animal" (change)="filtrar()">
+            <option value="" disabled selected hidden>Tipo de animal</option>
+            <option value="">Todas as opções</option>
+            <option value="Gato">Gato</option>
+            <option value="Cachorro">Cachorro</option>
+            <option value="Coelho">Coelho</option>
+            <option value="Ave">Ave</option>
+          </select>
+        </div>
+
+        <div class="filtro-pill">
+          <select [(ngModel)]="filtros.estado" (change)="filtrar()">
+            <option value="" disabled selected hidden>Estado</option>
+            <option value="">Todas as opções</option>
+            <option value="SC">SC</option>
+          </select>
+        </div>
+
+        <div class="filtro-pill">
+          <select [(ngModel)]="filtros.cidade" (change)="filtrar()">
+            <option value="" disabled selected hidden>Cidade</option>
+            <option value="">Todas as opções</option>
+            <option value="Joinville">Joinville</option>
+          </select>
+        </div>
+
+        <div class="filtro-pill">
+          <select [(ngModel)]="filtros.idade" (change)="filtrar()">
+            <option value="" disabled selected hidden>Idade</option>
+            <option value="">Todas as opções</option>
+            <option value="menos1">Menos de 1 ano</option>
+            <option value="1">1 ano</option>
+            <option value="2">2 anos</option>
+            <option value="3">3 anos</option>
+            <option value="4">4 anos</option>
+            <option value="5">5 anos</option>
+            <option value="6">6 anos</option>
+            <option value="7">7 anos</option>
+            <option value="8">8 anos</option>
+            <option value="9">9 anos</option>
+            <option value="10">10 anos</option>
+          </select>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="filtros-badge-bar" *ngIf="temFiltroAtivo()">
+    <div class="chips-scroll">
+      <span class="badge-chip" *ngIf="filtros.animal">
+        {{ filtros.animal }}
+        <ion-icon name="close-outline" (click)="limparCampo('animal')"></ion-icon>
+      </span>
+      <span class="badge-chip" *ngIf="filtros.cidade">
+        {{ filtros.cidade }}
+        <ion-icon name="close-outline" (click)="limparCampo('cidade')"></ion-icon>
+      </span>
+      <span class="badge-chip" *ngIf="filtros.estado">
+        {{ filtros.estado }}
+        <ion-icon name="close-outline" (click)="limparCampo('estado')"></ion-icon>
+      </span>
+      <span class="badge-chip" *ngIf="filtros.idade">
+        {{ filtros.idade === 'menos1' ? 'Menos de 1 ano' : filtros.idade === '1' ? '1 ano' : filtros.idade + ' anos' }}
+        <ion-icon name="close-outline" (click)="limparCampo('idade')"></ion-icon>
+      </span>
+    </div>
+    <span class="resultado-count">{{ petsFiltrados.length }} resultado{{ petsFiltrados.length !== 1 ? 's' : '' }}</span>
+  </div>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12" size-md="6" size-lg="4" *ngFor="let adocao of adocoesFiltradas">
+        <ion-card class="pet-card" (click)="abrirDetalhe(adocao)">
+          <div class="image-container">
+            <div class="pin-badge" *ngIf="adocao.fixado === 1 || adocao.fixado === 2">
+              <ion-icon name="star"></ion-icon> Fixado
+            </div>
+
+            <div *ngIf="adocao.fotosArray && adocao.fotosArray.length > 0" class="foto-unica-wrapper">
+              <img [src]="'http://localhost:3000/uploads/' + adocao.fotosArray[0]" [alt]="adocao.titulo"
+                class="foto-unica">
+            </div>
+
+            <div *ngIf="!adocao.fotosArray || adocao.fotosArray.length === 0" class="sem-foto">
+              <ion-icon name="paw-outline"></ion-icon>
+            </div>
+          </div>
+
+          <ion-card-header>
+            <ion-card-subtitle class="pet-subtitle">
+              {{ adocao.idade || 'Idade N/A' }} • {{ adocao.raca || 'SRD' }}
+            </ion-card-subtitle>
+            <ion-card-title class="pet-title">{{ adocao.titulo }}</ion-card-title>
+          </ion-card-header>
+
+          <ion-card-content class="pet-description">
+            {{ adocao.descricao }}
+          </ion-card-content>
+
+          <div class="card-footer">
+            <ion-button fill="clear" size="small">Ver Detalhes</ion-button>
+          </div>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <div class="empty-state" *ngIf="adocoesFiltradas.length === 0">
+    <ion-icon name="paw-outline"></ion-icon>
+    <p>Nenhum pet para adoção encontrado por aqui...</p>
+  </div>
+</ion-content>

@@ -1,0 +1,84 @@
+<ion-content [scrollY]="true">
+
+  <div class="floating-buttons">
+    <button class="float-btn" (click)="goBack()">
+      <ion-icon name="arrow-back-outline" class="seta-voltar"></ion-icon>
+    </button>
+    <button class="float-btn" (click)="compartilhar()">
+      <ion-icon name="arrow-redo-outline" class="seta-voltar"></ion-icon>
+    </button>
+  </div>
+
+  <div class="hero-image-wrapper">
+    <div class="carousel-container" (scroll)="onScroll($event)">
+      <img *ngFor="let img of pet.imagens" [src]="img" [alt]="pet.titulo" class="hero-image carousel-slide">
+    </div>
+
+    <div class="hero-overlay">
+      <h1 class="hero-title">{{ pet.titulo }}</h1>
+    </div>
+
+    <div class="carousel-dots" *ngIf="pet.imagens && pet.imagens.length > 1">
+      <div class="dot" *ngFor="let img of pet.imagens; let i = index" [class.active]="i === imagemAtiva">
+      </div>
+    </div>
+  </div>
+
+  <div class="content-body">
+
+    <div class="owner-card" (click)="irParaPerfilOng()">
+
+      <div class="owner-avatar admin-avatar" *ngIf="pet.tipo_usuario === 'admin'">
+        <ion-icon name="shield-checkmark"></ion-icon>
+      </div>
+
+      <img *ngIf="pet.tipo_usuario !== 'admin'"
+        [src]="pet.usuario_foto?.startsWith('http') ? pet.usuario_foto : ('http://localhost:3000/uploads/' + (pet.usuario_foto || ''))"
+        onerror="this.src='https://ionicframework.com/docs/img/demos/avatar.svg'" alt="Foto do Criador"
+        class="owner-avatar" [class.owner-avatar--ong]="pet.tipo_usuario === 'ong'">
+
+      <div class="owner-info">
+        <span class="owner-label">
+          {{ pet.tipo_usuario === 'admin' ? 'Administrador do Sistema' : (pet.tipo_usuario === 'ong' ? 'ONG Responsável'
+          : 'Protetor') }}
+        </span>
+        <span class="owner-name">{{ pet.usuario_nome || 'Usuário Desconhecido' }}</span>
+      </div>
+      <ion-icon name="chevron-forward-outline" class="ong-arrow"></ion-icon>
+    </div>
+
+    <div class="chips-row">
+      <div class="chip">
+        <ion-icon name="paw-outline"></ion-icon>
+        Animal doméstico
+      </div>
+      <div class="chip">
+        <ion-icon name="heart-outline"></ion-icon>
+        Precisa de lar
+      </div>
+    </div>
+
+    <div class="animal-details">
+      <div class="detail-card">
+        <span class="detail-label">Raça</span>
+        <span class="detail-value">{{ pet.raca }}</span>
+      </div>
+      <div class="detail-card">
+        <span class="detail-label">Gênero</span>
+        <span class="detail-value">{{ pet.genero }}</span>
+      </div>
+      <div class="detail-card">
+        <span class="detail-label">Idade</span>
+        <span class="detail-value">{{ pet.idade }}</span>
+      </div>
+    </div>
+
+  </div>
+</ion-content>
+
+<div class="bottom-bar">
+  <button class="adopt-btn" (click)="queroAdotar()">
+    <ion-icon name="paw"></ion-icon>
+    Quero Adotar
+  </button>
+</div>

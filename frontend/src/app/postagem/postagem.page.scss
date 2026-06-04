@@ -1,0 +1,456 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+
+/* =========================================
+   ESTILO GLOBAL E FUNDO DA TELA
+   ========================================= */
+ion-content {
+  --background: #f0fdf6;
+  /* Fundo verde água bem claro */
+  --padding-top: 0;
+}
+
+ion-content::part(scroll) {
+  padding-top: 0 !important;
+}
+
+/* =========================================
+   BOTÃO VOLTAR FLUTUANTE
+   ========================================= */
+.floating-buttons {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+}
+
+.float-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border: 2px solid #3ecf8e;
+  /* Verde principal */
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(62, 207, 142, 0.2);
+  transition: all 0.2s ease;
+  padding: 0;
+
+  &:active {
+    background: #3ecf8e;
+
+    .seta-voltar {
+      color: white;
+    }
+  }
+}
+
+.seta-voltar {
+  font-size: 20px;
+  color: #3ecf8e;
+  transition: color 0.2s ease;
+}
+
+/* =========================================
+   CONTAINER PRINCIPAL E INTRODUÇÃO
+   ========================================= */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 28px 40px;
+  max-width: 375px;
+  /* Limita largura em telas maiores */
+  margin: 0 auto;
+}
+
+.intro {
+  text-align: center;
+  margin-bottom: 20px;
+  margin-top: 40px;
+}
+
+@keyframes popIn {
+  from {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.logo-circle {
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(145deg, #5ad9a3, #3ecf8e);
+  /* Degradê verde */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 28px rgba(62, 207, 142, 0.4);
+  margin: 6px auto 10px;
+  animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.logo-icon {
+  font-size: 1.9rem;
+  color: white;
+}
+
+.intro h2 {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #3ecf8e;
+  /* Verde brilhante */
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.intro p {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.85rem;
+  color: #8a9e97;
+  /* Cinza esverdeado suave */
+  margin: 0;
+}
+
+/* =========================================
+   CARD DE SELEÇÃO INICIAL
+   ========================================= */
+.select-card {
+  width: 100%;
+  background: #d6f5e8;
+  border-radius: 24px;
+  padding: 16px;
+  margin-bottom: 16px;
+  margin-top: -8px;
+  box-shadow: none;
+  border: 1px solid #b2e8cf;
+}
+
+.select-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 100%;
+
+  ion-select {
+    flex: 0 1 auto;
+    max-width: fit-content;
+  }
+}
+
+/* 🟢 Estiliza a parte do texto visível do select */
+ion-select::part(text) {
+  color: #1e5c42 !important;
+  /* Força verde escuro */
+  font-weight: 700;
+}
+
+/* 🟢 Estiliza o ícone de seta do select */
+ion-select::part(icon) {
+  color: #3ecf8e;
+  /* Verde brilhante */
+}
+
+/* =========================================
+   CAMPOS DE FORMULÁRIO (INPUTS E TEXTAREAS)
+   ========================================= */
+ion-input,
+ion-textarea {
+  /* Cores de destaque padrão */
+  --highlight-color-focused: #3ecf8e !important;
+  --highlight-color: #3ecf8e !important;
+  --border-color: #b2e8cf !important;
+  caret-color: #3ecf8e;
+}
+
+.campos-dinamicos {
+  width: 100%;
+  background: #d6f5e8;
+  /* Fundo verde claro */
+  border-radius: 24px;
+  padding: 20px;
+  margin-bottom: 16px;
+  border: 1px solid #b2e8cf;
+}
+
+.campo {
+  margin-bottom: 14px;
+}
+
+label {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #3ecf8e;
+  display: block;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Estilo padronizado para Input */
+.custom-input {
+  --background: white;
+  --color: #1e5c42;
+  /* Verde escuro */
+  --placeholder-color: #8a9e97;
+  --placeholder-opacity: 1;
+  --placeholder-font-size: 0.85rem;
+  --border-radius: 14px;
+  --border-color: #b2e8cf;
+  --border-width: 1.5px;
+  --border-style: solid;
+  --padding-start: 14px;
+  --padding-end: 14px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.85rem;
+  border-radius: 14px;
+  height: 50px;
+}
+
+/* Estilo padronizado para Textarea */
+.custom-textarea {
+  --background: white;
+  --color: #1e5c42;
+  /* Verde escuro */
+  --placeholder-color: #8a9e97;
+  --placeholder-opacity: 1;
+  --placeholder-font-size: 0.85rem;
+  --border-radius: 14px;
+  --border-color: #b2e8cf;
+  --border-width: 1.5px;
+  --border-style: solid;
+  --padding-start: 14px;
+  --padding-end: 14px;
+  --padding-top: 12px;
+  --padding-bottom: 12px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.85rem;
+  border-radius: 14px;
+  min-height: 100px;
+}
+
+.campo-select {
+  background: white;
+  border-radius: 14px;
+  border: 1.5px solid #b2e8cf;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+
+  ion-select {
+    width: 100%;
+    --placeholder-color: #8a9e97;
+    --placeholder-opacity: 1;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem;
+    padding-left: 0;
+  }
+}
+
+.idade-wrapper {
+  display: flex;
+  gap: 12px;
+  /* Espaço entre os dois campos */
+  align-items: center;
+  width: 100%;
+
+  .input-idade {
+    flex: 1;
+    /* Faz o campo de número ocupar metade do espaço */
+    margin-bottom: 0;
+  }
+
+  .select-idade {
+    flex: 1.5;
+    /* Faz o campo de meses/anos ocupar um pouquinho mais de espaço */
+    margin-bottom: 0;
+  }
+}
+
+/* =========================================
+   SESSÃO DE FOTO E ADIÇÃO
+   ========================================= */
+.foto-box {
+  height: 140px;
+  border: 2px dashed #3ecf8e;
+  /* Borda tracejada verde */
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  color: #3ecf8e;
+  background: white;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+
+  ion-icon {
+    font-size: 2rem;
+    color: #3ecf8e;
+  }
+
+  span {
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #3ecf8e;
+  }
+
+  img.foto-preview {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+  }
+
+  .foto-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    /* Sobreposição escura */
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+
+    ion-icon {
+      font-size: 1.2rem;
+      color: white;
+    }
+  }
+}
+
+.fotos-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.foto-thumbnail {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+  }
+
+  .remove-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #ff4d4d;
+    /* Cor vermelha para apagar */
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease;
+
+    &:active {
+      transform: scale(0.9);
+    }
+
+    ion-icon {
+      font-size: 16px;
+    }
+  }
+}
+
+.add-more-box {
+  width: 80px;
+  height: 80px;
+  border: 2px dashed #3ecf8e;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:active {
+    background: #f0fdf6;
+  }
+
+  ion-icon {
+    font-size: 32px;
+    color: #3ecf8e;
+  }
+}
+
+/* =========================================
+   BOTÕES DE AÇÃO PRINCIPAIS
+   ========================================= */
+.btn-area {
+  margin-top: 8px;
+}
+
+.adopt-btn {
+  width: 100%;
+  height: 52px;
+  background: linear-gradient(135deg, #5ad9a3, #3ecf8e);
+  /* Degradê verde brilhante */
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1rem;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(102, 217, 166, 0.35);
+  transition: all 0.2s ease;
+
+  ion-icon {
+    font-size: 1.3rem;
+  }
+
+  &:active {
+    transform: scale(0.97);
+    box-shadow: 0 3px 10px rgba(60, 184, 122, 0.2);
+  }
+}

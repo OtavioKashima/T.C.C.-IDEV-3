@@ -1,0 +1,143 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
+ion-content {
+  --background: #f0fdf6;
+  font-family: 'Nunito', sans-serif;
+}
+
+ion-toolbar.custom-toolbar {
+  --background: #3ecf8e;
+  --color: white;
+  
+  ion-title {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+  }
+}
+
+.loading-container {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; height: 70vh;
+  p { color: #3ecf8e; font-weight: 700; margin-top: 15px; }
+}
+
+.form-container { padding: 10px; padding-bottom: 50px; }
+
+// 🔴 ESTILO DA FOTO DA POSTAGEM
+.grid-fotos-edicao {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 10px;
+  background: white;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid #d0eedd;
+}
+
+.foto-preview-wrapper {
+  position: relative;
+  width: 85px;
+  height: 85px;
+
+  .foto-preview-edicao {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 2px solid #e6f9f0;
+  }
+
+  .btn-remover-foto {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #ff6b6b; // Vermelho vivo para alertar que é exclusão
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 8px rgba(255, 107, 107, 0.4);
+    
+    ion-icon {
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    &:active {
+      transform: scale(0.9);
+    }
+  }
+}
+
+// Estilo do botão de Adicionar nova foto
+.add-foto-btn {
+  width: 85px;
+  height: 85px;
+  border: 2px dashed #3ecf8e;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #3ecf8e;
+  background: #f0fdf6;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  ion-icon {
+    font-size: 28px;
+    margin-bottom: 4px;
+  }
+
+  span {
+    font-size: 0.8rem;
+    font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+  }
+
+  &:active {
+    background: #e0f8eb;
+  }
+}
+
+// Estilo para destacar a seção condicional do pet
+.secao-pet-detalhes {
+  background: white;
+  padding: 15px;
+  border-radius: 16px;
+  border: 1px solid #d0eedd;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(102, 217, 166, 0.05);
+}
+
+.input-group {
+  margin-bottom: 18px;
+
+  ion-label {
+    color: #3ecf8e; font-weight: 800; font-size: 0.9rem; margin-bottom: 6px; display: block;
+    .req { color: #ff6b6b; }
+  }
+
+  ion-input, ion-textarea, ion-select {
+    --background: white;
+    --padding-start: 14px; --padding-end: 14px;
+    border-radius: 10px;
+    border: 1px solid #d0eedd;
+    font-weight: 600; color: #444;
+    font-family: 'Nunito', sans-serif;
+
+    &.ios { --padding-top: 12px; --padding-bottom: 12px; }
+  }
+}
+
+.btn-salvar {
+  --background: #3ecf8e; --background-hover: #2db376; --border-radius: 14px;
+  --box-shadow: 0 6px 16px rgba(62, 207, 142, 0.3);
+  margin-top: 30px; height: 50px;
+  font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.1rem;
+  text-transform: none;
+}

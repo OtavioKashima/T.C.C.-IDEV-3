@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-toolbar class="custom-toolbar">
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()" class="back-btn">
+        <ion-icon name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ pet.titulo }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="page-content" [scrollY]="true">
+  <div class="layout-wrapper">
+
+    <div class="side-actions">
+      <ion-icon name="chatbubble-outline" class="action-icon" (click)="irParaComentarios()"></ion-icon>
+      <ion-icon name="arrow-redo-outline" class="action-icon" (click)="compartilhar()"></ion-icon>
+    </div>
+
+    <div class="post-container">
+
+      <div class="user-info">
+        <img
+          src="https://randomuser.me/api/portraits/women/44.jpg"
+          class="user-avatar"/>
+        <span class="user-name">Regina Almeida</span>
+      </div>
+
+      <div class="pet-image-container">
+        <img
+          [src]="pet.imagem"
+          [alt]="pet.titulo"
+          class="pet-image-large"/>
+      </div>
+
+      <div class="pet-description">
+        {{ pet.descricaoCompleta }}
+      </div>
+
+    </div>
+  </div>
+</ion-content>

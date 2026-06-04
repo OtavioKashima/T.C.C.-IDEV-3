@@ -1,0 +1,83 @@
+<ion-content [scrollY]="true">
+
+  <div class="floating-buttons">
+    <button class="float-btn" routerLink="/tabs/perfil">
+      <ion-icon name="arrow-back-outline" class="seta-voltar"></ion-icon>
+    </button>
+  </div>
+
+  <div class="hero-image-wrapper">
+    <div class="hero-bg"></div>
+    <div class="hero-avatar-area">
+      <div class="avatar-wrapper">
+
+        <img [src]="previewFoto" alt="Foto de perfil" class="avatar-img">
+
+        <button class="trocar-foto-btn" (click)="fileInput.click()">
+          <ion-icon name="camera-outline"></ion-icon>
+        </button>
+        <input #fileInput type="file" accept="image/*" style="display:none" (change)="selecionarFoto($event)">
+      </div>
+      <h1 class="hero-nome">{{ usuario.nome || 'Nome de usuário' }}</h1>
+      <span class="hero-sub">Editar perfil</span>
+    </div>
+  </div>
+
+  <div class="content-body">
+
+    <div class="input-group">
+      <div class="input-wrapper">
+        <ion-icon name="person-outline" class="input-icon"></ion-icon>
+        <input class="field-input" type="text" [(ngModel)]="usuario.nome" placeholder="Nome Completo" maxlength="60">
+      </div>
+    </div>
+
+    <div class="input-group">
+      <div class="input-wrapper">
+        <ion-icon name="call-outline" class="input-icon"></ion-icon>
+        <input class="field-input" type="tel" [(ngModel)]="usuario.telefone" placeholder="Telefone (Ex: 14 99999-9999)"
+          maxlength="15">
+      </div>
+    </div>
+    <div *ngIf="usuario.admin == 2">
+
+      <div class="input-group">
+        <div class="input-wrapper">
+          <ion-icon name="information-circle-outline" class="input-icon"></ion-icon>
+          <input class="field-input" type="text" [(ngModel)]="usuario.bio"
+            placeholder="Biografia (Ex: Ajudando animais de rua)" maxlength="255">
+        </div>
+      </div>
+
+      <div class="input-group row-inputs">
+
+        <div class="input-wrapper input-cidade">
+          <ion-icon name="location-outline" class="input-icon"></ion-icon>
+          <input class="field-input" type="text" [(ngModel)]="usuario.cidade" placeholder="Cidade (Ex: Pompeia)"
+            maxlength="100">
+        </div>
+
+        <div class="input-wrapper input-uf">
+          <input class="field-input texto-uf" type="text" [(ngModel)]="usuario.estado" placeholder="UF" maxlength="2">
+        </div>
+
+      </div>
+
+      <div class="input-group">
+        <div class="input-wrapper">
+          <ion-icon name="cash-outline" class="input-icon"></ion-icon>
+          <input class="field-input" type="text" [(ngModel)]="usuario.chave_pix" placeholder="Chave PIX (Para doações)"
+            maxlength="255">
+        </div>
+      </div>
+
+    </div>
+
+    <button class="salvar-btn" (click)="salvarPerfil()">
+      <ion-icon name="checkmark-circle-outline"></ion-icon>
+      Salvar Alterações
+    </button>
+
+  </div>
+
+</ion-content>

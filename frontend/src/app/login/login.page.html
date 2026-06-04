@@ -1,0 +1,78 @@
+<ion-header [translucent]="true">
+  <ion-toolbar class="toolbar-transparente">
+    <ion-buttons slot="start">
+      <ion-button (click)="goToHome()" fill="clear" class="btn-voltar">
+        <ion-icon name="arrow-back-outline" class="seta-voltar"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" scroll-y="false">
+  <div class="login-container">
+    <div class="content-wrapper">
+
+      <div class="logo-container">
+        <div class="logo-circle">
+          <ion-icon name="paw" class="logo-icon"></ion-icon>
+        </div>
+      </div>
+
+      <h1 class="login-title">Login</h1>
+
+      <div class="form-container">
+        <div class="input-group">
+          <div class="input-wrapper">
+            <ion-icon name="card-outline" class="input-icon"></ion-icon>
+            <ion-input
+              class="custom-input"
+              placeholder="CPF"
+              type="text"
+              [(ngModel)]="usuario"
+              (ionInput)="maskCPF()"
+              (keypress)="somenteNumeros($event)"
+              maxlength="14">
+            </ion-input>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <div class="input-wrapper">
+            <ion-icon name="lock-closed-outline" class="input-icon"></ion-icon>
+            <ion-input
+              class="custom-input"
+              placeholder="Senha"
+              [type]="showPassword ? 'text' : 'password'"
+              [(ngModel)]="senha">
+            </ion-input>
+            <ion-icon
+              [name]="showPassword ? 'eye-off-outline' : 'eye-outline'"
+              class="input-icon-right"
+              (click)="showPassword = !showPassword">
+            </ion-icon>
+          </div>
+        </div>
+
+        <div class="forgot-password">
+          <span (click)="goToRecuperarSenha()" class="forgot-link">
+            Esqueci a senha
+          </span>
+        </div>
+      </div>
+
+      <div class="button-container">
+        <ion-button
+          class="login-button"
+          expand="block"
+          (click)="login()">
+          Entrar
+        </ion-button>
+
+        <div class="no-account">
+          <span (click)="goToCadastroPage()">Não tenho conta</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</ion-content>
