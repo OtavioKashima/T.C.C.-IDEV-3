@@ -125,16 +125,22 @@
       </div>
 
       <div class="campo">
-        <label>Direcionar para ONG específica (Opcional):</label>
-        <div class="campo-select">
-          <ion-select placeholder="Denúncia Pública (Para todos)" [(ngModel)]="ongDestino">
-            <ion-select-option value="">Denúncia Pública (Para todos)</ion-select-option>
-            <ion-select-option *ngFor="let ong of ongs" [value]="ong.id">
-              {{ ong.nome }}
-            </ion-select-option>
-          </ion-select>
-        </div>
-      </div>
+  <label>Direcionar para ONG Responsável pela Denúncia  *</label>
+
+  <div class="campo-select">
+    <ion-select
+      placeholder="Selecione uma ONG"
+      [(ngModel)]="ongDestino">
+
+      <ion-select-option
+        *ngFor="let ong of ongs"
+        [value]="ong.id">
+        {{ ong.nome }}
+      </ion-select-option>
+
+    </ion-select>
+  </div>
+</div>
 
       <div class="campo">
         <label>Descrição da denúncia:</label>

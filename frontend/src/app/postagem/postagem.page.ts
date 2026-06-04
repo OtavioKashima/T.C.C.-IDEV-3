@@ -112,6 +112,11 @@ export class PostagemPage implements OnInit {
       return;
     }
 
+    if (this.tipo_postagem === 'denuncia' && !this.ongDestino) {
+      alert('Selecione uma ONG para receber a denúncia!');
+      return;
+    }
+
     const formData = new FormData();
     formData.append('tipo_postagem', this.tipo_postagem);
     formData.append('titulo', this.titulo);

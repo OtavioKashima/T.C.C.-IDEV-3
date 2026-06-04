@@ -7,7 +7,13 @@ exports.criarPostagem = (req, res) => {
   // 🟢 1. Adicionado o 'ong_id' aqui no req.body
   const { tipo_postagem, titulo, descricao, localizacao, raca, genero, idade, fixado, ong_id } = req.body;
 
-  // 🚨 PEGANDO O ID DO USUÁRIO LOGADO
+  // 🚨 OBRIGA ESCOLHER UMA ONG PARA DENÚNCIAS
+  if (tipo_postagem === 'denuncia' && !ong_id) {
+    return res.status(400).json({
+      erro: 'É obrigatório selecionar uma ONG para registrar uma denúncia.'
+    });
+  }
+// 🚨 PEGANDO O ID DO USUÁRIO LOGADO
   const usuarios_id = req.usuarioId;
 
   // Trava de segurança: se não achar o usuário, cancela a postagem
