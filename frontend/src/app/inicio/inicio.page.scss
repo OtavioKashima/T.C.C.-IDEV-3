@@ -1,38 +1,49 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
 
-/* Fundo da tela */
+$verde:       #3ecf8e;
+$verde-claro: #5ad9a3;
+$verde-light: #edfaf4;
+$verde-mid:   #2eaf7a;
+$verde-text:  #1d7a55;
+
 .custom-content {
     --background: #f4f7f6;
-    /* Fundo levemente acinzentado para destacar os cards brancos */
     font-family: 'Nunito', sans-serif;
 }
 
 /* =========================================
-   HEADER & TOOLBAR
+   HEADER & TOOLBAR — gradiente igual às tabs
    ========================================= */
 .custom-toolbar {
-    --background: linear-gradient(135deg, #3ecf8e 0%, #2bb877 100%);
-    /* Degradê sutil */
+    --background: linear-gradient(135deg, #5ad9a3 0%, #3ecf8e 100%);
     --color: white;
-    --box-shadow: 0 4px 12px rgba(62, 207, 142, 0.2);
-
-    .header-icon-btn {
-        margin-inline-start: 8px;
-        /* Corrigido de margin-leading */
-        opacity: 1;
-        /* Remove a transparência do botão disabled */
-    }
-
-    .header-icon {
-        font-size: 1.6rem;
-        color: white;
-    }
+    --min-height: auto;
+    padding-bottom: 0;
 }
 
-ion-title {
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+}
+
+.title-section {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.header-title {
     font-family: 'Nunito', sans-serif;
-    font-weight: 800;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
+    font-weight: 400;
+    color: white;
+}
+
+.header-icon {
+    font-size: 1.6rem;
+    color: white;
 }
 
 /* =========================================
@@ -49,29 +60,21 @@ ion-title {
         font-size: 1.6rem;
         margin-top: 12px;
         opacity: 0.8;
-
-        &.text-orange {
-            color: #3ecf8e;
-        }
-
-        &.text-green {
-            color: #3ecf8e;
-        }
+        color: $verde;
     }
 }
 
 .sessao-titulo {
     font-family: 'Nunito', sans-serif;
     font-weight: 800;
-    color: #2c3e35;
-    /* Verde bem escuro, quase preto */
+    color: $verde-text;
     margin: 10px 0 2px;
     font-size: 1.3rem;
 }
 
 .sessao-sub {
     font-family: 'Nunito', sans-serif;
-    color: #7b8e85;
+    color: #7bb8a0;
     font-size: 0.9rem;
     font-weight: 600;
     margin: 0;
@@ -79,13 +82,13 @@ ion-title {
 
 .divider {
     height: 2px;
-    background: #e4ebe8;
+    background: #d4f0e5;
     border-radius: 2px;
     margin: 24px 0;
 }
 
 /* =========================================
-   CARDS DE COMUNICADOS (LARANJA ALERTA)
+   COMUNICADOS
    ========================================= */
 .comunicados-scroll {
     display: flex;
@@ -93,48 +96,36 @@ ion-title {
     gap: 16px;
     padding-bottom: 14px;
     padding-top: 4px;
-    /* Espaço para a sombra não cortar */
     margin-bottom: 10px;
     scroll-snap-type: x mandatory;
-    /* Ajuda a alinhar o scroll */
 
-    &::-webkit-scrollbar {
-        display: none;
-    }
+    &::-webkit-scrollbar { display: none; }
 }
 
 .comunicado-card {
     min-width: 270px;
     max-width: 270px;
-    /* Garante que todos tenham a mesma largura */
-    background: #f0fdf6;
-    /* Substituído pelo verde bem claro do app */
+    background: $verde-light;
     border-radius: 16px;
     padding: 16px;
-    box-shadow: 0 4px 14px rgba(62, 207, 142, 0.1);
-    /* Sombra suave em tom verde */
-    border-left: 5px solid #3ecf8e;
-    /* Borda lateral com o verde principal */
+    box-shadow: 0 4px 14px rgba(62, 207, 142, 0.15);
+    border-left: 5px solid $verde;
     cursor: pointer;
     scroll-snap-align: center;
     transition: transform 0.2s ease;
 
-    &:active {
-        transform: scale(0.97);
-    }
+    &:active { transform: scale(0.97); }
 
     .comunicado-header {
         display: flex;
         justify-content: space-between;
-        color: #54a792;
-        /* Texto superior em verde musgo suave */
+        color: $verde-mid;
         font-size: 0.8rem;
         margin-bottom: 10px;
         font-weight: 800;
 
         ion-icon {
-            color: #3ecf8e;
-            /* Ícone do megafone em verde */
+            color: $verde;
             font-size: 1.3rem;
         }
     }
@@ -143,114 +134,125 @@ ion-title {
         margin: 0 0 6px;
         font-size: 1.05rem;
         font-weight: 800;
-        color: #2bb877;
-        /* Título em verde médio em destaque */
+        color: $verde-mid;
     }
 
     p {
         margin: 0;
         font-size: 0.85rem;
-        color: #55665e;
-        /* Descrição em cinza-esverdeado escuro legível */
+        color: #3d7a62;
         line-height: 1.5;
     }
 }
 
+.sem-comunicados {
+    text-align: center;
+    padding: 16px;
+    color: #aaa;
+
+    ion-icon {
+        font-size: 2rem;
+        display: block;
+        margin-bottom: 6px;
+    }
+
+    p {
+        font-size: 0.85rem;
+        margin: 0;
+    }
+}
+
 /* =========================================
-   CARDS DE DOAÇÃO ONG (VERDE)
+   CARDS DE ONG
    ========================================= */
 .donation-card {
-    margin-bottom: 14px;
-    border-radius: 16px;
+    margin-bottom: 12px;
+    border-radius: 14px;
     background: white;
-    box-shadow: 0 4px 12px rgba(62, 207, 142, 0.08);
+    box-shadow: 0 2px 10px rgba(62, 207, 142, 0.1);
     cursor: pointer;
     transition: all 0.2s ease;
-    border: 1px solid #f0f5f3;
+    border: 1px solid #d4f0e5;
 
     &:active {
         transform: scale(0.98);
-        box-shadow: 0 2px 6px rgba(62, 207, 142, 0.1);
+        box-shadow: 0 1px 5px rgba(62, 207, 142, 0.12);
     }
 
     .donation-content {
         display: flex;
         gap: 14px;
-        padding: 16px;
+        padding: 14px 16px;
         align-items: center;
     }
 
     .donation-image {
-        width: 70px;
-        height: 70px;
-        border-radius: 50%;
+        width: 58px;
+        height: 58px;
+        border-radius: 10px;
         object-fit: cover;
         flex-shrink: 0;
-        border: 2px solid #3ecf8e;
-        padding: 2px;
-        /* Efeito de anel ao redor da foto */
+        border: 2.5px solid $verde;
     }
 
     .donation-info {
         flex: 1;
         min-width: 0;
-        /* 🟢 ESSENCIAL: Impede que o contêiner flex estoure o tamanho do card */
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
 
         strong {
             display: block;
             font-size: 1rem;
-            color: #24332c;
+            color: #1a3d2e;
             font-weight: 800;
-            margin-bottom: 4px;
-
-            /* Impede que o título também estoure se for longo */
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            margin: 0;
+            padding: 0;
         }
 
         .cidade-txt {
-            font-size: 0.75rem;
-            color: #7b8e85;
+            font-size: 0.78rem;
+            color: #7bb8a0;
             font-weight: 600;
-            margin: 0 0 6px;
+            margin: 0;
+            padding: 0;
             display: flex;
             align-items: center;
-            gap: 4px;
-
-            /* Impede que a cidade estoure */
+            gap: 2px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            margin-left: -1px;
 
             ion-icon {
-                color: #3ecf8e;
+                color: $verde;
                 flex-shrink: 0;
-                /* Garante que o ícone não seja espremido */
+                font-size: 0.78rem;
+                width: 0.78rem;
+                margin-right: 2px;
+            }
+
+            span {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
             }
         }
+    }
 
-        .bio-txt {
-            margin: 0;
-            font-size: 0.85rem;
-            color: #55665e;
-            line-height: 1.4;
-
-            /* 🟢 REGRAS PARA TRUNCAR O TEXTO EM 2 LINHAS */
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            /* Número máximo de linhas */
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            word-wrap: break-word;
-            /* Força a quebra de palavras gigantes */
-        }
+    .donation-arrow {
+        color: $verde-claro;
+        font-size: 1.1rem;
+        flex-shrink: 0;
     }
 }
 
 /* =========================================
-   UTILITÁRIOS DE TEXTO
+   UTILITÁRIOS
    ========================================= */
 .linha-unica {
     white-space: nowrap;
@@ -261,7 +263,6 @@ ion-title {
 .multi-linhas {
     display: -webkit-box;
     -webkit-line-clamp: 2;
-    /* Limita a 2 linhas para alinhar os cards */
     -webkit-box-orient: vertical;
     overflow: hidden;
 }

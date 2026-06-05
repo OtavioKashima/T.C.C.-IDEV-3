@@ -10,14 +10,16 @@ import { NavController } from '@ionic/angular';
   standalone: false
 })
 export class InicioPage implements OnInit {
-  // 🟢 Novas variáveis para a busca
   termoBuscaOng: string = '';
   ongsFiltradas: any[] = [];
-
   ongs: any[] = [];
   comunicados: any[] = [];
 
-  constructor(private http: HttpClient, private router: Router, private navCtrl: NavController) { }
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private navCtrl: NavController
+  ) { }
 
   ngOnInit() {
     this.carregarComunicados();
@@ -26,9 +28,7 @@ export class InicioPage implements OnInit {
 
   carregarComunicados() {
     this.http.get('http://localhost:3000/api/postagens/tipo/comunicado').subscribe({
-      next: (res: any) => {
-        this.comunicados = res;
-      },
+      next: (res: any) => { this.comunicados = res; },
       error: (err) => console.error('Erro ao buscar Comunicados', err)
     });
   }
@@ -36,11 +36,9 @@ export class InicioPage implements OnInit {
   carregarOngs() {
     this.http.get('http://localhost:3000/api/ongs').subscribe({
       next: (res: any) => {
-        // 🟢 Filtra o resultado para garantir que não existam ONGs com o mesmo ID
         const ongsUnicas = res.filter((ong: any, index: number, self: any[]) =>
           index === self.findIndex((o) => o.id === ong.id)
         );
-
         this.ongs = ongsUnicas;
         this.ongsFiltradas = [...this.ongs];
       },
@@ -48,14 +46,12 @@ export class InicioPage implements OnInit {
     });
   }
 
-  // 🟢 Nova função de filtro (Busca por Nome, Cidade ou Estado)
   filtrarOngs() {
     const termo = this.termoBuscaOng.toLowerCase().trim();
     if (!termo) {
       this.ongsFiltradas = [...this.ongs];
       return;
     }
-
     this.ongsFiltradas = this.ongs.filter(ong =>
       (ong.nome && ong.nome.toLowerCase().includes(termo)) ||
       (ong.cidade && ong.cidade.toLowerCase().includes(termo)) ||
