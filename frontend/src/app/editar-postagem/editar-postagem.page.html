@@ -22,11 +22,9 @@
       <div class="grid-fotos-edicao">
 
         <div class="foto-preview-wrapper" *ngFor="let foto of post.fotosArray; let i = index">
-
           <img
             [src]="foto?.toString().startsWith('data:') || foto?.toString().startsWith('blob:') ? foto : 'http://localhost:3000/uploads/' + foto"
             class="foto-preview-edicao" alt="Foto">
-
           <button type="button" class="btn-remover-foto" (click)="removerFoto(i)">
             <ion-icon name="close-outline"></ion-icon>
           </button>

@@ -7,17 +7,14 @@ $verde-mid:   #2eaf7a;
 $verde-text:  #1d7a55;
 
 ion-content {
-  --background: #f4f7f6;
+  --background: #edfdf5;
 }
 
 .custom-content {
-  --background: #f4f7f6;
+  --background: #edfdf5;
   font-family: 'Nunito', sans-serif;
 }
 
-/* =========================================
-   HEADER & TOOLBAR
-   ========================================= */
 ion-toolbar.custom-toolbar {
   --background: linear-gradient(135deg, #5ad9a3 0%, #3ecf8e 100%);
   --color: white;
@@ -57,9 +54,6 @@ ion-toolbar.custom-toolbar {
   gap: 14px;
 }
 
-/* =========================================
-   SEARCH BAR NO HEADER
-   ========================================= */
 .search-bar-wrapper {
   max-height: 0;
   overflow: hidden;
@@ -110,19 +104,17 @@ ion-toolbar.custom-toolbar {
   flex-shrink: 0;
 }
 
-/* =========================================
-   FILTROS
-   ========================================= */
 .filtros-painel {
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.35s ease;
   background: #f0fdf6;
-  border-bottom: 1px solid #d0eedd;
+  border-bottom: none;
   margin: 0 -16px;
 
   &.aberto {
     max-height: 220px;
+    border-bottom: 1px solid #d0eedd;
   }
 }
 
@@ -251,9 +243,6 @@ ion-toolbar.custom-toolbar {
   white-space: nowrap;
 }
 
-/* =========================================
-   LINHA SEPARADORA (igual ao divider de baixo)
-   ========================================= */
 .divider {
   height: 2px;
   background: #d4f0e5;
@@ -261,9 +250,6 @@ ion-toolbar.custom-toolbar {
   margin: 24px 0;
 }
 
-/* =========================================
-   TÍTULOS E SEÇÕES
-   ========================================= */
 .sessao-header {
   display: flex;
   justify-content: space-between;
@@ -292,14 +278,13 @@ ion-toolbar.custom-toolbar {
 .sessao-sub {
   font-family: 'Nunito', sans-serif;
   color: #7bb8a0;
-  font-size: 0.82rem;
+  font-size: 0.67rem;
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   margin: 0;
 }
 
-/* =========================================
-   COMUNICADOS
-   ========================================= */
 .comunicados-scroll {
   display: flex;
   overflow-x: auto;
@@ -358,23 +343,24 @@ ion-toolbar.custom-toolbar {
 .sem-comunicados {
   text-align: center;
   padding: 16px;
-  color: #aaa;
+  color: $verde;
 
   ion-icon {
     font-size: 2rem;
+    color: $verde;
     display: block;
     margin-bottom: 6px;
   }
 
   p {
     font-size: 0.85rem;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    color: $verde;
     margin: 0;
   }
 }
 
-/* =========================================
-   CARDS DE ONG
-   ========================================= */
 .donation-card {
   margin-bottom: 12px;
   border-radius: 14px;
@@ -414,9 +400,12 @@ ion-toolbar.custom-toolbar {
 
     strong {
       display: block;
-      font-size: 1rem;
+      font-size: 0.85rem;
       color: $verde-text;
       font-weight: 800;
+      font-family: 'Nunito', sans-serif;
+      letter-spacing: 0.08em;
+      text-transform: none;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -461,9 +450,6 @@ ion-toolbar.custom-toolbar {
   }
 }
 
-/* =========================================
-   EMPTY STATE
-   ========================================= */
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -499,9 +485,6 @@ ion-toolbar.custom-toolbar {
   }
 }
 
-/* =========================================
-   UTILITÁRIOS
-   ========================================= */
 .linha-unica {
   white-space: nowrap;
   overflow: hidden;

@@ -8,7 +8,7 @@ ion-content {
 ion-toolbar.custom-toolbar {
   --background: #3ecf8e;
   --color: white;
-  
+
   ion-title {
     font-family: 'Nunito', sans-serif;
     font-weight: 800;
@@ -16,13 +16,24 @@ ion-toolbar.custom-toolbar {
 }
 
 .loading-container {
-  display: flex; flex-direction: column; align-items: center; justify-content: center; height: 70vh;
-  p { color: #3ecf8e; font-weight: 700; margin-top: 15px; }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 70vh;
+
+  p {
+    color: #3ecf8e;
+    font-weight: 700;
+    margin-top: 15px;
+  }
 }
 
-.form-container { padding: 10px; padding-bottom: 50px; }
+.form-container {
+  padding: 10px;
+  padding-bottom: 50px;
+}
 
-// 🔴 ESTILO DA FOTO DA POSTAGEM
 .grid-fotos-edicao {
   display: flex;
   flex-wrap: wrap;
@@ -51,7 +62,7 @@ ion-toolbar.custom-toolbar {
     position: absolute;
     top: -8px;
     right: -8px;
-    background: #ff6b6b; // Vermelho vivo para alertar que é exclusão
+    background: #ff6b6b;
     color: white;
     border: none;
     border-radius: 50%;
@@ -61,7 +72,7 @@ ion-toolbar.custom-toolbar {
     align-items: center;
     justify-content: center;
     box-shadow: 0 3px 8px rgba(255, 107, 107, 0.4);
-    
+
     ion-icon {
       font-size: 16px;
       font-weight: bold;
@@ -73,7 +84,6 @@ ion-toolbar.custom-toolbar {
   }
 }
 
-// Estilo do botão de Adicionar nova foto
 .add-foto-btn {
   width: 85px;
   height: 85px;
@@ -104,7 +114,6 @@ ion-toolbar.custom-toolbar {
   }
 }
 
-// Estilo para destacar a seção condicional do pet
 .secao-pet-detalhes {
   background: white;
   padding: 15px;
@@ -118,26 +127,43 @@ ion-toolbar.custom-toolbar {
   margin-bottom: 18px;
 
   ion-label {
-    color: #3ecf8e; font-weight: 800; font-size: 0.9rem; margin-bottom: 6px; display: block;
-    .req { color: #ff6b6b; }
+    color: #3ecf8e;
+    font-weight: 800;
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+    display: block;
+
+    .req {
+      color: #ff6b6b;
+    }
   }
 
   ion-input, ion-textarea, ion-select {
     --background: white;
-    --padding-start: 14px; --padding-end: 14px;
+    --padding-start: 14px;
+    --padding-end: 14px;
     border-radius: 10px;
     border: 1px solid #d0eedd;
-    font-weight: 600; color: #444;
+    font-weight: 600;
+    color: #444;
     font-family: 'Nunito', sans-serif;
 
-    &.ios { --padding-top: 12px; --padding-bottom: 12px; }
+    &.ios {
+      --padding-top: 12px;
+      --padding-bottom: 12px;
+    }
   }
 }
 
 .btn-salvar {
-  --background: #3ecf8e; --background-hover: #2db376; --border-radius: 14px;
+  --background: #3ecf8e;
+  --background-hover: #2db376;
+  --border-radius: 14px;
   --box-shadow: 0 6px 16px rgba(62, 207, 142, 0.3);
-  margin-top: 30px; height: 50px;
-  font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1.1rem;
+  margin-top: 30px;
+  height: 50px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 1.1rem;
   text-transform: none;
 }

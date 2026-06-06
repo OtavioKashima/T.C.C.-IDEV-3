@@ -74,6 +74,7 @@ export class InicioPage implements OnInit {
   carregarOngs() {
     this.http.get('http://localhost:3000/api/ongs').subscribe({
       next: (res: any) => {
+        console.log('ONGs recebidas:', res.map((o: any) => ({ nome: o.nome, estado: o.estado, cidade: o.cidade })));
         const ongsUnicas = res.filter((ong: any, index: number, self: any[]) =>
           index === self.findIndex((o) => o.id === ong.id)
         );
@@ -97,11 +98,15 @@ export class InicioPage implements OnInit {
     }
 
     if (this.filtros.estado) {
-      resultado = resultado.filter(ong => ong.estado === this.filtros.estado);
+      resultado = resultado.filter(ong =>
+        ong.estado && ong.estado.toUpperCase().trim() === this.filtros.estado.toUpperCase().trim()
+      );
     }
 
     if (this.filtros.cidade) {
-      resultado = resultado.filter(ong => ong.cidade === this.filtros.cidade);
+      resultado = resultado.filter(ong =>
+        ong.cidade && ong.cidade.trim().toLowerCase() === this.filtros.cidade.trim().toLowerCase()
+      );
     }
 
     this.ongsFiltradas = resultado;

@@ -108,7 +108,7 @@
   <div class="filtros-badge-bar" *ngIf="temFiltroAtivo()">
     <div class="chips-scroll">
       <span class="badge-chip" *ngIf="filtros.estado">
-        {{ filtros.estado }}
+        {{ filtros.estado | uppercase }}
         <ion-icon name="close-outline" (click)="limparCampo('estado')"></ion-icon>
       </span>
       <span class="badge-chip" *ngIf="filtros.cidade">
@@ -159,7 +159,7 @@
         <strong>{{ ong.nome }}</strong>
         <p class="cidade-txt">
           <ion-icon name="location-outline"></ion-icon>
-          <span>{{ ong.cidade || 'Local não informado' }}<span *ngIf="ong.estado"> - {{ ong.estado }}</span></span>
+          <span>{{ ong.cidade || 'Local não informado' }}<span *ngIf="ong.estado"> - {{ ong.estado | uppercase }}</span></span>
         </p>
       </div>
       <ion-icon name="chevron-forward-outline" class="donation-arrow"></ion-icon>
