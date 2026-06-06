@@ -5,18 +5,127 @@
         <ion-icon name="paw" class="header-icon"></ion-icon>
         <span class="header-title">Início</span>
       </div>
+      <div class="header-actions">
+        <ion-icon name="options-outline" class="header-icon" (click)="toggleFiltros()"></ion-icon>
+        <ion-icon [name]="showSearch ? 'close-outline' : 'search-outline'" class="header-icon" (click)="toggleSearch()"></ion-icon>
+      </div>
+    </div>
+
+    <div class="search-bar-wrapper" [class.visible]="showSearch">
+      <div class="search-input-wrapper">
+        <ion-icon name="search-outline" class="search-input-icon"></ion-icon>
+        <input
+          class="search-input"
+          placeholder="Buscar ONG"
+          [(ngModel)]="termoBuscaOng"
+          (input)="filtrarOngs()">
+        <ion-icon
+          *ngIf="termoBuscaOng"
+          name="close-circle-outline"
+          class="search-clear-icon"
+          (click)="limparBusca()">
+        </ion-icon>
+      </div>
     </div>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding custom-content">
+<ion-content [fullscreen]="true" class="ion-padding custom-content">
 
-  <div class="sessao-header">
-    <h2 class="sessao-titulo">Comunicados</h2>
-    <ion-icon name="notifications-outline" class="sessao-icon text-orange"></ion-icon>
+  <div class="filtros-painel" [class.aberto]="showFiltros">
+    <div class="filtros-inner">
+      <div class="filtros-titulo">
+        <span>Filtrar por</span>
+        <button class="btn-limpar-todos" (click)="limparTodosFiltros()" *ngIf="temFiltroAtivo()">
+          Limpar tudo
+        </button>
+      </div>
+      <div class="filtros-row">
+
+        <div class="filtro-pill">
+          <select [(ngModel)]="filtros.estado" (change)="filtrarOngs()">
+            <option value="" disabled selected hidden>Estado</option>
+            <option value="">Todos os estados</option>
+            <option value="AC">AC</option>
+            <option value="AL">AL</option>
+            <option value="AM">AM</option>
+            <option value="BA">BA</option>
+            <option value="CE">CE</option>
+            <option value="DF">DF</option>
+            <option value="ES">ES</option>
+            <option value="GO">GO</option>
+            <option value="MA">MA</option>
+            <option value="MG">MG</option>
+            <option value="MS">MS</option>
+            <option value="MT">MT</option>
+            <option value="PA">PA</option>
+            <option value="PB">PB</option>
+            <option value="PE">PE</option>
+            <option value="PI">PI</option>
+            <option value="PR">PR</option>
+            <option value="RJ">RJ</option>
+            <option value="RN">RN</option>
+            <option value="RO">RO</option>
+            <option value="RR">RR</option>
+            <option value="RS">RS</option>
+            <option value="SC">SC</option>
+            <option value="SE">SE</option>
+            <option value="SP">SP</option>
+            <option value="TO">TO</option>
+          </select>
+        </div>
+
+        <div class="filtro-pill">
+          <select [(ngModel)]="filtros.cidade" (change)="filtrarOngs()">
+            <option value="" disabled selected hidden>Cidade</option>
+            <option value="">Todas as cidades</option>
+            <option value="Pompeia">Pompeia</option>
+            <option value="Tupã">Tupã</option>
+            <option value="Marília">Marília</option>
+            <option value="Oriente">Oriente</option>
+            <option value="Assis">Assis</option>
+            <option value="Adamantina">Adamantina</option>
+            <option value="Bauru">Bauru</option>
+            <option value="Botucatu">Botucatu</option>
+            <option value="Ourinhos">Ourinhos</option>
+            <option value="Osvaldo Cruz">Osvaldo Cruz</option>
+            <option value="Presidente Prudente">Presidente Prudente</option>
+            <option value="São Paulo">São Paulo</option>
+            <option value="Campinas">Campinas</option>
+            <option value="Joinville">Joinville</option>
+            <option value="Florianópolis">Florianópolis</option>
+            <option value="Curitiba">Curitiba</option>
+            <option value="Porto Alegre">Porto Alegre</option>
+            <option value="Belo Horizonte">Belo Horizonte</option>
+            <option value="Rio de Janeiro">Rio de Janeiro</option>
+          </select>
+        </div>
+
+      </div>
+    </div>
   </div>
 
-  <div class="comunicados-scroll">
+  <div class="filtros-badge-bar" *ngIf="temFiltroAtivo()">
+    <div class="chips-scroll">
+      <span class="badge-chip" *ngIf="filtros.estado">
+        {{ filtros.estado }}
+        <ion-icon name="close-outline" (click)="limparCampo('estado')"></ion-icon>
+      </span>
+      <span class="badge-chip" *ngIf="filtros.cidade">
+        {{ filtros.cidade }}
+        <ion-icon name="close-outline" (click)="limparCampo('cidade')"></ion-icon>
+      </span>
+    </div>
+    <span class="resultado-count">{{ ongsFiltradas.length }} resultado{{ ongsFiltradas.length !== 1 ? 's' : '' }}</span>
+  </div>
+
+  <!-- COMUNICADOS -->
+  <div class="sessao-header">
+    <h2 class="sessao-titulo">Comunicados</h2>
+    <ion-icon name="notifications-outline" class="sessao-icon"></ion-icon>
+  </div>
+
+  <div class="comunicados-scroll" *ngIf="comunicados.length > 0">
     <div class="comunicado-card" *ngFor="let aviso of comunicados" (click)="abrirComunicado(aviso)">
       <div class="comunicado-header">
         <ion-icon name="megaphone-outline"></ion-icon>
@@ -34,20 +143,14 @@
 
   <div class="divider"></div>
 
+  <!-- ONGS -->
   <div class="sessao-header">
     <div>
       <h2 class="sessao-titulo">Apoie uma ONG</h2>
       <p class="sessao-sub">Selecione uma ONG para doar via PIX</p>
     </div>
-    <ion-icon name="heart-outline" class="sessao-icon text-green"></ion-icon>
+    <ion-icon name="heart-outline" class="sessao-icon"></ion-icon>
   </div>
-
-  <ion-searchbar
-    placeholder="Buscar ONG por nome ou cidade..."
-    [(ngModel)]="termoBuscaOng"
-    (ionInput)="filtrarOngs()"
-    style="padding: 0 0 10px 0; --box-shadow: none; --background: #f4f5f8; --border-radius: 12px;">
-  </ion-searchbar>
 
   <div class="donation-card" *ngFor="let ong of ongsFiltradas" (click)="abrirPerfilOng(ong)">
     <div class="donation-content">
@@ -63,10 +166,10 @@
     </div>
   </div>
 
-  <div *ngIf="ongsFiltradas.length === 0" style="text-align: center; padding: 30px 20px; color: #888;">
-    <ion-icon name="search-outline" style="font-size: 3rem; color: #ccc; margin-bottom: 10px;"></ion-icon>
-    <p style="margin: 0; font-weight: 600; color: #666;">Nenhuma ONG encontrada</p>
-    <p style="font-size: 0.9rem; margin-top: 5px;">Tente buscar por outro nome ou cidade.</p>
+  <div *ngIf="ongsFiltradas.length === 0" class="empty-state">
+    <ion-icon name="paw-outline"></ion-icon>
+    <p class="empty-title">Nenhuma ONG encontrada</p>
+    <p class="empty-sub">Tente ajustar os filtros</p>
   </div>
 
 </ion-content>

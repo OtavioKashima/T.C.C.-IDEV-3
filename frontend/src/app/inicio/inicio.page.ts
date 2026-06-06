@@ -15,15 +15,53 @@ export class InicioPage implements OnInit {
   ongs: any[] = [];
   comunicados: any[] = [];
 
+  showSearch = false;
+  showFiltros = false;
+
+  filtros = {
+    estado: '',
+    cidade: ''
+  };
+
   constructor(
     private http: HttpClient,
     private router: Router,
     private navCtrl: NavController
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.carregarComunicados();
     this.carregarOngs();
+  }
+
+  toggleSearch() {
+    this.showSearch = !this.showSearch;
+    if (!this.showSearch) {
+      this.limparBusca();
+    }
+  }
+
+  toggleFiltros() {
+    this.showFiltros = !this.showFiltros;
+  }
+
+  limparBusca() {
+    this.termoBuscaOng = '';
+    this.filtrarOngs();
+  }
+
+  temFiltroAtivo(): boolean {
+    return !!(this.filtros.estado || this.filtros.cidade);
+  }
+
+  limparTodosFiltros() {
+    this.filtros = { estado: '', cidade: '' };
+    this.filtrarOngs();
+  }
+
+  limparCampo(campo: 'estado' | 'cidade') {
+    this.filtros[campo] = '';
+    this.filtrarOngs();
   }
 
   carregarComunicados() {
@@ -47,16 +85,26 @@ export class InicioPage implements OnInit {
   }
 
   filtrarOngs() {
+    let resultado = [...this.ongs];
+
     const termo = this.termoBuscaOng.toLowerCase().trim();
-    if (!termo) {
-      this.ongsFiltradas = [...this.ongs];
-      return;
+    if (termo) {
+      resultado = resultado.filter(ong =>
+        (ong.nome && ong.nome.toLowerCase().includes(termo)) ||
+        (ong.cidade && ong.cidade.toLowerCase().includes(termo)) ||
+        (ong.estado && ong.estado.toLowerCase().includes(termo))
+      );
     }
-    this.ongsFiltradas = this.ongs.filter(ong =>
-      (ong.nome && ong.nome.toLowerCase().includes(termo)) ||
-      (ong.cidade && ong.cidade.toLowerCase().includes(termo)) ||
-      (ong.estado && ong.estado.toLowerCase().includes(termo))
-    );
+
+    if (this.filtros.estado) {
+      resultado = resultado.filter(ong => ong.estado === this.filtros.estado);
+    }
+
+    if (this.filtros.cidade) {
+      resultado = resultado.filter(ong => ong.cidade === this.filtros.cidade);
+    }
+
+    this.ongsFiltradas = resultado;
   }
 
   getFotoUrl(foto_perfil: string) {

@@ -6,263 +6,511 @@ $verde-light: #edfaf4;
 $verde-mid:   #2eaf7a;
 $verde-text:  #1d7a55;
 
+ion-content {
+  --background: #f4f7f6;
+}
+
 .custom-content {
-    --background: #f4f7f6;
-    font-family: 'Nunito', sans-serif;
+  --background: #f4f7f6;
+  font-family: 'Nunito', sans-serif;
 }
 
 /* =========================================
-   HEADER & TOOLBAR — gradiente igual às tabs
+   HEADER & TOOLBAR
    ========================================= */
-.custom-toolbar {
-    --background: linear-gradient(135deg, #5ad9a3 0%, #3ecf8e 100%);
-    --color: white;
-    --min-height: auto;
-    padding-bottom: 0;
+ion-toolbar.custom-toolbar {
+  --background: linear-gradient(135deg, #5ad9a3 0%, #3ecf8e 100%);
+  --color: white;
+  --min-height: auto;
+  padding-bottom: 0;
 }
 
 .header-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
 }
 
 .title-section {
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .header-title {
-    font-family: 'Nunito', sans-serif;
-    font-size: 1.2rem;
-    font-weight: 400;
-    color: white;
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: white;
 }
 
 .header-icon {
-    font-size: 1.6rem;
-    color: white;
+  font-size: 1.6rem;
+  color: white;
+  cursor: pointer;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* =========================================
+   SEARCH BAR NO HEADER
+   ========================================= */
+.search-bar-wrapper {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+  padding: 0 16px;
+
+  &.visible {
+    max-height: 60px;
+    padding: 0 16px 10px;
+  }
+}
+
+.search-input-wrapper {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 10px;
+  padding: 0 10px;
+  height: 38px;
+  gap: 8px;
+}
+
+.search-input-icon {
+  font-size: 1rem;
+  color: white;
+  flex-shrink: 0;
+}
+
+.search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: white;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+  }
+}
+
+.search-clear-icon {
+  font-size: 1.1rem;
+  color: white;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* =========================================
+   FILTROS
+   ========================================= */
+.filtros-painel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+  background: #f0fdf6;
+  border-bottom: 1px solid #d0eedd;
+  margin: 0 -16px;
+
+  &.aberto {
+    max-height: 220px;
+  }
+}
+
+.filtros-inner {
+  padding: 16px 16px 20px;
+}
+
+.filtros-titulo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+
+  span {
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: $verde;
+  }
+}
+
+.btn-limpar-todos {
+  background: #d6f5e8;
+  border: none;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: $verde-mid;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+.filtros-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filtro-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  border: 1.5px solid $verde;
+  border-radius: 50px;
+  padding: 6px 28px 6px 14px;
+  background: white;
+
+  select {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: $verde;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    max-width: 130px;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    option {
+      color: #333;
+      background: white;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.9rem;
+    }
+  }
+
+  &::after {
+    content: '▾';
+    position: absolute;
+    right: 10px;
+    font-size: 0.7rem;
+    color: $verde;
+    pointer-events: none;
+  }
+}
+
+.filtros-badge-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  background: #d6f5e8;
+  border-bottom: 1px solid #d0eedd;
+  gap: 8px;
+  margin: 0 -16px;
+
+  .chips-scroll {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+}
+
+.badge-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: $verde;
+  color: white;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 50px;
+
+  ion-icon {
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+}
+
+.resultado-count {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: $verde-text;
+  white-space: nowrap;
+}
+
+/* =========================================
+   LINHA SEPARADORA (igual ao divider de baixo)
+   ========================================= */
+.divider {
+  height: 2px;
+  background: #d4f0e5;
+  border-radius: 2px;
+  margin: 24px 0;
 }
 
 /* =========================================
    TÍTULOS E SEÇÕES
    ========================================= */
 .sessao-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-top: 10px;
-    margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-top: 10px;
+  margin-bottom: 12px;
 
-    .sessao-icon {
-        font-size: 1.6rem;
-        margin-top: 12px;
-        opacity: 0.8;
-        color: $verde;
-    }
+  .sessao-icon {
+    font-size: 1.3rem;
+    margin-top: 8px;
+    opacity: 0.8;
+    color: $verde;
+  }
 }
 
 .sessao-titulo {
-    font-family: 'Nunito', sans-serif;
-    font-weight: 800;
-    color: $verde-text;
-    margin: 10px 0 2px;
-    font-size: 1.3rem;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  color: $verde;
+  margin: 8px 0 2px;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
 
 .sessao-sub {
-    font-family: 'Nunito', sans-serif;
-    color: #7bb8a0;
-    font-size: 0.9rem;
-    font-weight: 600;
-    margin: 0;
-}
-
-.divider {
-    height: 2px;
-    background: #d4f0e5;
-    border-radius: 2px;
-    margin: 24px 0;
+  font-family: 'Nunito', sans-serif;
+  color: #7bb8a0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  margin: 0;
 }
 
 /* =========================================
    COMUNICADOS
    ========================================= */
 .comunicados-scroll {
-    display: flex;
-    overflow-x: auto;
-    gap: 16px;
-    padding-bottom: 14px;
-    padding-top: 4px;
-    margin-bottom: 10px;
-    scroll-snap-type: x mandatory;
+  display: flex;
+  overflow-x: auto;
+  gap: 16px;
+  padding-bottom: 14px;
+  padding-top: 4px;
+  margin-bottom: 10px;
+  scroll-snap-type: x mandatory;
 
-    &::-webkit-scrollbar { display: none; }
+  &::-webkit-scrollbar { display: none; }
 }
 
 .comunicado-card {
-    min-width: 270px;
-    max-width: 270px;
-    background: $verde-light;
-    border-radius: 16px;
-    padding: 16px;
-    box-shadow: 0 4px 14px rgba(62, 207, 142, 0.15);
-    border-left: 5px solid $verde;
-    cursor: pointer;
-    scroll-snap-align: center;
-    transition: transform 0.2s ease;
+  min-width: 270px;
+  max-width: 270px;
+  background: $verde-light;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 4px 14px rgba(62, 207, 142, 0.15);
+  border-left: 5px solid $verde;
+  cursor: pointer;
+  scroll-snap-align: center;
+  transition: transform 0.2s ease;
 
-    &:active { transform: scale(0.97); }
+  &:active { transform: scale(0.97); }
 
-    .comunicado-header {
-        display: flex;
-        justify-content: space-between;
-        color: $verde-mid;
-        font-size: 0.8rem;
-        margin-bottom: 10px;
-        font-weight: 800;
+  .comunicado-header {
+    display: flex;
+    justify-content: space-between;
+    color: $verde-mid;
+    font-size: 0.8rem;
+    margin-bottom: 10px;
+    font-weight: 800;
 
-        ion-icon {
-            color: $verde;
-            font-size: 1.3rem;
-        }
+    ion-icon {
+      color: $verde;
+      font-size: 1.3rem;
     }
+  }
 
-    h3 {
-        margin: 0 0 6px;
-        font-size: 1.05rem;
-        font-weight: 800;
-        color: $verde-mid;
-    }
+  h3 {
+    margin: 0 0 6px;
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: $verde-mid;
+  }
 
-    p {
-        margin: 0;
-        font-size: 0.85rem;
-        color: #3d7a62;
-        line-height: 1.5;
-    }
+  p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #3d7a62;
+    line-height: 1.5;
+  }
 }
 
 .sem-comunicados {
-    text-align: center;
-    padding: 16px;
-    color: #aaa;
+  text-align: center;
+  padding: 16px;
+  color: #aaa;
 
-    ion-icon {
-        font-size: 2rem;
-        display: block;
-        margin-bottom: 6px;
-    }
+  ion-icon {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 6px;
+  }
 
-    p {
-        font-size: 0.85rem;
-        margin: 0;
-    }
+  p {
+    font-size: 0.85rem;
+    margin: 0;
+  }
 }
 
 /* =========================================
    CARDS DE ONG
    ========================================= */
 .donation-card {
-    margin-bottom: 12px;
-    border-radius: 14px;
-    background: white;
-    box-shadow: 0 2px 10px rgba(62, 207, 142, 0.1);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    border: 1px solid #d4f0e5;
+  margin-bottom: 12px;
+  border-radius: 14px;
+  background: white;
+  box-shadow: 0 2px 10px rgba(62, 207, 142, 0.1);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid #d4f0e5;
 
-    &:active {
-        transform: scale(0.98);
-        box-shadow: 0 1px 5px rgba(62, 207, 142, 0.12);
+  &:active {
+    transform: scale(0.98);
+    box-shadow: 0 1px 5px rgba(62, 207, 142, 0.12);
+  }
+
+  .donation-content {
+    display: flex;
+    gap: 14px;
+    padding: 14px 16px;
+    align-items: center;
+  }
+
+  .donation-image {
+    width: 58px;
+    height: 58px;
+    border-radius: 10px;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 2.5px solid $verde;
+  }
+
+  .donation-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    strong {
+      display: block;
+      font-size: 1rem;
+      color: $verde-text;
+      font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin: 0;
+      padding: 0;
     }
 
-    .donation-content {
-        display: flex;
-        gap: 14px;
-        padding: 14px 16px;
-        align-items: center;
-    }
+    .cidade-txt {
+      font-size: 0.78rem;
+      color: #7bb8a0;
+      font-weight: 600;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-left: -1px;
 
-    .donation-image {
-        width: 58px;
-        height: 58px;
-        border-radius: 10px;
-        object-fit: cover;
+      ion-icon {
+        color: $verde;
         flex-shrink: 0;
-        border: 2.5px solid $verde;
+        font-size: 0.78rem;
+        width: 0.78rem;
+        margin-right: 2px;
+      }
+
+      span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
     }
+  }
 
-    .donation-info {
-        flex: 1;
-        min-width: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
+  .donation-arrow {
+    color: $verde-claro;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+}
 
-        strong {
-            display: block;
-            font-size: 1rem;
-            color: #1a3d2e;
-            font-weight: 800;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin: 0;
-            padding: 0;
-        }
+/* =========================================
+   EMPTY STATE
+   ========================================= */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-top: 50px;
+  padding: 0 20px;
 
-        .cidade-txt {
-            font-size: 0.78rem;
-            color: #7bb8a0;
-            font-weight: 600;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            gap: 2px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin-left: -1px;
+  ion-icon {
+    font-size: 64px;
+    color: $verde;
+    display: block;
+    margin-bottom: 14px;
+  }
 
-            ion-icon {
-                color: $verde;
-                flex-shrink: 0;
-                font-size: 0.78rem;
-                width: 0.78rem;
-                margin-right: 2px;
-            }
+  .empty-title {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: $verde;
+    margin: 0 0 4px;
+    line-height: 1.3;
+  }
 
-            span {
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-            }
-        }
-    }
-
-    .donation-arrow {
-        color: $verde-claro;
-        font-size: 1.1rem;
-        flex-shrink: 0;
-    }
+  .empty-sub {
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: $verde-claro;
+    margin: 0;
+    line-height: 1.3;
+  }
 }
 
 /* =========================================
    UTILITÁRIOS
    ========================================= */
 .linha-unica {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .multi-linhas {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
