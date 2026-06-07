@@ -1,12 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
 
+$verde:       #3ecf8e;
+$verde-claro: #5ad9a3;
+$verde-light: #edfaf4;
+$verde-mid:   #2eaf7a;
+
 ion-content {
   --background: #f0fdf6;
 }
 
-/* =========================================
-  CABEÇALHO / HERO E BOTÕES FLUTUANTES
-  ========================================= */
 .floating-buttons {
   position: absolute;
   top: 0;
@@ -31,7 +33,7 @@ ion-content {
   align-items: center;
   justify-content: center;
   background: white;
-  border: 2px solid #3ecf8e;
+  border: 2px solid $verde;
   border-radius: 50%;
   width: 38px;
   height: 38px;
@@ -41,14 +43,14 @@ ion-content {
   padding: 0;
 
   &:active {
-    background: #3ecf8e;
+    background: $verde;
     .seta-voltar { color: white; }
   }
 }
 
 .seta-voltar {
   font-size: 20px;
-  color: #3ecf8e;
+  color: $verde;
   transition: color 0.2s ease;
 }
 
@@ -56,7 +58,7 @@ ion-content {
   position: relative;
   width: 100%;
   height: 260px;
-  background: linear-gradient(135deg, #3ecf8e, #3ecf8e);
+  background: $verde-claro;
   display: flex;
   align-items: flex-end;
 }
@@ -64,7 +66,7 @@ ion-content {
 .hero-gradient {
   position: absolute;
   inset: 0;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.45), transparent);
+  background: linear-gradient(to top, rgba(0,0,0,0.45), transparent);
 }
 
 .hero-content {
@@ -75,19 +77,18 @@ ion-content {
   flex-direction: column;
   align-items: center;
   padding-bottom: 20px;
-  gap: 6px;
+  gap: 4px;
+  text-align: center;
 }
 
-/* Identidade ONG */
 .ong-logo {
   width: 76px;
   height: 76px;
   border-radius: 16px;
   object-fit: cover;
   background: white;
-  padding: 0;
   border: none;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
 }
 .ong-nome {
   font-family: 'Nunito', sans-serif;
@@ -95,20 +96,21 @@ ion-content {
   font-weight: 900;
   color: white;
   margin: 0;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  text-align: center;
 }
 .ong-cidade {
   font-family: 'Nunito', sans-serif;
   font-size: 0.8rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255,255,255,0.85);
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 4px;
   ion-icon { font-size: 13px; }
 }
 
-/* Identidade Usuário */
 .user-avatar {
   width: 80px;
   height: 80px;
@@ -125,6 +127,7 @@ ion-content {
   color: white;
   margin: 0;
   text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  text-align: center;
 }
 .user-cidade {
   font-family: 'Nunito', sans-serif;
@@ -133,13 +136,11 @@ ion-content {
   color: rgba(255,255,255,0.85);
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 4px;
   ion-icon { font-size: 13px; }
 }
 
-/* =========================================
-  SOBRE E BOTÃO DOAÇÃO (ONG)
-  ========================================= */
 .sobre-section {
   background: white;
   padding: 16px 16px 0;
@@ -161,69 +162,55 @@ ion-content {
   width: 100%;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 12px;
-  background: linear-gradient(135deg, #3ecf8e, #2bb877);
+  background: linear-gradient(135deg, $verde-claro, $verde-mid);
   border: none;
   border-radius: 16px;
-  padding: 12px 16px;
+  padding: 14px 20px;
   cursor: pointer;
   box-shadow: 0 4px 14px rgba(62, 207, 142, 0.25);
   transition: all 0.2s ease;
+
   &:active {
     transform: scale(0.97);
     box-shadow: 0 2px 6px rgba(62, 207, 142, 0.15);
   }
+
   .doacao-icon-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
     background: white;
-    border-radius: 12px;
-    width: 42px;
-    height: 42px;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+
     ion-icon {
-      font-size: 1.6rem;
-      color: #3ecf8e;
+      font-size: 1.4rem;
+      color: $verde;
       animation: pulseHeart 2s infinite;
     }
   }
-  .doacao-text {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 2px;
-  }
+
   .doacao-title {
     font-family: 'Nunito', sans-serif;
     font-size: 1.05rem;
     font-weight: 800;
     color: white;
   }
-  .doacao-sub {
-    font-family: 'Nunito', sans-serif;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: rgba(255, 255, 255, 0.85);
-  }
-  .doacao-arrow {
-    font-size: 1.4rem;
-    color: white;
-  }
 }
 
 @keyframes pulseHeart {
-  0% { transform: scale(1); }
-  10% { transform: scale(1.15); }
-  20% { transform: scale(1); }
-  30% { transform: scale(1.15); }
-  40% { transform: scale(1); }
+  0%   { transform: scale(1); }
+  10%  { transform: scale(1.2); }
+  20%  { transform: scale(1); }
+  30%  { transform: scale(1.2); }
+  40%  { transform: scale(1); }
   100% { transform: scale(1); }
 }
 
-/* =========================================
-  BARRA DE ABAS (ONG E USUÁRIO)
-  ========================================= */
 .tabs-bar {
   display: flex;
   background: white;
@@ -248,7 +235,7 @@ ion-content {
       font-weight: 600;
     }
     &.active {
-      color: #3ecf8e;
+      color: $verde;
       &::after {
         content: '';
         position: absolute;
@@ -256,14 +243,9 @@ ion-content {
         left: 20%;
         width: 60%;
         height: 3px;
-        background: #3ecf8e;
+        background: $verde;
         border-radius: 3px 3px 0 0;
       }
-    }
-    &[click*="comunicados"].active {
-      color: #ff9800;
-      &::after { background: #ff9800; }
-      ion-icon, .tab-label { color: #ff9800; }
     }
   }
 }
@@ -281,9 +263,6 @@ ion-content {
   }
 }
 
-/* =========================================
-  FEEDS E ESTADOS VAZIOS
-  ========================================= */
 .feed {
   display: flex;
   flex-direction: column;
@@ -299,7 +278,7 @@ ion-content {
   text-align: center;
   .sem-resultados-icon {
     font-size: 3.5rem;
-    color: #3ecf8e;
+    color: $verde;
     margin-bottom: 12px;
   }
   p {
@@ -312,30 +291,27 @@ ion-content {
 }
 
 .sem-resultados-comunicado {
-  .sem-resultados-icon { color: #ffcc80; }
-  p { color: #ffa726; }
+  .sem-resultados-icon { color: $verde; }
+  p { color: $verde-mid; }
 }
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* =========================================
-  CARDS DE ADOÇÃO/DENÚNCIA DA ONG (LAYOUT GRANDE)
-  ========================================= */
 .denuncia-card {
   margin: 10px 16px;
   border-radius: 16px;
   background: white;
-  border: 2px solid #3ecf8e;
+  border: 2px solid $verde;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(102, 217, 166, 0.08);
   animation: fadeIn 0.3s ease both;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
   cursor: pointer;
   &:hover {
-    border-color: #2db376;
+    border-color: $verde-mid;
     box-shadow: 0 6px 20px rgba(102, 217, 166, 0.2);
     transform: translateY(-2px);
   }
@@ -363,7 +339,7 @@ ion-content {
 }
 
 .acao-btn {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255,255,255,0.2);
   border: none;
   padding: 5px;
   cursor: pointer;
@@ -377,7 +353,7 @@ ion-content {
     color: #ffffff;
     &.saved { transform: scale(1.1); }
   }
-  &:hover { background: rgba(255, 255, 255, 0.35); }
+  &:hover { background: rgba(255,255,255,0.35); }
   &:active { transform: scale(0.9); }
 }
 
@@ -415,7 +391,7 @@ ion-content {
 .denuncia-badge {
   display: inline-block;
   background: #e6f9f0;
-  color: #3ecf8e;
+  color: $verde;
   font-family: 'Nunito', sans-serif;
   font-size: 12px;
   font-weight: 800;
@@ -437,137 +413,38 @@ ion-content {
   text-overflow: ellipsis;
 }
 
-/* =========================================
-  CARDS DE DENÚNCIA DO USUÁRIO (LAYOUT COMPACTO)
-  ========================================= */
-.denuncia-card-user {
-  margin: 10px 16px;
-  border-radius: 16px;
-  background: #f0fdf6;
-  border: 1px solid #d0eedd;
-  overflow: hidden;
-  cursor: pointer;
-  animation: fadeIn 0.3s ease both;
-  transition: box-shadow 0.2s ease, transform 0.15s ease;
-  &:hover {
-    box-shadow: 0 4px 16px rgba(102, 217, 166, 0.15);
-    transform: translateY(-1px);
-  }
-  &:active { transform: scale(0.99); }
-}
-
-.denuncia-header-user {
-  background: #66d9a6;
-  padding: 10px 14px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  .header-titulo {
-    font-family: 'Nunito', sans-serif;
-    font-size: 14px;
-    font-weight: 400;
-    color: #ffffff;
-  }
-}
-
-.denuncia-acoes-user {
-  display: flex;
-  align-items: center;
-}
-
-.acao-btn-user {
-  background: none;
-  border: none;
-  padding: 5px 6px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 8px;
-  transition: opacity 0.15s ease;
-  ion-icon {
-    font-size: 1.15rem;
-    color: #ffffff;
-    transition: transform 0.2s ease;
-  }
-  &:hover { opacity: 0.75; }
-  &:active { transform: scale(0.85); }
-}
-
-.denuncia-content-user {
-  display: flex;
-  gap: 14px;
-  padding: 14px;
-  align-items: center;
-}
-
-.denuncia-image-user {
-  width: 82px;
-  height: 82px;
-  border-radius: 10px;
-  object-fit: cover;
-  flex-shrink: 0;
-  border: 1.5px solid #d0eedd;
-  background: white; /* fallback pra foto padrão */
-}
-
-.denuncia-info-user {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.denuncia-meta-user {
+// Data da denúncia
+.denuncia-data {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: $verde-mid;
   display: flex;
   align-items: center;
   gap: 4px;
-  ion-icon {
-    font-size: 0.8rem;
-    color: #7dddb0;
-  }
+  margin-bottom: 6px;
+  ion-icon { font-size: 0.85rem; }
 }
 
-.denuncia-tempo-user {
-  font-family: 'Nunito', sans-serif;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #7dddb0;
-}
-
-.denuncia-descricao-user {
-  font-family: 'Nunito', sans-serif;
-  font-size: 13px;
-  font-weight: 400;
-  color: #54a792;
-  line-height: 1.55;
-  margin: 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* =========================================
-  CARDS DE COMUNICADO (ONG)
-  ========================================= */
+// Comunicados — estilo igual à tela de início (verde)
 .comunicado-card-perfil {
+  min-width: unset;
   margin: 10px 16px;
-  background: #fffcf4;
+  background: $verde-light;
   border-radius: 16px;
   padding: 16px;
-  box-shadow: 0 4px 14px rgba(255, 152, 0, 0.08);
-  border-left: 5px solid #ff9800;
+  box-shadow: 0 4px 14px rgba(62, 207, 142, 0.15);
+  border-left: 5px solid $verde;
   cursor: pointer;
   animation: fadeIn 0.3s ease both;
   transition: transform 0.15s ease;
   &:active { transform: scale(0.99); }
+
   .comunicado-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    color: #ba8b61;
+    color: $verde-mid;
     font-size: 0.8rem;
     margin-bottom: 8px;
     font-weight: 700;
@@ -576,22 +453,23 @@ ion-content {
       align-items: center;
       gap: 6px;
       ion-icon {
-        color: #ff9800;
+        color: $verde;
         font-size: 1.2rem;
       }
     }
   }
+
   .comunicado-body {
     h3 {
       margin: 0 0 6px;
       font-size: 1.05rem;
       font-weight: 800;
-      color: #d84315;
+      color: $verde-mid;
     }
     p {
       margin: 0;
       font-size: 0.88rem;
-      color: #5d4037;
+      color: #3d7a62;
       line-height: 1.5;
     }
   }

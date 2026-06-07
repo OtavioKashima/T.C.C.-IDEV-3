@@ -6,10 +6,8 @@
         <span class="header-title">Denuncie</span>
       </div>
       <div class="header-actions">
-        <ion-icon name="options-outline" class="header-icon" (click)="toggleFiltros()">
-        </ion-icon>
-        <ion-icon [name]="showSearch ? 'close-outline' : 'search-outline'" class="header-icon" (click)="toggleSearch()">
-        </ion-icon>
+        <ion-icon name="options-outline" class="header-icon" (click)="toggleFiltros()"></ion-icon>
+        <ion-icon [name]="showSearch ? 'close-outline' : 'search-outline'" class="header-icon" (click)="toggleSearch()"></ion-icon>
       </div>
     </div>
 
@@ -17,8 +15,7 @@
       <div class="search-input-wrapper">
         <ion-icon name="search-outline" class="search-input-icon"></ion-icon>
         <input class="search-input" placeholder="Buscar denúncia..." [(ngModel)]="termoBusca" (input)="filtrar()">
-        <ion-icon *ngIf="termoBusca" name="close-circle-outline" class="search-clear-icon" (click)="limparBusca()">
-        </ion-icon>
+        <ion-icon *ngIf="termoBusca" name="close-circle-outline" class="search-clear-icon" (click)="limparBusca()"></ion-icon>
       </div>
     </div>
   </ion-toolbar>
@@ -30,11 +27,20 @@
     <div class="filtros-inner">
       <div class="filtros-titulo">
         <span>Filtrar por</span>
-        <button class="btn-limpar-todos" (click)="limparTodosFiltros()" *ngIf="temFiltroAtivo()">
-          Limpar tudo
-        </button>
+        <button class="btn-limpar-todos" (click)="limparTodosFiltros()" *ngIf="temFiltroAtivo()">Limpar tudo</button>
       </div>
       <div class="filtros-row">
+
+        <!-- Filtro de Prioridade -->
+        <div class="filtro-pill">
+          <select [(ngModel)]="filtros.prioridade" (change)="filtrar()">
+            <option value="" disabled selected hidden>Prioridade</option>
+            <option value="">Todas</option>
+            <option value="urgente">🚨 Urgente</option>
+            <option value="alta">⚠️ Alta</option>
+            <option value="normal">Normal</option>
+          </select>
+        </div>
 
         <div class="filtro-pill filtro-pill--input">
           <input type="date" [(ngModel)]="filtros.data" (change)="filtrar()" class="filtro-input-date">
@@ -73,6 +79,15 @@
 
   <div class="filtros-badge-bar" *ngIf="temFiltroAtivo()">
     <div class="chips-scroll">
+      <span class="badge-chip badge-chip--urgente" *ngIf="filtros.prioridade === 'urgente'">
+        🚨 Urgente <ion-icon name="close-outline" (click)="limparCampo('prioridade')"></ion-icon>
+      </span>
+      <span class="badge-chip badge-chip--alta" *ngIf="filtros.prioridade === 'alta'">
+        ⚠️ Alta <ion-icon name="close-outline" (click)="limparCampo('prioridade')"></ion-icon>
+      </span>
+      <span class="badge-chip" *ngIf="filtros.prioridade === 'normal'">
+        Normal <ion-icon name="close-outline" (click)="limparCampo('prioridade')"></ion-icon>
+      </span>
       <span class="badge-chip" *ngIf="filtros.data">
         {{ filtros.data | date:'dd/MM/yyyy' }}
         <ion-icon name="close-outline" (click)="limparCampo('data')"></ion-icon>
@@ -90,18 +105,33 @@
         <ion-icon name="close-outline" (click)="limparCampo('estado')"></ion-icon>
       </span>
     </div>
-    <span class="resultado-count">{{ denunciasFiltradas.length }} resultado{{ denunciasFiltradas.length !== 1 ? 's' : ''
-      }}</span>
+    <span class="resultado-count">{{ denunciasFiltradas.length }} resultado{{ denunciasFiltradas.length !== 1 ? 's' : '' }}</span>
   </div>
 
   <ion-grid>
     <ion-row>
       <ion-col size="12" size-md="6" size-lg="4" *ngFor="let denuncia of denunciasFiltradas">
-        <ion-card class="pet-card" (click)="irParaDetalhes(denuncia)">
+        <ion-card
+          class="pet-card"
+          [class.card-urgente]="denuncia.prioridade === 'urgente'"
+          [class.card-alta]="denuncia.prioridade === 'alta'"
+          (click)="irParaDetalhes(denuncia)">
 
           <div class="image-container">
+
+            <!-- Badge de prioridade urgente -->
+            <div class="priority-badge priority-badge--urgente" *ngIf="denuncia.prioridade === 'urgente'">
+              🚨 URGENTE
+            </div>
+
+            <!-- Badge de prioridade alta -->
+            <div class="priority-badge priority-badge--alta" *ngIf="denuncia.prioridade === 'alta'">
+              ⚠️ Alta Prioridade
+            </div>
+
             <img *ngIf="denuncia.fotosArray && denuncia.fotosArray.length > 0"
-              [src]="'http://localhost:3000/uploads/' + denuncia.fotosArray[0]" [alt]="denuncia.titulo"
+              [src]="'http://localhost:3000/uploads/' + denuncia.fotosArray[0]"
+              [alt]="denuncia.titulo"
               class="single-pet-image">
 
             <div *ngIf="!denuncia.fotosArray || denuncia.fotosArray.length === 0" class="sem-foto">
@@ -110,7 +140,7 @@
           </div>
 
           <ion-card-header>
-            <ion-card-subtitle class="pet-subtitle" style="display: flex; align-items: center; gap: 4px;">
+            <ion-card-subtitle class="pet-subtitle" style="display:flex; align-items:center; gap:4px;">
               <ion-icon name="location-outline"></ion-icon>
               {{ denuncia.localizacao || 'Localização não informada' }}
             </ion-card-subtitle>
@@ -122,8 +152,15 @@
           </ion-card-content>
 
           <div class="card-footer">
+            <span class="footer-priority-label footer-priority-label--urgente" *ngIf="denuncia.prioridade === 'urgente'">
+              🚨 Requer atenção imediata
+            </span>
+            <span class="footer-priority-label footer-priority-label--alta" *ngIf="denuncia.prioridade === 'alta'">
+              ⚠️ Atenção elevada
+            </span>
             <ion-button fill="clear" size="small">Ver Detalhes</ion-button>
           </div>
+
         </ion-card>
       </ion-col>
     </ion-row>

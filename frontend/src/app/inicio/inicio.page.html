@@ -41,11 +41,9 @@
         </button>
       </div>
       <div class="filtros-row">
-
         <div class="filtro-pill">
           <select [(ngModel)]="filtros.estado" (change)="filtrarOngs()">
-            <option value="" disabled selected hidden>Estado</option>
-            <option value="">Todos os estados</option>
+            <option value="">Estado</option>
             <option value="AC">AC</option>
             <option value="AL">AL</option>
             <option value="AM">AM</option>
@@ -74,11 +72,9 @@
             <option value="TO">TO</option>
           </select>
         </div>
-
         <div class="filtro-pill">
           <select [(ngModel)]="filtros.cidade" (change)="filtrarOngs()">
-            <option value="" disabled selected hidden>Cidade</option>
-            <option value="">Todas as cidades</option>
+            <option value="">Cidade</option>
             <option value="Pompeia">Pompeia</option>
             <option value="Tupã">Tupã</option>
             <option value="Marília">Marília</option>
@@ -100,7 +96,6 @@
             <option value="Rio de Janeiro">Rio de Janeiro</option>
           </select>
         </div>
-
       </div>
     </div>
   </div>
@@ -126,13 +121,23 @@
   </div>
 
   <div class="comunicados-scroll" *ngIf="comunicados.length > 0">
-    <div class="comunicado-card" *ngFor="let aviso of comunicados" (click)="abrirComunicado(aviso)">
+    <div
+      class="comunicado-card"
+      [class.card-urgente]="aviso.prioridade === 'urgente'"
+      [class.card-alta]="aviso.prioridade === 'alta'"
+      *ngFor="let aviso of comunicados"
+      (click)="abrirComunicado(aviso)">
+
       <div class="comunicado-header">
         <ion-icon name="megaphone-outline"></ion-icon>
-        <span>{{ aviso.data_criacao | date:'dd/MM/yyyy' }}</span>
+        <div class="header-right">
+          <span class="prioridade-tag" *ngIf="aviso.prioridade === 'urgente'">URGENTE</span>
+          <span class="prioridade-tag" *ngIf="aviso.prioridade === 'alta'">ALTA</span>
+          <span class="data-txt">{{ aviso.data_criacao | date:'dd/MM/yyyy' }}</span>
+        </div>
       </div>
+
       <h3 class="linha-unica">{{ aviso.titulo }}</h3>
-      <p class="multi-linhas">{{ aviso.texto }}</p>
     </div>
   </div>
 

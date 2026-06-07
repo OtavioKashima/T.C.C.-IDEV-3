@@ -10,47 +10,120 @@
 </ion-header>
 
 <ion-content>
+  <!-- HERO -->
   <div class="hero-banner">
     <div class="paw-bg">🐾</div>
-
     <div class="hero-text">
       <span class="hero-tag">ONG {{ ong?.nome | uppercase }}</span>
       <h2>Doe qualquer valor</h2>
-      <p>
-        Sua contribuição vai direto para a ONG, que decide como melhor ajudar os animais.
-      </p>
+      <p>Sua contribuição vai direto para a ONG, que decide como melhor ajudar os animais.</p>
     </div>
   </div>
 
+  <!-- BLOCO PRINCIPAL -->
   <div class="donate-block">
     <p class="donate-subtitle">Escolha ou insira o valor que deseja doar:</p>
 
+    <!-- VALORES RÁPIDOS -->
     <div class="valor-rapido">
-      <button *ngFor="let v of valoresRapidos" [class.ativo]="valorSelecionado === v" (click)="setValor(v)">
+      <button
+        *ngFor="let v of valoresRapidos"
+        [class.ativo]="valorSelecionado === v"
+        (click)="setValor(v)"
+      >
         R$ {{ v }}
       </button>
     </div>
 
+    <!-- INPUT VALOR LIVRE -->
     <div class="input-wrap">
       <span class="input-prefix">R$</span>
-      <input type="number" [(ngModel)]="valorDoacao" placeholder="Outro valor" class="input-valor" min="1"
-        (input)="valorSelecionado = null">
+      <input
+        type="number"
+        [(ngModel)]="valorDoacao"
+        placeholder="Outro valor"
+        class="input-valor"
+        min="1"
+        (input)="valorSelecionado = null"
+      />
     </div>
 
-    <div class="qrcode-container">
+    <!-- AVISO DOAÇÃO RELEVANTE (>=R$500 notifica a ONG) -->
+    <div class="aviso-relevante" *ngIf="valorDoacao && valorDoacao >= 500">
+      ⭐ Doação de <strong>R$ {{ valorDoacao }}</strong> — a ONG será notificada automaticamente!
+    </div>
 
-      <button class="copiar-pix-btn" (click)="copiarPix()">
+    <!-- SEÇÃO PIX -->
+    <div class="qrcode-container">
+      <button class="copiar-pix-btn" (click)="copiarPix()" [disabled]="!ong?.chave_pix">
         <ion-icon name="copy-outline"></ion-icon>
-        Copiar chave Pix
+        Copiar chave PIX
       </button>
 
-      <small style="margin-top: 10px; color: #888; word-break: break-all;">
-        {{ ong?.chave_pix || 'Chave não cadastrada' }}
+      <small style="margin-top: 10px; color: #888; word-break: break-all; text-align: center;">
+        {{ ong?.chave_pix || 'Chave PIX não cadastrada' }}
       </small>
+
+      <!-- Instruções passo a passo -->
+      <div class="pix-steps" *ngIf="ong?.chave_pix">
+        <span>1. Copie a chave acima</span>
+        <span>2. Abra o app do seu banco</span>
+        <span>3. Vá em <strong>PIX → Transferir</strong></span>
+        <span>4. Cole a chave e confirme o valor</span>
+      </div>
     </div>
 
-    <button class="adopt-btn" (click)="processarDoacao()" [disabled]="processando || !ong?.chave_pix">
-      <ion-icon name="paw"></ion-icon>
-      {{ processando ? 'Aguarde...' : 'Realizar Pagamento' }}
+    <!-- BOTÃO REGISTRAR DOAÇÃO -->
+    <button
+      class="adopt-btn"
+      (click)="registrarDoacao()"
+      [disabled]="processando || doacaoRegistrada || !valorDoacao || valorDoacao <= 0"
+    >
+      <ion-spinner name="crescent" *ngIf="processando" style="width:18px;height:18px;margin-right:6px;"></ion-spinner>
+      <ion-icon name="checkmark-circle-outline" *ngIf="!processando && !doacaoRegistrada"></ion-icon>
+      <ion-icon name="checkmark-done-outline" *ngIf="doacaoRegistrada"></ion-icon>
+      {{ processando ? 'Registrando...' : doacaoRegistrada ? 'Doação Registrada ✓' : 'Registrar Doação' }}
     </button>
+
+    <p class="seguro-label" *ngIf="!doacaoRegistrada">
+      🔒 Registre a doação e depois copie a chave PIX para pagar no seu banco.
+    </p>
+    <p class="seguro-label" *ngIf="doacaoRegistrada" style="color: #3ecf8e; font-weight: 700;">
+      ✅ Doação registrada! Copie a chave PIX acima e realize a transferência.
+    </p>
   </div>
+
+  <!-- INFO DA ONG -->
+  <div class="ong-info-card" *ngIf="ong?.descricao">
+    <div class="ong-info-header">
+      <ion-icon name="information-circle-outline"></ion-icon>
+      Sobre a ONG
+    </div>
+    <p>{{ ong.descricao }}</p>
+  </div>
+
+  <!-- SEPARADOR -->
+  <div class="section-header" *ngIf="cardsFiltrados.length > 0">
+    <div class="section-header-line"></div>
+    <span class="section-title">Para onde vai sua doação</span>
+    <div class="section-header-line"></div>
+  </div>
+
+  <!-- CARDS DESTINO -->
+  <div class="donation-card" *ngFor="let card of cardsFiltrados">
+    <div class="donation-content">
+      <img
+        [src]="card.imagem"
+        [alt]="card.titulo"
+        class="donation-image"
+        onerror="this.style.display='none'"
+      />
+      <div class="donation-info">
+        <strong>{{ card.titulo }}</strong>
+        <p>{{ card.descricao }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="height: 32px;"></div>
+</ion-content>

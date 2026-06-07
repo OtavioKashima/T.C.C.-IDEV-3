@@ -25,10 +25,6 @@ export class LoginPage {
     private navCtrl: NavController
   ) { }
 
-  // =========================
-  // Navegação
-  // =========================
-
   goToHome() {
     this.navCtrl.navigateRoot('/home');
   }
@@ -45,10 +41,6 @@ export class LoginPage {
     this.navCtrl.navigateRoot('/recuperar-senha');
   }
 
-  // =========================
-  // Máscaras
-  // =========================
-
   somenteNumeros(event: any) {
     const charCode = event.which ? event.which : event.keyCode;
     if (charCode < 48 || charCode > 57) {
@@ -64,12 +56,7 @@ export class LoginPage {
       .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
   }
 
-  // =========================
-  // Login
-  // =========================
-
   async login() {
-
     if (!this.usuario || !this.senha) {
       this.mostrarToast('Preencha todos os campos.');
       return;
@@ -82,14 +69,12 @@ export class LoginPage {
       senha: this.senha
     }).subscribe({
       next: async (res) => {
-
         console.log('Dados recebidos no login:', res);
 
-        // Salva o Token normal
         localStorage.setItem('token', res.token);
-
-        // 🟢 ALTERAÇÃO FEITA AQUI: Salva o nível do usuário
-        localStorage.setItem('admin', res.admin);
+        localStorage.setItem('admin', String(res.admin));
+        localStorage.setItem('usuario_email', res.email || '');  // ← salva o email
+        localStorage.setItem('usuario_id', String(res.id || '')); // ← salva o id
 
         await this.mostrarToast('Login realizado com sucesso!');
         this.navCtrl.navigateRoot('/tabs');

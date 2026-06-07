@@ -1,282 +1,417 @@
-const db = require('../config/db');
-const fs = require('fs');
+// =============================================================
+// controllers/postagemController.js
+// =============================================================
+
+const db   = require('../config/db');
+const fs   = require('fs');
 const path = require('path');
 
+const {
+  calcularPrioridadeDenuncia,
+  calcularPrioridadeComunicado,
+  calcularPrioridadeAdocao,
+  verificarDoacaoRelevante,
+} = require('../services/priorityService');
 
+const { criarNotificacao } = require('./notificacaoController');
+
+// =============================================================
+// HELPER — promisifica db.query
+// =============================================================
+function dbQuery(sql, params) {
+  return new Promise((resolve, reject) => {
+    db.query(sql, params, (err, results) => {
+      if (err) return reject(err);
+      resolve(results);
+    });
+  });
+}
+
+// =============================================================
+// POST /api/postagens
+// =============================================================
 exports.criarPostagem = (req, res) => {
-  // 🟢 1. Adicionado o 'ong_id' aqui no req.body
-  const { tipo_postagem, titulo, descricao, localizacao, raca, genero, idade, fixado, ong_id } = req.body;
+  const {
+    tipo_postagem,
+    titulo,
+    descricao,
+    localizacao,
+    raca,
+    genero,
+    idade,
+    fixado,
+    ong_id,
+    valor_doacao,
+  } = req.body;
 
-  // 🚨 OBRIGA ESCOLHER UMA ONG PARA DENÚNCIAS
   if (tipo_postagem === 'denuncia' && !ong_id) {
     return res.status(400).json({
-      erro: 'É obrigatório selecionar uma ONG para registrar uma denúncia.'
+      erro: 'É obrigatório selecionar uma ONG para registrar uma denúncia.',
     });
   }
-// 🚨 PEGANDO O ID DO USUÁRIO LOGADO
-  const usuarios_id = req.usuarioId;
 
-  // Trava de segurança: se não achar o usuário, cancela a postagem
+  const usuarios_id = req.usuarioId;
   if (!usuarios_id) {
-    return res.status(401).json({ erro: 'Usuário não autenticado ou ID não encontrado no token.' });
+    return res.status(401).json({ erro: 'Usuário não autenticado.' });
   }
 
-  // 🟢 2. Tratando o campo fixado
-  const campoFixado = (fixado === 'true' || fixado === '1' || fixado === 1) ? 1 : 0;
+  // ── Priorização automática ──────────────────────────────────
+  let prioridade        = 'normal';
+  let prioridade_score  = 0;
+  let motivoNotificacao = null;
+  let tipoNotificacao   = null;
 
-  // 🟢 3. Tratando o ong_id (se vier vazio ou undefined, salva como null no banco)
-  const ongDestino = ong_id ? parseInt(ong_id) : null;
+  if (tipo_postagem === 'denuncia') {
+    const result = calcularPrioridadeDenuncia({ titulo: titulo || '', descricao: descricao || '' });
+    prioridade       = result.prioridade;
+    prioridade_score = result.score;
 
-  // Lógica das fotos
+    if (prioridade === 'urgente' || prioridade === 'alta') {
+      const emoji = prioridade === 'urgente' ? '🚨' : '⚠️';
+      const label = prioridade === 'urgente' ? 'URGENTE' : 'ALTA PRIORIDADE';
+      motivoNotificacao = `${emoji} Denúncia ${label}: "${titulo}". Palavras detectadas: ${result.motivos.slice(0, 3).join(', ')}.`;
+      tipoNotificacao   = 'denuncia_urgente';
+    }
+
+  } else if (tipo_postagem === 'comunicado') {
+    const result = calcularPrioridadeComunicado({ titulo: titulo || '', descricao: descricao || '' });
+    prioridade       = result.prioridade;
+    prioridade_score = result.score;
+
+    // Notifica a própria ONG autora se o comunicado for urgente/alta
+    if ((prioridade === 'urgente' || prioridade === 'alta') && ong_id) {
+      const emoji = prioridade === 'urgente' ? '📢' : '🔔';
+      const label = prioridade === 'urgente' ? 'URGENTE' : 'IMPORTANTE';
+      motivoNotificacao = `${emoji} Comunicado ${label}: "${titulo}". Motivo detectado: ${result.motivos.slice(0, 2).join(', ')}.`;
+      tipoNotificacao   = 'comunicado_urgente';
+    }
+
+  } else if (tipo_postagem === 'adocao') {
+    const result = calcularPrioridadeAdocao({ idade });
+    prioridade = result.prioridade;
+
+  } else if (tipo_postagem === 'doacao') {
+    const result = verificarDoacaoRelevante({ valor: valor_doacao });
+    prioridade = result.relevante ? 'relevante' : 'normal';
+
+    if (result.relevante && ong_id) {
+      motivoNotificacao = `💰 Doação relevante recebida: R$ ${result.valor.toFixed(2).replace('.', ',')} — acima de R$ ${result.limite},00.`;
+      tipoNotificacao   = 'doacao_relevante';
+    }
+  }
+  // ────────────────────────────────────────────────────────────
+
+  const campoFixado    = (fixado === 'true' || fixado === '1' || fixado === 1) ? 1 : 0;
+  const ongDestino     = ong_id ? parseInt(ong_id) : null;
+  const valorDoacaoNum = valor_doacao ? parseFloat(String(valor_doacao).replace(',', '.')) : null;
+
   let nomesDasFotos = [];
   if (req.files && req.files.length > 0) {
     nomesDasFotos = req.files.map(file => file.filename);
   }
   const fotosJsonString = JSON.stringify(nomesDasFotos);
 
-  // 🟢 4. Atualizando o SQL para incluir a nova coluna 'ong_destino_id' (agora são 11 interrogações)
   const sql = `
     INSERT INTO postagens 
-    (tipo_postagem, titulo, descricao, localizacao, raca, genero, idade, foto, usuarios_id, fixado, ong_destino_id) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    (tipo_postagem, prioridade, prioridade_score, titulo, descricao, localizacao,
+     raca, genero, idade, foto, usuarios_id, fixado, ong_destino_id, valor_doacao) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
-  // 🟢 5. Adicionando a variável ongDestino na lista de valores
   const values = [
-    tipo_postagem,
-    titulo,
-    descricao,
-    localizacao || null,
-    raca || null,
-    genero || null,
-    idade || null,
-    fotosJsonString,
-    usuarios_id, // O ID do usuário dono da postagem
-    campoFixado, // O valor do destaque
-    ongDestino   // 👈 O ID da ONG vai aqui no final!
+    tipo_postagem, prioridade, prioridade_score,
+    titulo, descricao, localizacao || null,
+    raca || null, genero || null, idade || null,
+    fotosJsonString, usuarios_id, campoFixado,
+    ongDestino, valorDoacaoNum,
   ];
 
   db.query(sql, values, (err, result) => {
     if (err) {
-      console.error('Erro ao inserir no banco:', err);
-      return res.status(500).json({ erro: 'Erro ao salvar postagem no banco de dados' });
+      console.error('Erro ao inserir postagem:', err);
+      return res.status(500).json({ erro: 'Erro ao salvar postagem.' });
+    }
+
+    const postagem_id = result.insertId;
+
+    if (motivoNotificacao && ongDestino && tipoNotificacao) {
+      criarNotificacao({
+        ong_id: ongDestino,
+        postagem_id,
+        tipo: tipoNotificacao,
+        mensagem: motivoNotificacao,
+      }).catch(e => console.error('Falha ao salvar notificação:', e));
     }
 
     return res.status(201).json({
       mensagem: 'Postagem criada com sucesso!',
-      id: result.insertId
+      id: postagem_id,
+      prioridade,
+      prioridade_score,
     });
   });
 };
 
-exports.atualizarPostagem = (req, res) => {
-  const postId = req.params.id;
-  const usuarioId = req.usuarioId; // Pego pelo seu Middleware de Autenticação
+// =============================================================
+// POST /api/postagens/recalcular-prioridades
+// =============================================================
+exports.recalcularPrioridades = async (req, res) => {
+  try {
+    const rows = await dbQuery(
+      'SELECT id, tipo_postagem, titulo, descricao, idade FROM postagens',
+      []
+    );
 
-  // 📥 Recebe os campos de texto + a lista de fotos mantidas do Ionic
+    let atualizadas = 0;
+
+    for (const post of rows) {
+      let prioridade = 'normal';
+      let score      = 0;
+
+      if (post.tipo_postagem === 'denuncia') {
+        const r = calcularPrioridadeDenuncia({
+          titulo:    post.titulo    || '',
+          descricao: post.descricao || '',
+        });
+        prioridade = r.prioridade;
+        score      = r.score;
+
+      } else if (post.tipo_postagem === 'comunicado') {
+        const r = calcularPrioridadeComunicado({
+          titulo:    post.titulo    || '',
+          descricao: post.descricao || '',
+        });
+        prioridade = r.prioridade;
+        score      = r.score;
+
+      } else if (post.tipo_postagem === 'adocao') {
+        const r = calcularPrioridadeAdocao({ idade: post.idade });
+        prioridade = r.prioridade;
+      }
+
+      await dbQuery(
+        'UPDATE postagens SET prioridade = ?, prioridade_score = ? WHERE id = ?',
+        [prioridade, score, post.id]
+      );
+
+      atualizadas++;
+    }
+
+    return res.json({
+      mensagem: `✅ ${atualizadas} postagens recalculadas com sucesso.`,
+    });
+
+  } catch (err) {
+    console.error('Erro ao recalcular prioridades:', err);
+    return res.status(500).json({ erro: 'Erro ao recalcular prioridades.' });
+  }
+};
+
+// =============================================================
+// PUT /api/postperfil/:id
+// =============================================================
+exports.atualizarPostagem = (req, res) => {
+  const postId    = req.params.id;
+  const usuarioId = req.usuarioId;
+
   const { tipo_postagem, titulo, descricao, raca, genero, localizacao, idade, fotosMantidas } = req.body;
 
-  // 🖼️ 1. PROCESSAR AS FOTOS MANTIDAS
   let fotosFinais = [];
   if (fotosMantidas) {
-    try {
-      // O Ionic mandou como string texto. Aqui transformamos de volta em um Array do JavaScript
-      fotosFinais = JSON.parse(fotosMantidas);
-    } catch (e) {
-      fotosFinais = [];
-    }
+    try { fotosFinais = JSON.parse(fotosMantidas); } catch (e) { fotosFinais = []; }
   }
-
-  // 🖼️ 2. JUNTAR AS NOVAS FOTOS DO MULTER (req.files)
-  // Como usamos upload.array(), os novos arquivos vêm mapeados dentro de req.files
   if (req.files && req.files.length > 0) {
-    const nomesNovasFotos = req.files.map(file => file.filename);
-    fotosFinais = [...fotosFinais, ...nomesNovasFotos]; // Une o array das antigas com o das novas
+    fotosFinais = [...fotosFinais, ...req.files.map(f => f.filename)];
   }
 
-  // 🖼️ 3. CONVERTER PARA TEXTO (Pronto para salvar no Banco de Dados)
-  const fotoStringBanco = JSON.stringify(fotosFinais);
+  let prioridade       = 'normal';
+  let prioridade_score = 0;
 
-  // 🔴 QUERY ATUALIZADA: Agora alterando a coluna 'foto' também!
+  if (tipo_postagem === 'denuncia') {
+    const r = calcularPrioridadeDenuncia({ titulo: titulo || '', descricao: descricao || '' });
+    prioridade       = r.prioridade;
+    prioridade_score = r.score;
+  } else if (tipo_postagem === 'comunicado') {
+    const r = calcularPrioridadeComunicado({ titulo: titulo || '', descricao: descricao || '' });
+    prioridade       = r.prioridade;
+    prioridade_score = r.score;
+  } else if (tipo_postagem === 'adocao') {
+    const r = calcularPrioridadeAdocao({ idade });
+    prioridade = r.prioridade;
+  }
+
   const query = `
     UPDATE postagens 
-    SET tipo_postagem = ?, titulo = ?, descricao = ?, raca = ?, genero = ?, localizacao = ?, idade = ?, foto = ?
+    SET tipo_postagem = ?, titulo = ?, descricao = ?, raca = ?, genero = ?,
+        localizacao = ?, idade = ?, foto = ?, prioridade = ?, prioridade_score = ?
     WHERE id = ? AND usuarios_id = ?
   `;
 
   db.query(
     query,
-    [tipo_postagem, titulo, descricao, raca, genero, localizacao, idade, fotoStringBanco, postId, usuarioId],
+    [tipo_postagem, titulo, descricao, raca, genero, localizacao, idade,
+     JSON.stringify(fotosFinais), prioridade, prioridade_score, postId, usuarioId],
     (err, result) => {
       if (err) {
-        console.error("Erro ao atualizar postagem:", err);
-        return res.status(500).json({ erro: 'Erro interno ao atualizar postagem.' });
+        console.error('Erro ao atualizar postagem:', err);
+        return res.status(500).json({ erro: 'Erro ao atualizar postagem.' });
       }
-
       if (result.affectedRows === 0) {
-        return res.status(403).json({ erro: 'Postagem não encontrada ou você não tem permissão.' });
+        return res.status(403).json({ erro: 'Postagem não encontrada ou sem permissão.' });
       }
-
-      res.json({ mensagem: 'Postagem atualizada com sucesso!' });
+      res.json({ mensagem: 'Postagem atualizada com sucesso!', prioridade, prioridade_score });
     }
   );
 };
 
+// =============================================================
+// DELETE /api/postagensDelete/:id
+// =============================================================
 exports.deletarPostagem = (req, res) => {
-  const postId = req.params.id;
-  const usuarioId = req.usuarioId;
-
-  // 🟢 1. Pegando o nível de acesso que veio do middleware
+  const postId     = req.params.id;
+  const usuarioId  = req.usuarioId;
   const nivelAdmin = req.usuarioAdmin;
 
   if (!usuarioId) {
-    return res.status(403).json({ erro: 'Sem permissão. Usuário não autenticado.' });
+    return res.status(403).json({ erro: 'Usuário não autenticado.' });
   }
 
-  // 🟢 2. PRIMEIRO: Buscar a postagem (Removido o "AND usuarios_id = ?" para permitir que o admin também encontre a postagem)
-  // Adicionamos a coluna "usuarios_id" no SELECT para fazer a verificação no passo seguinte
-  const sqlSelect = 'SELECT foto, usuarios_id FROM postagens WHERE id = ?';
-
-  db.query(sqlSelect, [postId], (err, results) => {
-    if (err) {
-      console.error("Erro ao buscar postagem para deletar:", err);
-      return res.status(500).json({ erro: 'Erro interno ao buscar a postagem.' });
-    }
-
-    if (results.length === 0) {
-      return res.status(404).json({ erro: 'Postagem não encontrada.' });
-    }
+  db.query('SELECT foto, usuarios_id FROM postagens WHERE id = ?', [postId], (err, results) => {
+    if (err) return res.status(500).json({ erro: 'Erro ao buscar postagem.' });
+    if (results.length === 0) return res.status(404).json({ erro: 'Postagem não encontrada.' });
 
     const postagem = results[0];
 
-    // 🟢 3. TRAVA DE SEGURANÇA JAVASCRIPT: Só continua se for o dono DAQUELA postagem OU for Admin Geral (1)
     if (postagem.usuarios_id !== usuarioId && nivelAdmin !== 1) {
-      return res.status(403).json({ erro: 'Sem permissão. Você não é o dono desta postagem nem administrador.' });
+      return res.status(403).json({ erro: 'Sem permissão.' });
     }
 
-    // 4. SEGUNDO: Apagar as fotos da pasta uploads fisicamente
     if (postagem.foto) {
       try {
-        const fotosArray = JSON.parse(postagem.foto);
-
-        fotosArray.forEach((nomeFoto) => {
-          const caminhoFoto = path.join(__dirname, '..', 'uploads', nomeFoto);
-
-          if (fs.existsSync(caminhoFoto)) {
-            fs.unlinkSync(caminhoFoto);
-          }
+        JSON.parse(postagem.foto).forEach(nomeFoto => {
+          const caminho = path.join(__dirname, '..', 'uploads', nomeFoto);
+          if (fs.existsSync(caminho)) fs.unlinkSync(caminho);
         });
-      } catch (e) {
-        console.error("Erro ao tentar ler ou apagar fotos da pasta:", e);
-      }
+      } catch (e) {}
     }
 
-    // 5. TERCEIRO: Deletar do banco de dados 
-    const sqlDelete = 'DELETE FROM postagens WHERE id = ?';
-
-    db.query(sqlDelete, [postId], (errDelete, resultDelete) => {
-      if (errDelete) {
-        console.error("Erro ao deletar postagem no banco:", errDelete);
-        return res.status(500).json({ erro: 'Erro interno ao deletar do banco de dados.' });
-      }
-
-      return res.status(200).json({ mensagem: 'Postagem e imagens deletadas com sucesso!' });
+    db.query('DELETE FROM postagens WHERE id = ?', [postId], (errDelete) => {
+      if (errDelete) return res.status(500).json({ erro: 'Erro ao deletar.' });
+      return res.status(200).json({ mensagem: 'Postagem deletada com sucesso!' });
     });
   });
 };
 
+// =============================================================
+// GET /api/postagens/tipo/:tipo
+// =============================================================
 exports.listarPorTipo = (req, res) => {
   const tipo = req.params.tipo;
 
-  // 🟢 AJUSTE: Mudamos para INNER JOIN para trazer os dados de quem criou a postagem junto com o pet
   const query = `
-    SELECT p.*, u.nome AS usuario_nome, u.foto_perfil AS usuario_foto, u.admin AS usuario_admin
-FROM postagens p 
-    INNER JOIN usuarios u ON p.usuarios_id = u.id 
-    WHERE p.tipo_postagem = ? 
-    ORDER BY p.data_criacao DESC
+    SELECT 
+      p.*,
+      u.nome        AS usuario_nome,
+      u.foto_perfil AS usuario_foto,
+      u.admin       AS usuario_admin
+    FROM postagens p
+    INNER JOIN usuarios u ON p.usuarios_id = u.id
+    WHERE p.tipo_postagem = ?
+    ORDER BY
+      p.fixado DESC,
+      CASE p.prioridade
+        WHEN 'urgente'     THEN 1
+        WHEN 'alta'        THEN 2
+        WHEN 'prioritario' THEN 3
+        WHEN 'relevante'   THEN 4
+        ELSE                    5
+      END ASC,
+      p.prioridade_score DESC,
+      p.data_criacao DESC
   `;
 
   db.query(query, [tipo], (err, results) => {
     if (err) {
-      console.error("Erro ao listar postagens por tipo:", err);
-      return res.status(500).json({ erro: 'Erro interno ao buscar postagens.' });
+      console.error('Erro ao listar postagens:', err);
+      return res.status(500).json({ erro: 'Erro ao buscar postagens.' });
     }
     res.json(results);
   });
 };
 
+// =============================================================
+// GET /api/postagens/usuario/:id
+// =============================================================
 exports.listarPorUsuario = (req, res) => {
   const usuarioId = req.params.id;
-  const query = 'SELECT * FROM postagens WHERE usuarios_id = ? ORDER BY id DESC';
-
-  db.query(query, [usuarioId], (err, results) => {
-    if (err) {
-      console.error("Erro ao buscar postagens do usuário:", err);
-      return res.status(500).json({ erro: 'Erro interno ao buscar postagens.' });
+  db.query(
+    'SELECT * FROM postagens WHERE usuarios_id = ? ORDER BY id DESC',
+    [usuarioId],
+    (err, results) => {
+      if (err) return res.status(500).json({ erro: 'Erro ao buscar postagens.' });
+      res.status(200).json(results);
     }
-    res.status(200).json(results);
-  });
+  );
 };
 
+// =============================================================
+// GET /api/postperfil
+// =============================================================
 exports.PostagensPerfil = (req, res) => {
-  // Como a rota usa o middleware 'autenticar', o ID do usuário logado geralmente fica em req.usuario.id (ou req.user.id, dependendo do seu middleware)
   const usuarioId = req.usuarioId;
 
-  const query = `
-    SELECT p.*, u.nome AS usuario_nome, u.foto_perfil AS usuario_foto, u.admin AS usuario_admin
-FROM postagens p 
-    INNER JOIN usuarios u ON p.usuarios_id = u.id 
-    WHERE p.usuarios_id = ? 
-    ORDER BY p.data_criacao DESC
-  `;
-
-  db.query(query, [usuarioId], (err, results) => {
-    if (err) {
-      console.error("Erro ao buscar postagens do perfil logado:", err);
-      return res.status(500).json({ erro: 'Erro interno ao buscar postagens.' });
+  db.query(
+    `SELECT p.*, u.nome AS usuario_nome, u.foto_perfil AS usuario_foto, u.admin AS usuario_admin
+     FROM postagens p
+     INNER JOIN usuarios u ON p.usuarios_id = u.id
+     WHERE p.usuarios_id = ?
+     ORDER BY p.data_criacao DESC`,
+    [usuarioId],
+    (err, results) => {
+      if (err) return res.status(500).json({ erro: 'Erro ao buscar postagens.' });
+      res.status(200).json(results);
     }
-    res.status(200).json(results);
-  });
+  );
 };
 
+// =============================================================
+// GET /api/postagens/:id
+// =============================================================
 exports.buscarPorId = (req, res) => {
-  const postId = req.params.id;
-
-  // Perceba que aqui buscamos por "id = ?" e não "usuarios_id = ?"
-  const query = 'SELECT * FROM postagens WHERE id = ?';
-
-  db.query(query, [postId], (err, results) => {
-    if (err) {
-      console.error("Erro ao buscar postagem por ID:", err);
-      return res.status(500).json({ erro: 'Erro interno ao buscar postagem.' });
-    }
-
-    if (results.length === 0) {
-      return res.status(404).json({ erro: 'Postagem não encontrada.' });
-    }
-
-    // Retorna APENAS o objeto da postagem encontrada
+  db.query('SELECT * FROM postagens WHERE id = ?', [req.params.id], (err, results) => {
+    if (err) return res.status(500).json({ erro: 'Erro ao buscar postagem.' });
+    if (results.length === 0) return res.status(404).json({ erro: 'Postagem não encontrada.' });
     res.status(200).json(results[0]);
   });
 };
 
+// =============================================================
+// GET /api/postagens/direcionadas/:ong_id
+// =============================================================
 exports.listarDenunciasDirecionadas = (req, res) => {
   const ong_id = req.params.ong_id;
 
   const sql = `
-    SELECT p.*, u.nome as nome_autor, u.foto_perfil as foto_autor 
-    FROM postagens p 
-    JOIN usuarios u ON p.usuarios_id = u.id 
-    WHERE p.tipo_postagem = 'denuncia' AND p.ong_destino_id = ?
-    ORDER BY p.data_criacao DESC
+    SELECT 
+      p.*,
+      u.nome        AS nome_autor,
+      u.foto_perfil AS foto_autor
+    FROM postagens p
+    JOIN usuarios u ON p.usuarios_id = u.id
+    WHERE p.tipo_postagem = 'denuncia'
+      AND p.ong_destino_id = ?
+    ORDER BY
+      CASE p.prioridade
+        WHEN 'urgente' THEN 1
+        WHEN 'alta'    THEN 2
+        ELSE                3
+      END ASC,
+      p.prioridade_score DESC,
+      p.data_criacao DESC
   `;
 
   db.query(sql, [ong_id], (err, results) => {
-    if (err) {
-      console.error('Erro ao buscar denúncias direcionadas:', err);
-      return res.status(500).json({ erro: 'Erro ao buscar denúncias direcionadas' });
-    }
+    if (err) return res.status(500).json({ erro: 'Erro ao buscar denúncias.' });
     return res.status(200).json(results);
   });
 };

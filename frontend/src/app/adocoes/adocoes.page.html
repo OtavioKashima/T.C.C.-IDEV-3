@@ -6,10 +6,8 @@
         <span class="header-title">Adote</span>
       </div>
       <div class="header-actions">
-        <ion-icon name="options-outline" class="header-icon" (click)="toggleFiltros()">
-        </ion-icon>
-        <ion-icon [name]="showSearch ? 'close-outline' : 'search-outline'" class="header-icon" (click)="toggleSearch()">
-        </ion-icon>
+        <ion-icon name="options-outline" class="header-icon" (click)="toggleFiltros()"></ion-icon>
+        <ion-icon [name]="showSearch ? 'close-outline' : 'search-outline'" class="header-icon" (click)="toggleSearch()"></ion-icon>
       </div>
     </div>
 
@@ -17,13 +15,11 @@
       <div class="search-input-wrapper">
         <ion-icon name="search-outline" class="search-input-icon"></ion-icon>
         <input class="search-input" placeholder="Buscar animal..." [(ngModel)]="termoBusca" (input)="filtrar()">
-        <ion-icon *ngIf="termoBusca" name="close-circle-outline" class="search-clear-icon" (click)="limparBusca()">
-        </ion-icon>
+        <ion-icon *ngIf="termoBusca" name="close-circle-outline" class="search-clear-icon" (click)="limparBusca()"></ion-icon>
       </div>
     </div>
   </ion-toolbar>
 </ion-header>
-
 
 <ion-content [fullscreen]="true" class="ion-padding" [scrollY]="true">
 
@@ -31,11 +27,19 @@
     <div class="filtros-inner">
       <div class="filtros-titulo">
         <span>Filtrar por</span>
-        <button class="btn-limpar-todos" (click)="limparTodosFiltros()" *ngIf="temFiltroAtivo()">
-          Limpar tudo
-        </button>
+        <button class="btn-limpar-todos" (click)="limparTodosFiltros()" *ngIf="temFiltroAtivo()">Limpar tudo</button>
       </div>
       <div class="filtros-row">
+
+        <!-- Filtro Prioridade -->
+        <div class="filtro-pill">
+          <select [(ngModel)]="filtros.prioridade" (change)="filtrar()">
+            <option value="" disabled selected hidden>Prioridade</option>
+            <option value="">Todas</option>
+            <option value="prioritario">🐾 Prioritário (idoso)</option>
+            <option value="normal">Normal</option>
+          </select>
+        </div>
 
         <div class="filtro-pill">
           <select [(ngModel)]="filtros.animal" (change)="filtrar()">
@@ -88,6 +92,10 @@
 
   <div class="filtros-badge-bar" *ngIf="temFiltroAtivo()">
     <div class="chips-scroll">
+      <span class="badge-chip" *ngIf="filtros.prioridade">
+        {{ filtros.prioridade === 'prioritario' ? '🐾 Prioritário' : filtros.prioridade }}
+        <ion-icon name="close-outline" (click)="limparCampo('prioridade')"></ion-icon>
+      </span>
       <span class="badge-chip" *ngIf="filtros.animal">
         {{ filtros.animal }}
         <ion-icon name="close-outline" (click)="limparCampo('animal')"></ion-icon>
@@ -101,24 +109,31 @@
         <ion-icon name="close-outline" (click)="limparCampo('estado')"></ion-icon>
       </span>
       <span class="badge-chip" *ngIf="filtros.idade">
-        {{ filtros.idade === 'menos1' ? 'Menos de 1 ano' : filtros.idade === '1' ? '1 ano' : filtros.idade + ' anos' }}
+        {{ filtros.idade === 'menos1' ? 'Menos de 1 ano' : filtros.idade + ' anos' }}
         <ion-icon name="close-outline" (click)="limparCampo('idade')"></ion-icon>
       </span>
     </div>
-    <span class="resultado-count">{{ petsFiltrados.length }} resultado{{ petsFiltrados.length !== 1 ? 's' : '' }}</span>
+    <span class="resultado-count">{{ adocoesFiltradas.length }} resultado{{ adocoesFiltradas.length !== 1 ? 's' : '' }}</span>
   </div>
+
   <ion-grid>
     <ion-row>
       <ion-col size="12" size-md="6" size-lg="4" *ngFor="let adocao of adocoesFiltradas">
-        <ion-card class="pet-card" (click)="abrirDetalhe(adocao)">
+        <ion-card class="pet-card" [class.card-prioritario]="adocao.prioridade === 'prioritario'" (click)="abrirDetalhe(adocao)">
+
           <div class="image-container">
+            <!-- Badge de fixado -->
             <div class="pin-badge" *ngIf="adocao.fixado === 1 || adocao.fixado === 2">
               <ion-icon name="star"></ion-icon> Fixado
             </div>
 
+            <!-- Badge de prioridade idoso -->
+            <div class="priority-badge priority-badge--senior" *ngIf="adocao.prioridade === 'prioritario'">
+              🐾 Prioritário
+            </div>
+
             <div *ngIf="adocao.fotosArray && adocao.fotosArray.length > 0" class="foto-unica-wrapper">
-              <img [src]="'http://localhost:3000/uploads/' + adocao.fotosArray[0]" [alt]="adocao.titulo"
-                class="foto-unica">
+              <img [src]="'http://localhost:3000/uploads/' + adocao.fotosArray[0]" [alt]="adocao.titulo" class="foto-unica">
             </div>
 
             <div *ngIf="!adocao.fotosArray || adocao.fotosArray.length === 0" class="sem-foto">
@@ -138,8 +153,12 @@
           </ion-card-content>
 
           <div class="card-footer">
+            <span class="footer-priority-label" *ngIf="adocao.prioridade === 'prioritario'">
+              🐾 Animal idoso — adoção prioritária
+            </span>
             <ion-button fill="clear" size="small">Ver Detalhes</ion-button>
           </div>
+
         </ion-card>
       </ion-col>
     </ion-row>
@@ -149,4 +168,5 @@
     <ion-icon name="paw-outline"></ion-icon>
     <p>Nenhum pet para adoção encontrado por aqui...</p>
   </div>
+
 </ion-content>

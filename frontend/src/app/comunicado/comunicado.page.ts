@@ -11,6 +11,7 @@ interface Comunicado {
   imagem?: string;
   imagens?: string[];
   fotosArray?: string[];
+  prioridade?: 'normal' | 'alta' | 'urgente';
 
   // Informações do criador
   usuarios_id?: number;
@@ -32,7 +33,8 @@ export class ComunicadoPage implements OnInit {
   comunicado: Comunicado = {
     titulo: 'Carregando...',
     texto: '',
-    imagens: []
+    imagens: [],
+    prioridade: 'normal'
   };
 
   constructor(
@@ -43,10 +45,7 @@ export class ComunicadoPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    // 🔴 CORREÇÃO AQUI: Mudamos de router.getCurrentNavigation() para history.state
     const state = history.state;
-
-    // Captura os dados caso venham como 'postagemSelecionada' ou como 'comunicado'
     const dadosBrutos = state?.['postagemSelecionada'] || state?.['comunicado'];
 
     if (dadosBrutos) {
@@ -57,6 +56,7 @@ export class ComunicadoPage implements OnInit {
         titulo: dados.titulo,
         texto: dados.descricao || dados.texto || '',
         data: dados.data_criacao,
+        prioridade: dados.prioridade || 'normal',
         usuarios_id: dados.usuarios_id,
         usuario_nome: dados.usuario_nome,
         usuario_foto: dados.usuario_foto,
@@ -86,11 +86,9 @@ export class ComunicadoPage implements OnInit {
       }
     }
 
-    // Injeta as propriedades de segurança da ONG
     this.aplicarCriadorSeguranca();
   }
 
-  // 🟢 FUNÇÃO DE SEGURANÇA (Adicione logo abaixo do ngOnInit)
   aplicarCriadorSeguranca() {
     const ongSalva = localStorage.getItem('ong_perfil_atual');
 
@@ -129,7 +127,6 @@ export class ComunicadoPage implements OnInit {
   }
 
   irParaPerfilOng() {
-    // 🟢 Busca o ID criador direto do objeto clonado
     const criadorId = (this.comunicado as any).usuarios_id;
 
     if (!criadorId) {

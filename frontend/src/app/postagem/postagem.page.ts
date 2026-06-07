@@ -12,12 +12,10 @@ import { IonicModule, NavController } from '@ionic/angular';
   imports: [IonicModule, CommonModule, FormsModule]
 })
 export class PostagemPage implements OnInit {
-  // Controle de exibição e permissão
   tipoSelecionado = '';
   isAdminOuOng = false;
-  isAdmin = false; // 🛡️ Nova flag de controle exclusivo para Admin
+  isAdmin = false;
 
-  // Variáveis do formulário (Banco de Dados)
   tipo_postagem = '';
   titulo = '';
   descricao = '';
@@ -26,21 +24,22 @@ export class PostagemPage implements OnInit {
   genero = '';
   idade: number | null = null;
   unidadeIdade = 'meses';
-  sub_tipo = 'normal'; // 🛡️ Define se o post é normal ou fixado
+  sub_tipo = 'normal';
 
-  // Variáveis para a imagem
+  // 🆕 Campo de valor para doações
+  valor_doacao: number | null = null;
+
   fotosSelecionadas: File[] = [];
   fotosPreviews: string[] = [];
   fotoSelecionada: File | null = null;
   fotoPreview: string | ArrayBuffer | null = null;
 
   ongs: any[] = [];
-  ongDestino: string = ''; // Guarda o ID da ONG selecionada
+  ongDestino: string = '';
 
-  constructor(private http: HttpClient, private navCtrl: NavController) { }
+  constructor(private http: HttpClient, private navCtrl: NavController) {}
 
   ngOnInit() {
-    // 🟢 CORREÇÃO: Lê a nova chave 'admin' salva no Login (1 = Admin, 2 = ONG, 0 = Comum)
     const nivelAdmin = localStorage.getItem('admin');
 
     if (nivelAdmin === '1') {
@@ -50,7 +49,6 @@ export class PostagemPage implements OnInit {
       this.isAdmin = false;
       this.isAdminOuOng = true;
     } else {
-      // Se for usuário comum (0 ou não encontrado), bloqueia interações e força denúncia
       this.isAdmin = false;
       this.isAdminOuOng = false;
       this.tipoSelecionado = 'denuncia';
@@ -60,14 +58,9 @@ export class PostagemPage implements OnInit {
   }
 
   carregarOngs() {
-    // 🟢 Coloque aqui a URL da sua rota existente que chama o listarOngs do usuariosController
     this.http.get('http://localhost:3000/api/ongs').subscribe({
-      next: (res: any) => {
-        this.ongs = res; // O Angular vai pegar o id e o nome normalmente
-      },
-      error: (err: any) => {
-        console.error('Erro ao carregar ONGs', err);
-      }
+      next: (res: any) => { this.ongs = res; },
+      error: (err: any) => console.error('Erro ao carregar ONGs', err)
     });
   }
 
@@ -82,11 +75,8 @@ export class PostagemPage implements OnInit {
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         this.fotosSelecionadas.push(file);
-
         const reader = new FileReader();
-        reader.onload = (e: any) => {
-          this.fotosPreviews.push(e.target.result);
-        };
+        reader.onload = (e: any) => { this.fotosPreviews.push(e.target.result); };
         reader.readAsDataURL(file);
       }
     }
@@ -117,22 +107,25 @@ export class PostagemPage implements OnInit {
       return;
     }
 
+    // 🆕 Validação básica de doação
+    if (this.tipo_postagem === 'doacao' && this.valor_doacao !== null && this.valor_doacao <= 0) {
+      alert('Informe um valor válido para a doação.');
+      return;
+    }
+
     const formData = new FormData();
     formData.append('tipo_postagem', this.tipo_postagem);
     formData.append('titulo', this.titulo);
     formData.append('descricao', this.descricao);
 
-    // 🛡️ Envia a classificação de destaque selecionada pelo administrador
     if (this.isAdminOuOng) {
-      // Se o usuário selecionou "fixado", envia '1' para o backend. Se não, envia '0'.
-      const valorFixado = this.sub_tipo === 'fixado' ? '1' : '0';
-      formData.append('fixado', valorFixado);
+      formData.append('fixado', this.sub_tipo === 'fixado' ? '1' : '0');
     } else {
-      // Se for usuário comum, garante que o banco receba 0 (não fixado)
       formData.append('fixado', '0');
     }
 
     if (this.localizacao) formData.append('localizacao', this.localizacao);
+
     if (this.tipo_postagem === 'denuncia' && this.ongDestino) {
       formData.append('ong_id', this.ongDestino);
     }
@@ -140,34 +133,41 @@ export class PostagemPage implements OnInit {
     if (this.tipo_postagem !== 'denuncia' && this.tipo_postagem !== 'comunicado') {
       if (this.raca) formData.append('raca', this.raca);
       if (this.genero) formData.append('genero', this.genero);
-
-      // 🟢 ALTERAÇÃO AQUI: Junta o número com a unidade de tempo antes de salvar!
       if (this.idade) {
-        const idadeFormatada = `${this.idade} ${this.unidadeIdade}`;
-        formData.append('idade', idadeFormatada); // Vai enviar "3 meses" ou "2 anos"
+        formData.append('idade', `${this.idade} ${this.unidadeIdade}`);
       }
     }
 
+    // 🆕 Envia o valor da doação (o backend calcula se é relevante)
+    if (this.tipo_postagem === 'doacao' && this.valor_doacao !== null) {
+      formData.append('valor_doacao', String(this.valor_doacao));
+    }
+
     if (this.fotosSelecionadas.length > 0) {
-      this.fotosSelecionadas.forEach((foto) => {
-        formData.append('fotos', foto);
-      });
+      this.fotosSelecionadas.forEach(foto => formData.append('fotos', foto));
     }
 
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
 
-    this.http.post('http://localhost:3000/api/postagens', formData, { headers })
-      .subscribe({
-        next: (res: any) => {
-          console.log('Postagem salva com sucesso!', res);
-          window.dispatchEvent(new CustomEvent('postagemCriada'));
-          this.navCtrl.navigateRoot('/tabs');
-        },
-        error: (err: any) => {
-          console.error('Erro ao salvar', err.error);
-          alert('Erro ao enviar postagem.');
+    this.http.post('http://localhost:3000/api/postagens', formData, { headers }).subscribe({
+      next: (res: any) => {
+        console.log('Postagem salva!', res);
+
+        // 🆕 Avisa o usuário se a doação foi marcada como relevante
+        if (res.prioridade === 'relevante') {
+          alert('✅ Postagem criada! A ONG foi notificada sobre essa doação de alto valor.');
+        } else if (res.prioridade === 'urgente' || res.prioridade === 'alta') {
+          alert('🚨 Denúncia enviada e classificada como urgente! A ONG foi notificada.');
         }
-      });
+
+        window.dispatchEvent(new CustomEvent('postagemCriada'));
+        this.navCtrl.navigateRoot('/tabs');
+      },
+      error: (err: any) => {
+        console.error('Erro ao salvar', err.error);
+        alert('Erro ao enviar postagem.');
+      }
+    });
   }
 }

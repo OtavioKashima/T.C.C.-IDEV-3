@@ -39,11 +39,7 @@
         <div class="doacao-icon-wrapper">
           <ion-icon name="heart"></ion-icon>
         </div>
-        <div class="doacao-text">
-          <span class="doacao-title">Apoiar esta causa</span>
-          <span class="doacao-sub">Faça uma doação via PIX</span>
-        </div>
-        <ion-icon name="chevron-forward-outline" class="doacao-arrow"></ion-icon>
+        <span class="doacao-title">Realizar Doação</span>
       </button>
     </div>
   </div>
@@ -63,6 +59,7 @@
     </button>
   </div>
 
+  <!-- Feed Adoções -->
   <div class="feed" *ngIf="tabAtiva === 'adocoes' && ong.admin === 2">
     <div *ngIf="postagens.length === 0" class="sem-resultados">
       <ion-icon name="paw-outline" class="sem-resultados-icon"></ion-icon>
@@ -75,8 +72,8 @@
           <img [src]="ong.avatar" alt="Foto do criador"
             style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1px solid #ddd;">
           <div style="display: flex; flex-direction: column;">
-            <span style="font-weight: bold; font-size: 0.95rem; color: #333;">{{ ong.nome }}</span>
-            <span style="font-size: 0.8rem; color: #666;">{{ post.titulo }}</span>
+            <span style="font-weight: bold; font-size: 0.95rem;">{{ ong.nome }}</span>
+            <span style="font-size: 0.8rem; opacity: 0.85;">{{ post.titulo }}</span>
           </div>
         </div>
         <div class="denuncia-acoes">
@@ -97,7 +94,6 @@
           <img *ngIf="!post.fotosArray || post.fotosArray.length === 0" src="assets/img-padrao.png" alt="Sem foto"
             class="post-imagem-padrao" />
         </div>
-
         <div class="denuncia-info">
           <div class="badge-container">
             <span class="denuncia-badge" *ngIf="post.raca">{{ post.raca }}</span>
@@ -110,6 +106,7 @@
     </div>
   </div>
 
+  <!-- Feed Denúncias ONG -->
   <div class="feed" *ngIf="tabAtiva === 'denuncias' && ong.admin === 2">
     <div *ngIf="denuncias.length === 0" class="sem-resultados">
       <ion-icon name="alert-circle-outline" class="sem-resultados-icon"></ion-icon>
@@ -122,8 +119,8 @@
           <img [src]="d.usuario?.avatar || ong.avatar" alt="Foto do criador"
             style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1px solid #ddd;">
           <div style="display: flex; flex-direction: column;">
-            <span style="font-weight: bold; font-size: 0.95rem; color: #333;">{{ d.autor || ong.nome }}</span>
-            <span style="font-size: 0.8rem; color: #666;">{{ d.titulo }}</span>
+            <span style="font-weight: bold; font-size: 0.95rem;">{{ d.autor || ong.nome }}</span>
+            <span style="font-size: 0.8rem; opacity: 0.85;">{{ d.titulo }}</span>
           </div>
         </div>
         <div class="denuncia-acoes">
@@ -140,10 +137,10 @@
           <img *ngIf="!d.fotosArray || d.fotosArray.length === 0" src="assets/img-padrao.png" alt="Sem foto"
             class="post-imagem-padrao" />
         </div>
-
         <div class="denuncia-info">
-          <div class="denuncia-meta" style="margin-bottom: 8px; color: #88c8a8; font-size: 0.85rem;">
-            <ion-icon name="time-outline"></ion-icon> {{ d.tempo || 'Recente' }}
+          <div class="denuncia-data">
+            <ion-icon name="calendar-outline"></ion-icon>
+            {{ d.data_criacao | date:'dd/MM/yyyy' }}
           </div>
           <p class="denuncia-descricao">{{ d.descricao }}</p>
         </div>
@@ -151,6 +148,7 @@
     </div>
   </div>
 
+  <!-- Feed Comunicados ONG -->
   <div class="feed" *ngIf="tabAtiva === 'comunicados' && ong.admin === 2">
     <div *ngIf="comunicados.length === 0" class="sem-resultados sem-resultados-comunicado">
       <ion-icon name="megaphone-outline" class="sem-resultados-icon"></ion-icon>
@@ -171,6 +169,7 @@
     </div>
   </div>
 
+  <!-- Tabs usuário comum -->
   <div class="tabs-bar user-tabs-bar" *ngIf="ong.admin === 0">
     <button class="tab-btn user-tab-btn active">
       <ion-icon name="alert-circle-outline"></ion-icon>
@@ -178,6 +177,7 @@
     </button>
   </div>
 
+  <!-- Feed Denúncias usuário comum -->
   <div class="feed" *ngIf="ong.admin === 0">
     <div *ngIf="denuncias.length === 0" class="sem-resultados">
       <ion-icon name="alert-circle-outline" class="sem-resultados-icon"></ion-icon>
@@ -190,8 +190,8 @@
           <img [src]="ong.avatar" alt="Foto do criador"
             style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1px solid #ddd;">
           <div style="display: flex; flex-direction: column;">
-            <span style="font-weight: bold; font-size: 0.95rem; color: #333;">{{ ong.nome }}</span>
-            <span style="font-size: 0.8rem; color: #666;">{{ d.titulo || 'Denúncia' }}</span>
+            <span style="font-weight: bold; font-size: 0.95rem;">{{ ong.nome }}</span>
+            <span style="font-size: 0.8rem; opacity: 0.85;">{{ d.titulo || 'Denúncia' }}</span>
           </div>
         </div>
         <div class="denuncia-acoes">
@@ -211,8 +211,11 @@
           <img *ngIf="!d.fotosArray || d.fotosArray.length === 0" src="assets/img-padrao.png" alt="Sem foto"
             class="post-imagem-padrao" />
         </div>
-
         <div class="denuncia-info">
+          <div class="denuncia-data">
+            <ion-icon name="calendar-outline"></ion-icon>
+            {{ d.data_criacao | date:'dd/MM/yyyy' }}
+          </div>
           <div class="badge-container">
             <span class="denuncia-badge" *ngIf="d.raca">{{ d.raca }}</span>
             <span class="denuncia-badge" *ngIf="d.genero">{{ d.genero }}</span>

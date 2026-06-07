@@ -17,11 +17,21 @@ export class InicioPage implements OnInit {
 
   showSearch = false;
   showFiltros = false;
+  showDropEstado = false;
+  showDropCidade = false;
 
   filtros = {
     estado: '',
     cidade: ''
   };
+
+  estados = ['AC','AL','AM','BA','CE','DF','ES','GO','MA','MG','MS','MT',
+             'PA','PB','PE','PI','PR','RJ','RN','RO','RR','RS','SC','SE','SP','TO'];
+
+  cidades = ['Pompeia','Tupã','Marília','Oriente','Assis','Adamantina','Bauru',
+             'Botucatu','Ourinhos','Osvaldo Cruz','Presidente Prudente','São Paulo',
+             'Campinas','Joinville','Florianópolis','Curitiba','Porto Alegre',
+             'Belo Horizonte','Rio de Janeiro'];
 
   constructor(
     private http: HttpClient,
@@ -36,13 +46,35 @@ export class InicioPage implements OnInit {
 
   toggleSearch() {
     this.showSearch = !this.showSearch;
-    if (!this.showSearch) {
-      this.limparBusca();
-    }
+    if (!this.showSearch) this.limparBusca();
   }
 
   toggleFiltros() {
     this.showFiltros = !this.showFiltros;
+    this.showDropEstado = false;
+    this.showDropCidade = false;
+  }
+
+  toggleDropEstado() {
+    this.showDropEstado = !this.showDropEstado;
+    this.showDropCidade = false;
+  }
+
+  toggleDropCidade() {
+    this.showDropCidade = !this.showDropCidade;
+    this.showDropEstado = false;
+  }
+
+  selecionarEstado(uf: string) {
+    this.filtros.estado = uf;
+    this.showDropEstado = false;
+    this.filtrarOngs();
+  }
+
+  selecionarCidade(cidade: string) {
+    this.filtros.cidade = cidade;
+    this.showDropCidade = false;
+    this.filtrarOngs();
   }
 
   limparBusca() {
@@ -66,7 +98,12 @@ export class InicioPage implements OnInit {
 
   carregarComunicados() {
     this.http.get('http://localhost:3000/api/postagens/tipo/comunicado').subscribe({
-      next: (res: any) => { this.comunicados = res; },
+      next: (res: any) => {
+        const ordem: Record<string, number> = { urgente: 1, alta: 2, normal: 3 };
+        this.comunicados = res.sort((a: any, b: any) =>
+          (ordem[a.prioridade] ?? 3) - (ordem[b.prioridade] ?? 3)
+        );
+      },
       error: (err) => console.error('Erro ao buscar Comunicados', err)
     });
   }
@@ -74,9 +111,8 @@ export class InicioPage implements OnInit {
   carregarOngs() {
     this.http.get('http://localhost:3000/api/ongs').subscribe({
       next: (res: any) => {
-        console.log('ONGs recebidas:', res.map((o: any) => ({ nome: o.nome, estado: o.estado, cidade: o.cidade })));
         const ongsUnicas = res.filter((ong: any, index: number, self: any[]) =>
-          index === self.findIndex((o) => o.id === ong.id)
+          index === self.findIndex((o: any) => o.id === ong.id)
         );
         this.ongs = ongsUnicas;
         this.ongsFiltradas = [...this.ongs];

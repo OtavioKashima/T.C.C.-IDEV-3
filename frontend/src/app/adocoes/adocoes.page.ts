@@ -3,7 +3,6 @@ import { Location } from '@angular/common';
 import { NavController } from '@ionic/angular';
 import { HttpClient } from '@angular/common/http';
 
-// Interface atualizada com suporte aos novos campos de localização/espécie
 interface Adocao {
   id?: number;
   titulo: string;
@@ -15,10 +14,12 @@ interface Adocao {
   foto?: string;
   fotosArray?: string[];
   fixado?: number;
-  animal?: string;      // 🟢 Opcional: Tipo do animal vindo do banco (Cachorro, Gato...)
-  cidade?: string;      // 🟢 Opcional: Cidade cadastrada
-  estado?: string;      // 🟢 Opcional: Estado cadastrado
-  localizacao?: string; // 🟢 Opcional: String genérica de endereço
+  prioridade?: string;        // 'prioritario' | 'normal'
+  prioridade_score?: number;
+  animal?: string;
+  cidade?: string;
+  estado?: string;
+  localizacao?: string;
 }
 
 @Component({
@@ -33,8 +34,8 @@ export class AdocoesPage implements OnInit {
   showFiltros = false;
   termoBusca = '';
 
-  // 🟢 Objeto que armazena os estados dos selects do HTML
   filtros = {
+    prioridade: '',
     animal: '',
     estado: '',
     cidade: '',
@@ -44,7 +45,6 @@ export class AdocoesPage implements OnInit {
   adocoes: Adocao[] = [];
   adocoesFiltradas: Adocao[] = [];
 
-  // 🟢 GETTER: Resolve o uso de "petsFiltrados.length" presente no seu HTML
   get petsFiltrados(): Adocao[] {
     return this.adocoesFiltradas;
   }
@@ -53,39 +53,49 @@ export class AdocoesPage implements OnInit {
     private location: Location,
     private navCtrl: NavController,
     private http: HttpClient
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.carregarAdocoes();
   }
 
   carregarAdocoes() {
-    this.http.get('http://localhost:3000/api/postagens/tipo/adocao').subscribe({
-      next: (res: any) => {
-        const dadosReais = Array.isArray(res) ? res : (res.data || res.postagens || []);
+    this.http.get<any[]>('http://localhost:3000/api/postagens/tipo/adocao').subscribe({
+      next: (res) => {
+        const dadosReais = Array.isArray(res) ? res : [];
 
         this.adocoes = dadosReais.map((adocao: any) => {
+          // Parse fotos
           if (adocao.foto) {
             try { adocao.fotosArray = JSON.parse(adocao.foto); }
-            catch (e) { adocao.fotosArray = [adocao.foto]; }
-          } else { adocao.fotosArray = []; }
+            catch { adocao.fotosArray = [adocao.foto]; }
+          } else {
+            adocao.fotosArray = [];
+          }
 
-          if (!adocao.descricaoCompleta) { adocao.descricaoCompleta = adocao.descricao || ''; }
+          if (!adocao.descricaoCompleta) {
+            adocao.descricaoCompleta = adocao.descricao || '';
+          }
 
-          // Garante que o fixado seja tratado como número
           adocao.fixado = Number(adocao.fixado) || 0;
+          adocao.prioridade = adocao.prioridade || 'normal';
+          adocao.prioridade_score = Number(adocao.prioridade_score) || 0;
 
           return adocao;
         });
 
-        // Ordenação: Fixados (Admin=1 / ONG=2) no topo, depois ID decrescente
+        // Ordenação: fixados no topo → prioritários → score desc → id desc
+        // O backend já retorna ordenado, mas garantimos aqui também
         this.adocoes.sort((a, b) => {
           const aFixado = (a.fixado === 1 || a.fixado === 2) ? 1 : 0;
           const bFixado = (b.fixado === 1 || b.fixado === 2) ? 1 : 0;
+          if (aFixado !== bFixado) return bFixado - aFixado;
 
-          if (aFixado !== bFixado) {
-            return bFixado - aFixado;
-          }
+          const prioridadeOrdem: Record<string, number> = { prioritario: 1, normal: 2 };
+          const aPrio = prioridadeOrdem[a.prioridade || 'normal'] || 2;
+          const bPrio = prioridadeOrdem[b.prioridade || 'normal'] || 2;
+          if (aPrio !== bPrio) return aPrio - bPrio;
+
           return (b.id || 0) - (a.id || 0);
         });
 
@@ -97,20 +107,16 @@ export class AdocoesPage implements OnInit {
 
   toggleSearch() {
     this.showSearch = !this.showSearch;
-    if (!this.showSearch) {
-      this.limparBusca();
-    }
+    if (!this.showSearch) this.limparBusca();
   }
 
   toggleFiltros() {
     this.showFiltros = !this.showFiltros;
   }
 
-  // 🟢 LÓGICA DE FILTRAGEM MULTI-CRITÉRIO UNIFICADA
   filtrar() {
     let resultado = [...this.adocoes];
 
-    // 1. Filtro por Texto (Barra de Pesquisa)
     const termo = this.termoBusca.toLowerCase().trim();
     if (termo) {
       resultado = resultado.filter(a =>
@@ -120,7 +126,10 @@ export class AdocoesPage implements OnInit {
       );
     }
 
-    // 2. Filtro por Tipo de Animal
+    if (this.filtros.prioridade) {
+      resultado = resultado.filter(a => a.prioridade === this.filtros.prioridade);
+    }
+
     if (this.filtros.animal) {
       const animalAlvo = this.filtros.animal.toLowerCase();
       resultado = resultado.filter(a =>
@@ -130,7 +139,6 @@ export class AdocoesPage implements OnInit {
       );
     }
 
-    // 3. Filtro por Estado
     if (this.filtros.estado) {
       const estadoAlvo = this.filtros.estado.toLowerCase();
       resultado = resultado.filter(a =>
@@ -139,7 +147,6 @@ export class AdocoesPage implements OnInit {
       );
     }
 
-    // 4. Filtro por Cidade
     if (this.filtros.cidade) {
       const cidadeAlvo = this.filtros.cidade.toLowerCase();
       resultado = resultado.filter(a =>
@@ -148,44 +155,32 @@ export class AdocoesPage implements OnInit {
       );
     }
 
-    // 5. Filtro Inteligente por Idade (Casando strings do tipo "3 meses" ou "2 anos")
     if (this.filtros.idade) {
       resultado = resultado.filter(a => {
         if (!a.idade) return false;
         const idadeStr = a.idade.toLowerCase();
-
         if (this.filtros.idade === 'menos1') {
           return idadeStr.includes('meses') || idadeStr.includes('0 ano');
-        } else {
-          // Busca o número exato correspondente isolado na frase (ex: "1 ano" ou "1 anos")
-          const numeroBuscado = this.filtros.idade;
-          return idadeStr.startsWith(numeroBuscado + ' ') || idadeStr.includes(' ' + numeroBuscado + ' ');
         }
+        const numeroBuscado = this.filtros.idade;
+        return idadeStr.startsWith(numeroBuscado + ' ') || idadeStr.includes(' ' + numeroBuscado + ' ');
       });
     }
 
     this.adocoesFiltradas = resultado;
   }
 
-  // 🟢 Verifica se o usuário selecionou qualquer critério nos selects
   temFiltroAtivo(): boolean {
-    return Object.values(this.filtros).some(valor => valor !== '');
+    return Object.values(this.filtros).some(v => v !== '');
   }
 
-  // 🟢 Remove a seleção de um select específico ao clicar no "X" do chip/badge
-  limparCampo(campo: 'animal' | 'estado' | 'cidade' | 'idade') {
+  limparCampo(campo: keyof typeof this.filtros) {
     this.filtros[campo] = '';
-    this.filtrar(); // Re-calcula a lista
+    this.filtrar();
   }
 
-  // 🟢 Reseta completamente todos os selects de uma vez
   limparTodosFiltros() {
-    this.filtros = {
-      animal: '',
-      estado: '',
-      cidade: '',
-      idade: ''
-    };
+    this.filtros = { prioridade: '', animal: '', estado: '', cidade: '', idade: '' };
     this.filtrar();
   }
 
@@ -195,9 +190,7 @@ export class AdocoesPage implements OnInit {
   }
 
   abrirDetalhe(adocao: Adocao) {
-    this.navCtrl.navigateForward('/adocoes-detalhes', {
-      state: { pet: adocao }
-    });
+    this.navCtrl.navigateForward('/adocoes-detalhes', { state: { pet: adocao } });
   }
 
   goBack() {
