@@ -388,3 +388,130 @@ ion-content {
     box-shadow: 0 3px 10px rgba(61, 209, 143, 0.25);
   }
 }
+// ── FILTROS (idênticos à tela de início) ─────────────
+
+$verde:       #3ecf8e;
+$verde-claro: #5ad9a3;
+$verde-mid:   #2eaf7a;
+$verde-text:  #1d7a55;
+
+.filtros-painel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+  background: #f0fdf6;
+  margin: 0;
+
+  &.aberto {
+    max-height: 220px;
+    border-bottom: 1px solid #d0eedd;
+  }
+}
+
+.filtros-inner {
+  padding: 16px 16px 20px;
+}
+
+.filtros-titulo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+
+  span {
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: $verde;
+  }
+}
+
+.btn-limpar-todos {
+  background: #d6f5e8;
+  border: none;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: $verde-mid;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+.filtros-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filtro-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  border: 1.5px solid $verde;
+  border-radius: 50px;
+  padding: 6px 28px 6px 14px;
+  background: white;
+
+  select {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: $verde;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    max-width: 130px;
+
+    option {
+      color: #333;
+      background: white;
+    }
+  }
+
+  &::after {
+    content: '▾';
+    position: absolute;
+    right: 10px;
+    font-size: 0.7rem;
+    color: $verde;
+    pointer-events: none;
+  }
+}
+
+.filtros-badge-bar {
+  display: flex;
+  align-items: center;
+  padding: 8px 14px;
+  background: #d6f5e8;
+  border-bottom: 1px solid #d0eedd;
+  gap: 8px;
+
+  .chips-scroll {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+}
+
+.badge-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: $verde;
+  color: white;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 50px;
+
+  ion-icon {
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+}

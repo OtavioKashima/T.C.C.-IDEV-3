@@ -93,10 +93,6 @@ export class AdocoesDetalhesPage implements OnInit {
             this.pet.imagens = [];
           }
         }
-
-        console.log('Dados processados com sucesso no Detalhes:', this.pet);
-      } else {
-        console.warn('Nenhum dado de pet ou postagem encontrado no history.state.');
       }
     }
     this.aplicarCriadorSeguranca();
@@ -127,6 +123,36 @@ export class AdocoesDetalhesPage implements OnInit {
     }
   }
 
+  showFiltros = false;
+
+filtros = {
+  estado: '',
+  cidade: ''
+};
+
+toggleFiltros() {
+  this.showFiltros = !this.showFiltros;
+}
+
+temFiltroAtivo(): boolean {
+  return !!(this.filtros.estado || this.filtros.cidade);
+}
+
+limparTodosFiltros() {
+  this.filtros = { estado: '', cidade: '' };
+  this.aplicarFiltros();
+}
+
+limparCampo(campo: 'estado' | 'cidade') {
+  this.filtros[campo] = '';
+  this.aplicarFiltros();
+}
+
+aplicarFiltros() {
+  // Implemente aqui a lógica de filtro específica desta tela
+  // Ex: filtrar lista de pets por estado/cidade se houver
+}
+
   goBack() {
     this.location.back();
   }
@@ -153,11 +179,18 @@ export class AdocoesDetalhesPage implements OnInit {
     });
     await toast.present();
 
+    const urlDoServidor = 'http://localhost:3000/uploads/';
+    const fotoOng = this.pet.usuario_foto
+      ? (this.pet.usuario_foto.startsWith('http')
+          ? this.pet.usuario_foto
+          : `${urlDoServidor}${this.pet.usuario_foto}`)
+      : 'https://ionicframework.com/docs/img/demos/avatar.svg';
+
     this.router.navigate(['/chat-ong'], {
       state: {
         ong: {
           nome: this.pet.usuario_nome || 'ONG',
-          avatar: this.pet.usuario_foto
+          avatar: fotoOng
         },
         pet: this.pet
       }
@@ -183,19 +216,19 @@ export class AdocoesDetalhesPage implements OnInit {
     if (tipoReal === 'admin') {
       if (this.pet) {
         this.pet.usuario_nome = 'Administrador do Sistema';
-        this.pet.usuario_foto = ''; 
+        this.pet.usuario_foto = '';
       }
       if (this.postagem) {
         this.postagem.usuario_nome = 'Administrador do Sistema';
         this.postagem.usuario_foto = '';
       }
-      return; 
+      return;
     }
 
     const ongSalva = localStorage.getItem('ong_perfil_atual');
     if (ongSalva) {
       const ongData = JSON.parse(ongSalva);
-      
+
       if (criadorId && ongData.id && criadorId === ongData.id) {
         if (this.pet) {
           this.pet.usuario_nome = ongData.nome;

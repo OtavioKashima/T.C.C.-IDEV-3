@@ -14,7 +14,7 @@ interface Adocao {
   foto?: string;
   fotosArray?: string[];
   fixado?: number;
-  prioridade?: string;        // 'prioritario' | 'normal'
+  prioridade?: string;
   prioridade_score?: number;
   animal?: string;
   cidade?: string;
@@ -45,10 +45,6 @@ export class AdocoesPage implements OnInit {
   adocoes: Adocao[] = [];
   adocoesFiltradas: Adocao[] = [];
 
-  get petsFiltrados(): Adocao[] {
-    return this.adocoesFiltradas;
-  }
-
   constructor(
     private location: Location,
     private navCtrl: NavController,
@@ -65,7 +61,6 @@ export class AdocoesPage implements OnInit {
         const dadosReais = Array.isArray(res) ? res : [];
 
         this.adocoes = dadosReais.map((adocao: any) => {
-          // Parse fotos
           if (adocao.foto) {
             try { adocao.fotosArray = JSON.parse(adocao.foto); }
             catch { adocao.fotosArray = [adocao.foto]; }
@@ -84,7 +79,6 @@ export class AdocoesPage implements OnInit {
           return adocao;
         });
 
-        // Ordenação: fixados no topo → prioritários → score desc → id desc
         this.adocoes.sort((a, b) => {
           const aFixado = (a.fixado === 1 || a.fixado === 2) ? 1 : 0;
           const bFixado = (b.fixado === 1 || b.fixado === 2) ? 1 : 0;

@@ -24,6 +24,89 @@
     </div>
   </div>
 
+  <!-- FILTROS PAINEL -->
+  <div class="filtros-painel" [class.aberto]="showFiltros">
+    <div class="filtros-inner">
+      <div class="filtros-titulo">
+        <span>Filtrar por</span>
+        <button class="btn-limpar-todos" (click)="limparTodosFiltros()" *ngIf="temFiltroAtivo()">
+          Limpar tudo
+        </button>
+      </div>
+      <div class="filtros-row">
+        <div class="filtro-pill">
+          <select [(ngModel)]="filtros.estado" (change)="aplicarFiltros()">
+            <option value="">Estado</option>
+            <option value="AC">AC</option>
+            <option value="AL">AL</option>
+            <option value="AM">AM</option>
+            <option value="BA">BA</option>
+            <option value="CE">CE</option>
+            <option value="DF">DF</option>
+            <option value="ES">ES</option>
+            <option value="GO">GO</option>
+            <option value="MA">MA</option>
+            <option value="MG">MG</option>
+            <option value="MS">MS</option>
+            <option value="MT">MT</option>
+            <option value="PA">PA</option>
+            <option value="PB">PB</option>
+            <option value="PE">PE</option>
+            <option value="PI">PI</option>
+            <option value="PR">PR</option>
+            <option value="RJ">RJ</option>
+            <option value="RN">RN</option>
+            <option value="RO">RO</option>
+            <option value="RR">RR</option>
+            <option value="RS">RS</option>
+            <option value="SC">SC</option>
+            <option value="SE">SE</option>
+            <option value="SP">SP</option>
+            <option value="TO">TO</option>
+          </select>
+        </div>
+        <div class="filtro-pill">
+          <select [(ngModel)]="filtros.cidade" (change)="aplicarFiltros()">
+            <option value="">Cidade</option>
+            <option value="Pompeia">Pompeia</option>
+            <option value="Tupã">Tupã</option>
+            <option value="Marília">Marília</option>
+            <option value="Oriente">Oriente</option>
+            <option value="Assis">Assis</option>
+            <option value="Adamantina">Adamantina</option>
+            <option value="Bauru">Bauru</option>
+            <option value="Botucatu">Botucatu</option>
+            <option value="Ourinhos">Ourinhos</option>
+            <option value="Osvaldo Cruz">Osvaldo Cruz</option>
+            <option value="Presidente Prudente">Presidente Prudente</option>
+            <option value="São Paulo">São Paulo</option>
+            <option value="Campinas">Campinas</option>
+            <option value="Joinville">Joinville</option>
+            <option value="Florianópolis">Florianópolis</option>
+            <option value="Curitiba">Curitiba</option>
+            <option value="Porto Alegre">Porto Alegre</option>
+            <option value="Belo Horizonte">Belo Horizonte</option>
+            <option value="Rio de Janeiro">Rio de Janeiro</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BADGES DE FILTROS ATIVOS -->
+  <div class="filtros-badge-bar" *ngIf="temFiltroAtivo()">
+    <div class="chips-scroll">
+      <span class="badge-chip" *ngIf="filtros.estado">
+        {{ filtros.estado | uppercase }}
+        <ion-icon name="close-outline" (click)="limparCampo('estado')"></ion-icon>
+      </span>
+      <span class="badge-chip" *ngIf="filtros.cidade">
+        {{ filtros.cidade }}
+        <ion-icon name="close-outline" (click)="limparCampo('cidade')"></ion-icon>
+      </span>
+    </div>
+  </div>
+
   <div class="content-body">
 
     <div class="owner-card" (click)="irParaPerfilOng()">
