@@ -1,9 +1,8 @@
 <ion-header [translucent]="true">
-  <ion-toolbar color="primary"
-    style="display: flex; align-items: center; justify-content: space-between; padding: 0 10px;">
+  <ion-toolbar class="custom-toolbar" style="display: flex; align-items: center; justify-content: space-between; padding: 0 10px;">
     <div style="display: flex; align-items: center;">
-      <ion-icon name="person" size="large" style="margin-right: 8px; margin-left: 0.1px;"></ion-icon>
-      <ion-title style="margin-left: 4px;">Perfil</ion-title>
+      <ion-icon name="person" size="large" style="margin-right: 2px; margin-left: 5px;"></ion-icon>
+      <ion-title style="--padding-start: 0px; --padding-end: 0px; margin-left: 0px;">Perfil</ion-title>
     </div>
     <ion-buttons slot="end">
       <button class="toolbar-btn" id="menu-opcoes">
@@ -35,16 +34,12 @@
   <div class="perfil-hero">
     <div class="hero-bg"></div>
     <div class="perfil-avatar-wrapper">
-      <img [src]="usuario?.fotoUrl || 'https://ionicframework.com/docs/img/demos/avatar.svg'" class="perfil-foto"
-        [alt]="usuario?.nome">
+      <img [src]="usuario?.fotoUrl || 'https://ionicframework.com/docs/img/demos/avatar.svg'" class="perfil-foto" [alt]="usuario?.nome">
     </div>
     <h2 class="perfil-nome">{{ usuario?.nome }}</h2>
-    <p class="perfil-telefone">
-      <ion-icon name="call-outline"></ion-icon> {{ usuario?.telefone }}
-    </p>
   </div>
-  <div class="ong-info-container" *ngIf="usuario?.admin == 2">
 
+  <div class="ong-info-container" *ngIf="usuario?.admin == 2">
     <div class="ong-card" *ngIf="usuario.bio">
       <div class="info-header">
         <ion-icon name="book-outline"></ion-icon>
@@ -52,50 +47,35 @@
       </div>
       <p class="ong-text">{{ usuario.bio }}</p>
     </div>
-
-    <div class="ong-card" *ngIf="usuario.cidade || usuario.estado">
-      <div class="info-header">
-        <ion-icon name="location-outline"></ion-icon>
-        <h3>Localização</h3>
-      </div>
-      <p class="ong-text">
-        {{ usuario.cidade || 'Cidade não informada' }}
-        <span *ngIf="usuario.estado">- {{ usuario.estado | uppercase }}</span>
-      </p>
-    </div>
-
-    <div class="ong-card pix-card" *ngIf="usuario.chave_pix">
-      <div class="info-header">
-        <ion-icon name="heart-circle-outline" class="coracao-icone"></ion-icon>
-        <h3>Apoie nossa causa</h3>
-      </div>
-      <p class="pix-label">Chave PIX para doações:</p>
-
-      <div class="pix-box" (click)="copiarPix(usuario.chave_pix)">
-        <span class="pix-chave">{{ usuario.chave_pix }}</span>
-        <ion-icon name="copy-outline"></ion-icon>
-      </div>
-      <small class="pix-dica">Clique para copiar</small>
-    </div>
-
   </div>
 
   <div class="filtros-container">
-    <ion-searchbar placeholder="Buscar postagem..." (ionInput)="pesquisarPost($event)" animated="true"></ion-searchbar>
-    <ion-segment value="todas" (ionChange)="filtrarCategoria($event)">
-      <ion-segment-button value="todas">
-        <ion-label>Todas</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="recentes">
-        <ion-label>Recentes</ion-label>
-      </ion-segment-button>
-    </ion-segment>
+    <ion-searchbar placeholder="Buscar na lista..." (ionInput)="pesquisarPost($event)" animated="true"></ion-searchbar>
+  </div>
+
+  <div class="tabs-bar" *ngIf="usuario?.admin === 2">
+    <button class="tab-btn" [class.active]="tabAtiva === 'adocoes'" (click)="mudarTab('adocoes')">
+      <ion-icon name="paw-outline"></ion-icon>
+      <span class="tab-label">Adoções</span>
+    </button>
+    <button class="tab-btn" [class.active]="tabAtiva === 'denuncias'" (click)="mudarTab('denuncias')">
+      <ion-icon name="alert-circle-outline"></ion-icon>
+      <span class="tab-label">Denúncias</span>
+    </button>
+    <button class="tab-btn" [class.active]="tabAtiva === 'doacoes'" (click)="mudarTab('doacoes')">
+      <ion-icon name="heart-outline"></ion-icon>
+      <span class="tab-label">Doações</span>
+    </button>
+    <button class="tab-btn" [class.active]="tabAtiva === 'comunicados'" (click)="mudarTab('comunicados')">
+      <ion-icon name="megaphone-outline"></ion-icon>
+      <span class="tab-label">Comunicados</span>
+    </button>
   </div>
 
   <div class="secao-header">
     <span class="secao-titulo">
-      <ion-icon name="alert-circle-outline"></ion-icon>
-      Minhas Postagens
+      <ion-icon name="document-text-outline"></ion-icon>
+      {{ tabAtiva === 'doacoes' ? 'Doações Recebidas' : (tabAtiva === 'comunicados' ? 'Comunicados Enviados' : 'Minhas Postagens') }}
     </span>
     <span class="secao-count">
       {{ postagensFiltradas.length }} ite{{ postagensFiltradas.length !== 1 ? 'ns' : 'm' }}
@@ -103,52 +83,92 @@
   </div>
 
   <div class="sem-resultados" *ngIf="postagensExibidas.length === 0">
-    <ion-icon class="sem-resultados-icon" name="document-text-outline"></ion-icon>
-    <p>Nenhuma postagem encontrada.</p>
-    <span class="sem-resultados-sub">Tente ajustar seus filtros ou busca.</span>
+    <ion-icon class="sem-resultados-icon" [name]="tabAtiva === 'doacoes' ? 'heart-dislike-outline' : 'document-text-outline'"></ion-icon>
+    <p>Nenhum registro encontrado.</p>
   </div>
 
   <div class="feed" *ngIf="postagensExibidas.length > 0">
-
-    <div class="denuncia-card" *ngFor="let post of postagensExibidas">
-
-      <div class="denuncia-header">
-        <span>{{ post.titulo }}</span>
-
-        <div class="denuncia-acoes">
-          <button class="acao-btn" (click)="editarDenuncia(post); $event.stopPropagation()">
-            <ion-icon name="create-outline"></ion-icon>
-          </button>
-          <button class="acao-btn" (click)="excluirDenuncia(post); $event.stopPropagation()">
-            <ion-icon name="trash-outline"></ion-icon>
-          </button>
+    
+    <ng-container *ngIf="tabAtiva === 'adocoes' || tabAtiva === 'denuncias'">
+      <div class="denuncia-card" *ngFor="let post of postagensExibidas">
+        <div class="denuncia-header">
+          <span>{{ post.titulo }}</span>
+          <div class="denuncia-acoes">
+            <button class="acao-btn" (click)="editarDenuncia(post); $event.stopPropagation()">
+              <ion-icon name="create-outline"></ion-icon>
+            </button>
+            <button class="acao-btn" (click)="excluirDenuncia(post); $event.stopPropagation()">
+              <ion-icon name="trash-outline"></ion-icon>
+            </button>
+          </div>
+        </div>
+        <div class="denuncia-content">
+          <div class="post-imagem-container">
+            <img *ngIf="post.fotosArray && post.fotosArray.length > 0"
+              [src]="'http://localhost:3000/uploads/' + post.fotosArray[0]" class="post-imagem-unica">
+            <img *ngIf="!post.fotosArray || post.fotosArray.length === 0" src="assets/img-padrao.png" class="post-imagem-padrao" />
+          </div>
+          <div class="denuncia-info">
+            <div class="badge-container">
+              <span class="denuncia-badge">{{ post.tipo_postagem | uppercase }}</span>
+              <span class="denuncia-badge" *ngIf="post.idade">{{ post.idade }}</span>
+            </div>
+            <p class="denuncia-descricao">{{ post.descricao }}</p>
+          </div>
         </div>
       </div>
+    </ng-container>
 
-      <div class="denuncia-content">
-        <div class="post-imagem-container">
-          <img *ngIf="post.fotosArray && post.fotosArray.length > 0"
-            [src]="'http://localhost:3000/uploads/' + post.fotosArray[0]" alt="Foto da postagem"
-            class="post-imagem-unica">
-
-          <img *ngIf="!post.fotosArray || post.fotosArray.length === 0" src="assets/img-padrao.png" alt="Sem foto"
-            class="post-imagem-padrao" />
+    <ng-container *ngIf="tabAtiva === 'comunicados'">
+      <div class="comunicado-card-perfil" *ngFor="let aviso of postagensExibidas">
+        <div class="comunicado-header">
+          <div class="header-esquerda">
+            <ion-icon name="megaphone-outline"></ion-icon>
+            <span>{{ aviso.data_criacao | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="card-lateral-acoes">
+            <button class="card-acao-btn" (click)="editarDenuncia(aviso); $event.stopPropagation()">
+              <ion-icon name="create-outline"></ion-icon>
+            </button>
+            <button class="card-acao-btn" (click)="excluirDenuncia(aviso); $event.stopPropagation()">
+              <ion-icon name="trash-outline"></ion-icon>
+            </button>
+          </div>
         </div>
-
-        <div class="denuncia-info">
-          <span class="denuncia-badge" *ngIf="post.idade">{{ post.idade }}</span>
-          <p class="denuncia-descricao">{{ post.descricao }}</p>
+        <div class="comunicado-body">
+          <h3>{{ aviso.titulo }}</h3>
         </div>
       </div>
-    </div>
+    </ng-container>
+
+    <ng-container *ngIf="tabAtiva === 'doacoes'">
+      <div class="comunicado-card-perfil" *ngFor="let doacao of postagensExibidas">
+        <div class="comunicado-header">
+          <div class="header-esquerda">
+            <ion-icon name="heart-outline"></ion-icon>
+            <span>{{ (doacao.data_criacao || doacao.data) | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="card-lateral-acoes">
+            <button class="card-acao-btn" (click)="editarDenuncia(doacao); $event.stopPropagation()">
+              <ion-icon name="create-outline"></ion-icon>
+            </button>
+            <button class="card-acao-btn" (click)="excluirDenuncia(doacao); $event.stopPropagation()">
+              <ion-icon name="trash-outline"></ion-icon>
+            </button>
+          </div>
+        </div>
+        <div class="comunicado-body">
+          <h3>Doação: R$ {{ (doacao.valor || doacao.valor_doacao) | number:'1.2-2' }}</h3>
+        </div>
+      </div>
+    </ng-container>
+
   </div>
 
   <div class="paginacao-container" *ngIf="postagensFiltradas.length > itensPorPagina">
-    <ion-button fill="outline" size="small" (click)="paginaAnterior()"
-      [disabled]="paginaAtual === 1">Anterior</ion-button>
+    <ion-button fill="outline" size="small" (click)="paginaAnterior()" [disabled]="paginaAtual === 1">Anterior</ion-button>
     <span class="paginacao-texto">Pág {{ paginaAtual }} de {{ totalPaginas }}</span>
-    <ion-button fill="outline" size="small" (click)="proximaPagina()"
-      [disabled]="paginaAtual === totalPaginas">Próxima</ion-button>
+    <ion-button fill="outline" size="small" (click)="proximaPagina()" [disabled]="paginaAtual === totalPaginas">Próxima</ion-button>
   </div>
 
   <div class="bottom-space"></div>

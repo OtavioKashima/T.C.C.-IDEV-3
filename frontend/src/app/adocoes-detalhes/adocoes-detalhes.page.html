@@ -39,12 +39,18 @@
 
       <div class="owner-info">
         <span class="owner-label">
-          {{ pet.tipo_usuario === 'admin' ? 'Administrador do Sistema' : (pet.tipo_usuario === 'ong' ? 'ONG Responsável'
-          : 'Protetor') }}
+          {{ pet.tipo_usuario === 'admin' ? 'Administrador do Sistema' : (pet.tipo_usuario === 'ong' ? 'ONG Responsável' : 'Protetor') }}
         </span>
         <span class="owner-name">{{ pet.usuario_nome || 'Usuário Desconhecido' }}</span>
       </div>
       <ion-icon name="chevron-forward-outline" class="ong-arrow"></ion-icon>
+    </div>
+
+    <div class="about-card" *ngIf="pet.descricaoCompleta || pet.descricao">
+      <h2 class="about-title">Sobre o animal</h2>
+      <p class="about-text">
+        {{ pet.descricaoCompleta || pet.descricao }}
+      </p>
     </div>
 
     <div class="chips-row">

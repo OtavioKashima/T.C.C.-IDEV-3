@@ -85,7 +85,6 @@ export class AdocoesPage implements OnInit {
         });
 
         // Ordenação: fixados no topo → prioritários → score desc → id desc
-        // O backend já retorna ordenado, mas garantimos aqui também
         this.adocoes.sort((a, b) => {
           const aFixado = (a.fixado === 1 || a.fixado === 2) ? 1 : 0;
           const bFixado = (b.fixado === 1 || b.fixado === 2) ? 1 : 0;

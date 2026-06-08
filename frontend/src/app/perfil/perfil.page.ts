@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http'; // 🔴 CORRIGIDO: Importado do lugar certo!
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { NavController, AlertController, ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
 
@@ -10,29 +10,25 @@ import { Router } from '@angular/router';
   standalone: false
 })
 export class PerfilPage implements OnInit {
-  // Variável para os dados do usuário logado
-  postagens: any[] = [];
+  
   usuario: any = {
     nome: 'Carregando...',
     telefone: '',
-    foto: null
+    foto: null,
+    admin: 0
   };
 
-  // Listas para controle de dados e filtros
+  tabAtiva: string = 'adocoes';
+
   minhasPostagens: any[] = [];
   postagensFiltradas: any[] = [];
   postagensExibidas: any[] = [];
 
-  // Controle de Paginação
   paginaAtual: number = 1;
   itensPorPagina: number = 3;
   totalPaginas: number = 1;
 
-  // Estados dos Filtros
   termoBusca: string = '';
-  filtroSegmento: string = 'todas';
-
-  totalPostagens: number = 0;
 
   constructor(
     private http: HttpClient,
@@ -70,26 +66,32 @@ export class PerfilPage implements OnInit {
       .subscribe({
         next: (res: any) => {
           this.usuario = res;
-          if (this.usuario && this.usuario.foto_perfil) {
+          this.usuario.admin = res.admin !== undefined ? Number(res.admin) : 0;
+          
+          if (this.usuario.foto_perfil) {
             const imgTimestamp = new Date().getTime();
             this.usuario.fotoUrl = `http://localhost:3000/uploads/${this.usuario.foto_perfil}?t=${imgTimestamp}`;
           }
+
+          if (this.usuario.admin === 0) {
+            this.tabAtiva = 'denuncias';
+          }
+
+          this.aplicarFiltrosEPaginacao();
           this.cdr.detectChanges();
         },
-        error: (err: any) => console.error('Erro ao buscar usuário:', err) // 🔴 CORRIGIDO: Tipado explicitamente como any
+        error: (err: any) => console.error('Erro ao buscar usuário:', err)
       });
   }
 
-
   carregarMinhasPostagens() {
     const token = localStorage.getItem('token');
+    if (!token) return;
     const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
 
     this.http.get('http://localhost:3000/api/postperfil', { headers })
       .subscribe({
         next: (res: any) => {
-
-          // 🟢 CORREÇÃO 1: Salvar na variável 'minhasPostagens' que é a base dos filtros
           this.minhasPostagens = res.map((post: any) => {
             if (post.foto) {
               try {
@@ -103,46 +105,50 @@ export class PerfilPage implements OnInit {
             return post;
           });
 
-          // 🟢 CORREÇÃO 2: Chamar a função de filtro para renderizar a tela e a contagem
           this.aplicarFiltrosEPaginacao();
-
         },
         error: (err) => console.error('Erro ao buscar postagens do perfil', err)
       });
   }
 
+  mudarTab(novaTab: string) {
+    this.tabAtiva = novaTab;
+    this.paginaAtual = 1;
+    this.aplicarFiltrosEPaginacao();
+  }
+
   aplicarFiltrosEPaginacao() {
-    // 1. Filtro de Aba (Recentes vs Todas)
     let listaBase = this.minhasPostagens;
 
-    if (this.filtroSegmento === 'recentes') {
-      // 🟢 CORREÇÃO 3: Lógica de 1 semana (7 dias) usando a data_criacao
-      const umaSemanaAtras = new Date();
-      umaSemanaAtras.setDate(umaSemanaAtras.getDate() - 7);
-
-      listaBase = listaBase.filter(post => {
-        if (!post.data_criacao) return false; // Prevenção caso o post não tenha data
-        const dataPost = new Date(post.data_criacao);
-        return dataPost >= umaSemanaAtras;
-      });
+    // Filtros por Abas
+    if (this.usuario?.admin === 2) {
+      if (this.tabAtiva === 'adocoes') {
+        listaBase = listaBase.filter(post => post.tipo_postagem === 'adocao');
+      } else if (this.tabAtiva === 'denuncias') {
+        listaBase = listaBase.filter(post => post.tipo_postagem === 'denuncia');
+      } else if (this.tabAtiva === 'doacoes') {
+        listaBase = listaBase.filter(post => post.tipo_postagem === 'doacao' || post.tipo === 'doacao');
+      } else if (this.tabAtiva === 'comunicados') {
+        listaBase = listaBase.filter(post => post.tipo_postagem === 'comunicado');
+      }
     }
 
-    // 2. Filtro de Busca
+    // Filtro de Busca Textual
     let resultado = listaBase.filter(post => {
       const termo = this.termoBusca.toLowerCase().trim();
-      if (!termo) return true; // Se não tem busca, passa tudo
+      if (!termo) return true;
 
       const tituloMatch = post.titulo?.toLowerCase().includes(termo);
       const descMatch = post.descricao?.toLowerCase().includes(termo);
-      return tituloMatch || descMatch;
+      const textoMatch = post.texto?.toLowerCase().includes(termo);
+      return tituloMatch || descMatch || textoMatch;
     });
 
-    // 3. Contagem e Paginação
     this.postagensFiltradas = resultado;
     this.totalPaginas = Math.ceil(this.postagensFiltradas.length / this.itensPorPagina) || 1;
 
     if (this.paginaAtual > this.totalPaginas) {
-      this.paginaAtual = this.totalPaginas; // Garante que não fique numa página fantasma
+      this.paginaAtual = this.totalPaginas;
     }
 
     const indexInicio = (this.paginaAtual - 1) * this.itensPorPagina;
@@ -154,12 +160,6 @@ export class PerfilPage implements OnInit {
 
   pesquisarPost(event: any) {
     this.termoBusca = event.target.value || '';
-    this.paginaAtual = 1;
-    this.aplicarFiltrosEPaginacao();
-  }
-
-  filtrarCategoria(event: any) {
-    this.filtroSegmento = event.detail.value;
     this.paginaAtual = 1;
     this.aplicarFiltrosEPaginacao();
   }
@@ -189,32 +189,25 @@ export class PerfilPage implements OnInit {
   }
 
   editarDenuncia(post: any) {
-    // Aqui você direciona o usuário para a tela de edição, passando o ID da postagem.
-    // Atenção: Ajuste a rota '/editar-postagem' para o nome da tela que você usa no seu app.
     this.navCtrl.navigateForward(`/editar-postagem/${post.id}`);
   }
 
   async mostrarAviso(mensagem: string, cor: string = 'success') {
     const toast = await this.toastController.create({
       message: mensagem,
-      duration: 2500, // Fica na tela por 2.5 segundos
-      color: cor,     // Cores do Ionic: 'success', 'danger', 'warning'
-      position: 'top' // Aparece no topo sem atrapalhar as abas (tabs)
+      duration: 2500,
+      color: cor,
+      position: 'top'
     });
     toast.present();
   }
 
-  // 2. Função para Excluir
   async excluirDenuncia(post: any) {
     const alert = await this.alertController.create({
       header: 'Excluir Postagem',
       message: 'Tem certeza que deseja apagar esta postagem? Essa ação não pode ser desfeita.',
       buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel',
-          cssClass: 'secondary'
-        },
+        { text: 'Cancelar', role: 'cancel' },
         {
           text: 'Excluir',
           role: 'destructive',
@@ -227,19 +220,12 @@ export class PerfilPage implements OnInit {
             this.http.delete(`http://localhost:3000/api/postagensDelete/${post.id}`, { headers })
               .subscribe({
                 next: () => {
-                  // 1. Remove da tela
                   this.minhasPostagens = this.minhasPostagens.filter(p => p.id !== post.id);
-                  if (typeof this.aplicarFiltrosEPaginacao === 'function') {
-                    this.aplicarFiltrosEPaginacao();
-                  }
-
-                  // 🌟 2. MOSTRA O AVISO ELEGANTE DE SUCESSO
+                  this.aplicarFiltrosEPaginacao();
                   this.mostrarAviso('Postagem excluída com sucesso!', 'success');
                 },
                 error: (err: any) => {
-                  console.error('Erro ao excluir:', err);
-
-                  // 🌟 MOSTRA O AVISO ELEGANTE DE ERRO
+                  console.error(err);
                   this.mostrarAviso('Erro ao tentar excluir a postagem.', 'danger');
                 }
               });
@@ -247,25 +233,6 @@ export class PerfilPage implements OnInit {
         }
       ]
     });
-
     await alert.present();
-  }
-  async copiarPix(chave: string) {
-    if (!chave) return;
-  
-    // Copia para a área de transferência do celular/PC
-    navigator.clipboard.writeText(chave).then(async () => {
-      // Exibe um toast de sucesso (certifique-se de ter o ToastController importado no construtor)
-      const toast = await this.toastController.create({
-        message: 'Chave PIX copiada com sucesso!',
-        duration: 2000,
-        color: 'success',
-        position: 'top',
-        icon: 'checkmark-circle'
-      });
-      toast.present();
-    }).catch(err => {
-      console.error('Erro ao copiar', err);
-    });
   }
 }

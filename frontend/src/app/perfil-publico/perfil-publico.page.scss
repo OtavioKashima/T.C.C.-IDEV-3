@@ -1,482 +1,482 @@
-  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
 
-  $verde:       #3ecf8e;
-  $verde-claro: #5ad9a3;
-  $verde-light: #edfaf4;
-  $verde-mid:   #2eaf7a;
+$verde:       #3ecf8e;
+$verde-claro: #5ad9a3;
+$verde-light: #edfaf4;
+$verde-mid:   #2eaf7a;
 
-  ion-content {
-    --background: #f0fdf6;
+ion-content {
+  --background: #f0fdf6;
+}
+
+.floating-buttons {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 14px 12px 0;
+}
+
+.right-floating-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.float-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border: 2px solid $verde;
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(78, 202, 136, 0.2);
+  transition: all 0.2s ease;
+  padding: 0;
+
+  &:active {
+    background: $verde;
+    .seta-voltar { color: white; }
+  }
+}
+
+.seta-voltar {
+  font-size: 20px;
+  color: $verde;
+  transition: color 0.2s ease;
+}
+
+.hero-banner {
+  position: relative;
+  width: 100%;
+  height: 260px;
+  background: $verde-claro;
+  display: flex;
+  align-items: flex-end;
+}
+
+.hero-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.45), transparent);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 20px;
+  gap: 4px;
+  text-align: center;
+}
+
+.ong-logo {
+  width: 76px;
+  height: 76px;
+  border-radius: 16px;
+  object-fit: cover;
+  background: white;
+  border: none;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+.ong-nome {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.55rem;
+  font-weight: 900;
+  color: white;
+  margin: 0;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  text-align: center;
+}
+.ong-cidade {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  ion-icon { font-size: 13px; }
+}
+
+.user-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid white;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.22);
+  background: white;
+}
+.user-nome {
+  font-family: 'Nunito', sans-serif;
+  font-size: 1.55rem;
+  font-weight: 900;
+  color: white;
+  margin: 0;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+  text-align: center;
+}
+.user-cidade {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  ion-icon { font-size: 13px; }
+}
+
+.sobre-section {
+  background: white;
+  padding: 16px 16px 0;
+}
+.sobre-text {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: #5a6e66;
+  line-height: 1.7;
+  padding-bottom: 16px;
+  margin: 0;
+}
+.doacao-container {
+  padding-bottom: 20px;
+  margin-top: -4px;
+}
+.doacao-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: linear-gradient(135deg, $verde-claro, $verde-mid);
+  border: none;
+  border-radius: 16px;
+  padding: 14px 20px;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(62, 207, 142, 0.25);
+  transition: all 0.2s ease;
+
+  &:active {
+    transform: scale(0.97);
+    box-shadow: 0 2px 6px rgba(62, 207, 142, 0.15);
   }
 
-  .floating-buttons {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 100;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: 14px 12px 0;
-  }
-
-  .right-floating-group {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: center;
-  }
-
-  .float-btn {
+  .doacao-icon-wrapper {
     display: flex;
     align-items: center;
     justify-content: center;
     background: white;
-    border: 2px solid $verde;
     border-radius: 50%;
-    width: 38px;
-    height: 38px;
-    cursor: pointer;
-    box-shadow: 0 2px 10px rgba(78, 202, 136, 0.2);
-    transition: all 0.2s ease;
-    padding: 0;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
 
-    &:active {
-      background: $verde;
-      .seta-voltar { color: white; }
+    ion-icon {
+      font-size: 1.4rem;
+      color: $verde;
+      animation: pulseHeart 2s infinite;
     }
   }
 
-  .seta-voltar {
-    font-size: 20px;
-    color: $verde;
-    transition: color 0.2s ease;
+  .doacao-title {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: white;
+    flex: 1;
+    text-align: left;
   }
 
-  .hero-banner {
-    position: relative;
-    width: 100%;
-    height: 260px;
-    background: $verde-claro;
-    display: flex;
-    align-items: flex-end;
+  .doacao-seta {
+    font-size: 1.3rem;
+    color: white;
+    flex-shrink: 0;
   }
+}
 
-  .hero-gradient {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.45), transparent);
-  }
+@keyframes pulseHeart {
+  0%   { transform: scale(1); }
+  10%  { transform: scale(1.2); }
+  20%  { transform: scale(1); }
+  30%  { transform: scale(1.2); }
+  40%  { transform: scale(1); }
+  100% { transform: scale(1); }
+}
 
-  .hero-content {
-    position: relative;
-    z-index: 2;
-    width: 100%;
+.tabs-bar {
+  display: flex;
+  background: white;
+  border-bottom: 1px solid #f0f0f0;
+  padding: 0 10px;
+
+  .tab-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 14px 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-bottom: 20px;
-    gap: 4px;
-    text-align: center;
-  }
-
-  .ong-logo {
-    width: 76px;
-    height: 76px;
-    border-radius: 16px;
-    object-fit: cover;
-    background: white;
-    border: none;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-  }
-  .ong-nome {
-    font-family: 'Nunito', sans-serif;
-    font-size: 1.55rem;
-    font-weight: 900;
-    color: white;
-    margin: 0;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.3);
-    text-align: center;
-  }
-  .ong-cidade {
-    font-family: 'Nunito', sans-serif;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: rgba(255,255,255,0.85);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    ion-icon { font-size: 13px; }
-  }
-
-  .user-avatar {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 3px solid white;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.22);
-    background: white;
-  }
-  .user-nome {
-    font-family: 'Nunito', sans-serif;
-    font-size: 1.55rem;
-    font-weight: 900;
-    color: white;
-    margin: 0;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.3);
-    text-align: center;
-  }
-  .user-cidade {
-    font-family: 'Nunito', sans-serif;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: rgba(255,255,255,0.85);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    ion-icon { font-size: 13px; }
-  }
-
-  .sobre-section {
-    background: white;
-    padding: 16px 16px 0;
-  }
-  .sobre-text {
-    font-family: 'Nunito', sans-serif;
-    font-size: 0.86rem;
-    font-weight: 600;
-    color: #5a6e66;
-    line-height: 1.7;
-    padding-bottom: 16px;
-    margin: 0;
-  }
-  .doacao-container {
-    padding-bottom: 20px;
-    margin-top: -4px;
-  }
-  .doacao-btn {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    background: linear-gradient(135deg, $verde-claro, $verde-mid);
-    border: none;
-    border-radius: 16px;
-    padding: 14px 20px;
-    cursor: pointer;
-    box-shadow: 0 4px 14px rgba(62, 207, 142, 0.25);
-    transition: all 0.2s ease;
-
-    &:active {
-      transform: scale(0.97);
-      box-shadow: 0 2px 6px rgba(62, 207, 142, 0.15);
+    gap: 6px;
+    color: #999;
+    position: relative;
+    transition: all 0.3s ease;
+    ion-icon { font-size: 1.4rem; }
+    .tab-label {
+      font-size: 0.8rem;
+      font-weight: 600;
     }
-
-    .doacao-icon-wrapper {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: white;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      flex-shrink: 0;
-
-      ion-icon {
-        font-size: 1.4rem;
-        color: $verde;
-        animation: pulseHeart 2s infinite;
+    &.active {
+      color: $verde;
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 20%;
+        width: 60%;
+        height: 3px;
+        background: $verde;
+        border-radius: 3px 3px 0 0;
       }
     }
-
-    .doacao-title {
-      font-family: 'Nunito', sans-serif;
-      font-size: 1.05rem;
-      font-weight: 800;
-      color: white;
-      flex: 1;
-      text-align: left;
-    }
-
-    .doacao-seta {
-      font-size: 1.3rem;
-      color: white;
-      flex-shrink: 0;
-    }
   }
+}
 
-  @keyframes pulseHeart {
-    0%   { transform: scale(1); }
-    10%  { transform: scale(1.2); }
-    20%  { transform: scale(1); }
-    30%  { transform: scale(1.2); }
-    40%  { transform: scale(1); }
-    100% { transform: scale(1); }
+.user-tabs-bar {
+  border-bottom: 1.5px solid #e8efeb;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  .user-tab-btn {
+    font-family: 'Nunito', sans-serif;
+    padding: 12px 0 10px;
+    ion-icon { font-size: 22px; }
+    .tab-label { text-transform: uppercase; letter-spacing: 0.5px; font-weight: 800; font-size: 0.7rem; }
   }
+}
 
-  .tabs-bar {
+.feed {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 0 100px;
+}
+
+.sem-resultados {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  .sem-resultados-icon {
+    font-size: 3.5rem;
+    color: $verde;
+    margin-bottom: 12px;
+  }
+  p {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #52c994;
+    margin: 0;
+  }
+}
+
+.sem-resultados-comunicado {
+  .sem-resultados-icon { color: $verde; }
+  p { color: $verde-mid; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.denuncia-card {
+  margin: 10px 16px;
+  border-radius: 16px;
+  background: white;
+  border: 2px solid $verde;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(102, 217, 166, 0.08);
+  animation: fadeIn 0.3s ease both;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+  cursor: pointer;
+  &:hover {
+    border-color: $verde-mid;
+    box-shadow: 0 6px 20px rgba(102, 217, 166, 0.2);
+    transform: translateY(-2px);
+  }
+  &:active { transform: scale(0.99); }
+}
+
+.denuncia-header {
+  background: #66d9a6;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  span {
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #ffffff !important;
+  }
+}
+
+.denuncia-acoes {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.acao-btn {
+  background: rgba(255,255,255,0.2);
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: background 0.15s ease;
+  ion-icon {
+    font-size: 1.15rem;
+    color: #ffffff;
+    &.saved { transform: scale(1.1); }
+  }
+  &:hover { background: rgba(255,255,255,0.35); }
+  &:active { transform: scale(0.9); }
+}
+
+.denuncia-content {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 14px;
+}
+
+.post-imagem-container {
+  position: relative;
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #f0fdf6;
+  .post-imagem-unica,
+  .post-imagem-padrao {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.denuncia-info { width: 100%; }
+
+.badge-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.denuncia-badge {
+  display: inline-block;
+  background: #e6f9f0;
+  color: $verde;
+  font-family: 'Nunito', sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 8px;
+}
+
+.denuncia-descricao {
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #54a792;
+  line-height: 1.55;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.denuncia-data {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: $verde-mid;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 6px;
+  ion-icon { font-size: 0.85rem; }
+}
+
+.comunicado-card-perfil {
+  min-width: unset;
+  margin: 10px 16px;
+  background: $verde-light;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 4px 14px rgba(62, 207, 142, 0.15);
+  border-left: 5px solid $verde;
+  cursor: pointer;
+  animation: fadeIn 0.3s ease both;
+  transition: transform 0.15s ease;
+  &:active { transform: scale(0.99); }
+
+  .comunicado-header {
     display: flex;
-    background: white;
-    border-bottom: 1px solid #f0f0f0;
-    padding: 0 10px;
-
-    .tab-btn {
-      flex: 1;
-      background: transparent;
-      border: none;
-      padding: 14px 0;
+    justify-content: space-between;
+    align-items: center;
+    color: $verde-mid;
+    font-size: 0.8rem;
+    margin-bottom: 8px;
+    font-weight: 700;
+    .header-esquerda {
       display: flex;
-      flex-direction: column;
       align-items: center;
       gap: 6px;
-      color: #999;
-      position: relative;
-      transition: all 0.3s ease;
-      ion-icon { font-size: 1.4rem; }
-      .tab-label {
-        font-size: 0.8rem;
-        font-weight: 600;
-      }
-      &.active {
+      ion-icon {
         color: $verde;
-        &::after {
-          content: '';
-          position: absolute;
-          bottom: -1px;
-          left: 20%;
-          width: 60%;
-          height: 3px;
-          background: $verde;
-          border-radius: 3px 3px 0 0;
-        }
+        font-size: 1.2rem;
       }
     }
   }
 
-  .user-tabs-bar {
-    border-bottom: 1.5px solid #e8efeb;
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    .user-tab-btn {
-      font-family: 'Nunito', sans-serif;
-      padding: 12px 0 10px;
-      ion-icon { font-size: 22px; }
-      .tab-label { text-transform: uppercase; letter-spacing: 0.5px; font-weight: 800; font-size: 0.7rem; }
-    }
-  }
-
-  .feed {
-    display: flex;
-    flex-direction: column;
-    padding: 12px 0 100px;
-  }
-
-  .sem-resultados {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 60px 20px;
-    text-align: center;
-    .sem-resultados-icon {
-      font-size: 3.5rem;
-      color: $verde;
-      margin-bottom: 12px;
+  .comunicado-body {
+    h3 {
+      margin: 0 0 6px;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: $verde-mid;
     }
     p {
-      font-family: 'Nunito', sans-serif;
-      font-size: 1rem;
-      font-weight: 600;
-      color: #52c994;
       margin: 0;
+      font-size: 0.88rem;
+      color: #3d7a62;
+      line-height: 1.5;
     }
   }
-
-  .sem-resultados-comunicado {
-    .sem-resultados-icon { color: $verde; }
-    p { color: $verde-mid; }
-  }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(6px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .denuncia-card {
-    margin: 10px 16px;
-    border-radius: 16px;
-    background: white;
-    border: 2px solid $verde;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(102, 217, 166, 0.08);
-    animation: fadeIn 0.3s ease both;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
-    cursor: pointer;
-    &:hover {
-      border-color: $verde-mid;
-      box-shadow: 0 6px 20px rgba(102, 217, 166, 0.2);
-      transform: translateY(-2px);
-    }
-    &:active { transform: scale(0.99); }
-  }
-
-  .denuncia-header {
-    background: #66d9a6;
-    padding: 10px 14px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    span {
-      font-family: 'Nunito', sans-serif;
-      font-size: 15px;
-      font-weight: 700;
-      color: #ffffff !important;
-    }
-  }
-
-  .denuncia-acoes {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-
-  .acao-btn {
-    background: rgba(255,255,255,0.2);
-    border: none;
-    padding: 5px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-    transition: background 0.15s ease;
-    ion-icon {
-      font-size: 1.15rem;
-      color: #ffffff;
-      &.saved { transform: scale(1.1); }
-    }
-    &:hover { background: rgba(255,255,255,0.35); }
-    &:active { transform: scale(0.9); }
-  }
-
-  .denuncia-content {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    padding: 14px;
-  }
-
-  .post-imagem-container {
-    position: relative;
-    width: 100%;
-    border-radius: 12px;
-    overflow: hidden;
-    background: #f0fdf6;
-    .post-imagem-unica,
-    .post-imagem-padrao {
-      width: 100%;
-      height: 220px;
-      object-fit: cover;
-      display: block;
-    }
-  }
-
-  .denuncia-info { width: 100%; }
-
-  .badge-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 8px;
-  }
-
-  .denuncia-badge {
-    display: inline-block;
-    background: #e6f9f0;
-    color: $verde;
-    font-family: 'Nunito', sans-serif;
-    font-size: 12px;
-    font-weight: 800;
-    padding: 4px 10px;
-    border-radius: 8px;
-  }
-
-  .denuncia-descricao {
-    font-family: 'Nunito', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    color: #54a792;
-    line-height: 1.55;
-    margin: 0;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .denuncia-data {
-    font-family: 'Nunito', sans-serif;
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: $verde-mid;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    margin-bottom: 6px;
-    ion-icon { font-size: 0.85rem; }
-  }
-
-  .comunicado-card-perfil {
-    min-width: unset;
-    margin: 10px 16px;
-    background: $verde-light;
-    border-radius: 16px;
-    padding: 16px;
-    box-shadow: 0 4px 14px rgba(62, 207, 142, 0.15);
-    border-left: 5px solid $verde;
-    cursor: pointer;
-    animation: fadeIn 0.3s ease both;
-    transition: transform 0.15s ease;
-    &:active { transform: scale(0.99); }
-
-    .comunicado-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: $verde-mid;
-      font-size: 0.8rem;
-      margin-bottom: 8px;
-      font-weight: 700;
-      .header-esquerda {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        ion-icon {
-          color: $verde;
-          font-size: 1.2rem;
-        }
-      }
-    }
-
-    .comunicado-body {
-      h3 {
-        margin: 0 0 6px;
-        font-size: 1.05rem;
-        font-weight: 800;
-        color: $verde-mid;
-      }
-      p {
-        margin: 0;
-        font-size: 0.88rem;
-        color: #3d7a62;
-        line-height: 1.5;
-      }
-    }
-  }
+}

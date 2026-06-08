@@ -156,10 +156,12 @@ ion-toolbar.custom-toolbar {
 }
 
 .btn-salvar {
-  --background: #3ecf8e;
-  --background-hover: #2db376;
+  --background: #ffffff;
+  --background-hover: #f5f5f5;
+  --color: #3ecf8e;
   --border-radius: 14px;
-  --box-shadow: 0 6px 16px rgba(62, 207, 142, 0.3);
+  --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 2px solid #3ecf8e;
   margin-top: 30px;
   height: 50px;
   font-family: 'Nunito', sans-serif;

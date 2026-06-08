@@ -31,12 +31,11 @@
       </div>
       <div class="filtros-row">
 
-        <!-- Filtro Prioridade -->
         <div class="filtro-pill">
           <select [(ngModel)]="filtros.prioridade" (change)="filtrar()">
             <option value="" disabled selected hidden>Prioridade</option>
             <option value="">Todas</option>
-            <option value="prioritario">🐾 Prioritário (idoso)</option>
+            <option value="prioritario">Prioritário (idoso)</option>
             <option value="normal">Normal</option>
           </select>
         </div>
@@ -93,7 +92,7 @@
   <div class="filtros-badge-bar" *ngIf="temFiltroAtivo()">
     <div class="chips-scroll">
       <span class="badge-chip" *ngIf="filtros.prioridade">
-        {{ filtros.prioridade === 'prioritario' ? '🐾 Prioritário' : filtros.prioridade }}
+        {{ filtros.prioridade === 'prioritario' ? 'Prioritário' : filtros.prioridade }}
         <ion-icon name="close-outline" (click)="limparCampo('prioridade')"></ion-icon>
       </span>
       <span class="badge-chip" *ngIf="filtros.animal">
@@ -122,14 +121,12 @@
         <ion-card class="pet-card" [class.card-prioritario]="adocao.prioridade === 'prioritario'" (click)="abrirDetalhe(adocao)">
 
           <div class="image-container">
-            <!-- Badge de fixado -->
             <div class="pin-badge" *ngIf="adocao.fixado === 1 || adocao.fixado === 2">
               <ion-icon name="star"></ion-icon> Fixado
             </div>
 
-            <!-- Badge de prioridade idoso -->
             <div class="priority-badge priority-badge--senior" *ngIf="adocao.prioridade === 'prioritario'">
-              🐾 Prioritário
+              Prioritário
             </div>
 
             <div *ngIf="adocao.fotosArray && adocao.fotosArray.length > 0" class="foto-unica-wrapper">
@@ -154,7 +151,7 @@
 
           <div class="card-footer">
             <span class="footer-priority-label" *ngIf="adocao.prioridade === 'prioritario'">
-              🐾 Animal idoso — adoção prioritária
+              Animal idoso — adoção prioritária
             </span>
             <ion-button fill="clear" size="small">Ver Detalhes</ion-button>
           </div>

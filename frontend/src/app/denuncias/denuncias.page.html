@@ -36,8 +36,8 @@
           <select [(ngModel)]="filtros.prioridade" (change)="filtrar()">
             <option value="" disabled selected hidden>Prioridade</option>
             <option value="">Todas</option>
-            <option value="urgente">🚨 Urgente</option>
-            <option value="alta">⚠️ Alta</option>
+            <option value="urgente"> Urgente</option>
+            <option value="alta">Alta</option>
             <option value="normal">Normal</option>
           </select>
         </div>
@@ -121,12 +121,12 @@
 
             <!-- Badge de prioridade urgente -->
             <div class="priority-badge priority-badge--urgente" *ngIf="denuncia.prioridade === 'urgente'">
-              🚨 URGENTE
+               URGENTE
             </div>
 
             <!-- Badge de prioridade alta -->
             <div class="priority-badge priority-badge--alta" *ngIf="denuncia.prioridade === 'alta'">
-              ⚠️ Alta Prioridade
+               Alta Prioridade
             </div>
 
             <img *ngIf="denuncia.fotosArray && denuncia.fotosArray.length > 0"
@@ -153,10 +153,10 @@
 
           <div class="card-footer">
             <span class="footer-priority-label footer-priority-label--urgente" *ngIf="denuncia.prioridade === 'urgente'">
-              🚨 Requer atenção imediata
+               Requer atenção imediata
             </span>
             <span class="footer-priority-label footer-priority-label--alta" *ngIf="denuncia.prioridade === 'alta'">
-              ⚠️ Atenção elevada
+               Atenção elevada
             </span>
             <ion-button fill="clear" size="small">Ver Detalhes</ion-button>
           </div>

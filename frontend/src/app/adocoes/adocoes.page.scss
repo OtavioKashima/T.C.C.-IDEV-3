@@ -198,13 +198,13 @@ ion-toolbar.custom-toolbar {
   ion-card-content { padding: 0 12px 8px 12px !important; }
 }
 
-// ── CARD PRIORITÁRIO (animal idoso) ───────────────────────
+// ── CARD PRIORITÁRIO (animal idoso alterado para Verde Claro) ──
 .card-prioritario {
-  border-color: #f59e0b !important;
-  box-shadow: 0 4px 14px rgba(245,158,11,0.18) !important;
+  border-color: #66d9a6 !important;
+  box-shadow: 0 4px 14px rgba(102, 217, 166, 0.18) !important;
   &:hover {
-    border-color: #d97706 !important;
-    box-shadow: 0 6px 20px rgba(245,158,11,0.28) !important;
+    border-color: #3ecf8e !important;
+    box-shadow: 0 6px 20px rgba(62, 207, 142, 0.28) !important;
   }
 }
 
@@ -242,7 +242,7 @@ ion-toolbar.custom-toolbar {
   position: absolute;
   top: 10px;
   right: 10px;
-  background: #66d9a6;
+  background: #3ecf8e;
   color: #fff;
   padding: 4px 10px;
   border-radius: 20px;
@@ -265,7 +265,7 @@ ion-toolbar.custom-toolbar {
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 
   &--senior {
-    background: #f59e0b;
+    background: #66d9a6;
     color: #fff;
   }
 }
@@ -306,14 +306,18 @@ ion-toolbar.custom-toolbar {
   align-items: center;
   padding: 4px 12px;
   border-top: 1px solid #eee;
-  ion-button { margin: 0; min-height: 32px; }
+  ion-button { 
+    margin: 0; 
+    min-height: 32px;
+    --color: #3ecf8e;
+  }
 }
 
 .footer-priority-label {
   font-family: 'Nunito', sans-serif;
   font-size: 0.72rem;
   font-weight: 700;
-  color: #f59e0b;
+  color: #66d9a6;
 }
 
 .empty-state {
