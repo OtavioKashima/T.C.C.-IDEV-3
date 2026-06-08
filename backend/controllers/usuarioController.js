@@ -61,9 +61,6 @@ exports.cadastrar = async (req, res) => {
 exports.login = (req, res) => {
   const { identificador, senha } = req.body;
 
-  console.log('--- NOVA TENTATIVA DE LOGIN ---');
-  console.log('Identificador:', identificador);
-
   const apenasNumeros = identificador.replace(/\D/g, '');
   let cpfFormatado = identificador;
 
@@ -82,7 +79,6 @@ exports.login = (req, res) => {
       }
 
       const usuario = rows[0];
-      console.log('Usuário encontrado:', usuario.email, '| Admin:', usuario.admin);
 
       const match = await bcrypt.compare(senha, usuario.senha);
       if (!match) {
@@ -95,7 +91,6 @@ exports.login = (req, res) => {
         { expiresIn: '24h' }
       );
 
-      // ← Devolve token, admin, email e id para o frontend salvar no localStorage
       res.json({
         token:  token,
         admin:  usuario.admin,
@@ -110,36 +105,49 @@ exports.login = (req, res) => {
 // =============================================================
 // PUT /api/perfiledit
 // =============================================================
-exports.atualizar = (req, res) => {
+exports.atualizar = async (req, res) => {
   const usuarioId = req.usuarioId;
-  const { nome, telefone, bio, cidade, estado, chave_pix } = req.body;
+  const { nome, telefone, email, senha, bio, cidade, estado, chave_pix } = req.body;
 
   const safeBio      = bio       !== undefined ? bio       : null;
   const safeCidade   = cidade    !== undefined ? cidade    : null;
   const safeEstado   = estado    !== undefined ? estado    : null;
   const safeChavePix = chave_pix !== undefined ? chave_pix : null;
+  const safeEmail    = email     !== undefined ? email     : null;
 
-  if (req.file) {
-    const nomeArquivoNovo = req.file.filename;
-
-    db.query(
-      'UPDATE usuarios SET nome=?, telefone=?, bio=?, cidade=?, estado=?, chave_pix=?, foto_perfil=? WHERE id=?',
-      [nome, telefone, safeBio, safeCidade, safeEstado, safeChavePix, nomeArquivoNovo, usuarioId],
-      (err) => {
-        if (err) return res.status(500).json({ erro: 'Erro ao atualizar perfil.' });
-        res.status(200).json({ message: 'Perfil atualizado com sucesso.', foto_perfil: nomeArquivoNovo });
-      }
-    );
-  } else {
-    db.query(
-      'UPDATE usuarios SET nome=?, telefone=?, bio=?, cidade=?, estado=?, chave_pix=? WHERE id=?',
-      [nome, telefone, safeBio, safeCidade, safeEstado, safeChavePix, usuarioId],
-      (err) => {
-        if (err) return res.status(500).json({ erro: 'Erro ao atualizar perfil.' });
-        res.status(200).json({ mensagem: 'Dados atualizados com sucesso!' });
-      }
-    );
+  // Hash da nova senha se fornecida
+  let senhaHash = null;
+  if (senha && senha.trim() !== '') {
+    senhaHash = await bcrypt.hash(senha, SALT_ROUNDS);
   }
+
+  // Monta query dinamicamente para incluir senha só se fornecida
+  const comFoto = !!req.file;
+  const comSenha = !!senhaHash;
+
+  let sql = 'UPDATE usuarios SET nome=?, telefone=?, email=?, bio=?, cidade=?, estado=?, chave_pix=?';
+  let params = [nome, telefone, safeEmail, safeBio, safeCidade, safeEstado, safeChavePix];
+
+  if (comSenha) {
+    sql += ', senha=?';
+    params.push(senhaHash);
+  }
+
+  if (comFoto) {
+    sql += ', foto_perfil=?';
+    params.push(req.file.filename);
+  }
+
+  sql += ' WHERE id=?';
+  params.push(usuarioId);
+
+  db.query(sql, params, (err) => {
+    if (err) return res.status(500).json({ erro: 'Erro ao atualizar perfil.' });
+    res.status(200).json({
+      mensagem: 'Perfil atualizado com sucesso!',
+      ...(comFoto ? { foto_perfil: req.file.filename } : {})
+    });
+  });
 };
 
 // =============================================================

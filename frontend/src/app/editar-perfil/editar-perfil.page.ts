@@ -11,11 +11,13 @@ import { NavController } from '@ionic/angular';
   standalone: false
 })
 export class EditarPerfilPage implements OnInit {
-  usuario: any = { nome: '', telefone: '' };
-  fotoSelecionada: File | null = null;
 
-  // 🟢 Começa com o avatar padrão do Ionic
+  usuario: any = { nome: '', bio: '', cidade: '', estado: '', chave_pix: '', admin: 0 };
+  fotoSelecionada: File | null = null;
   previewFoto: string | ArrayBuffer | null = 'https://ionicframework.com/docs/img/demos/avatar.svg';
+
+  readonly apiUrl = 'http://localhost:3000/api';
+  readonly urlUploads = 'http://localhost:3000/uploads/';
 
   constructor(
     private http: HttpClient,
@@ -28,28 +30,25 @@ export class EditarPerfilPage implements OnInit {
     this.carregarDadosAtuais();
   }
 
-  // 🟢 FUNÇÃO UNIFICADA: Puxa os dados e define a foto
   carregarDadosAtuais() {
     const token = localStorage.getItem('token');
     if (!token) return;
 
-    const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-    this.http.get('http://localhost:3000/api/perfil', { headers }).subscribe({
+    this.http.get(`${this.apiUrl}/perfil`, { headers }).subscribe({
       next: (res: any) => {
         this.usuario = res;
 
-        // Se ele tiver foto no banco, substitui o avatar do Ionic pela foto dele
-        if (this.usuario && this.usuario.foto_perfil) {
-          const timestamp = new Date().getTime(); // Quebra o cache da imagem
-          this.previewFoto = `http://localhost:3000/uploads/${this.usuario.foto_perfil}?t=${timestamp}`;
+        if (this.usuario?.foto_perfil) {
+          const timestamp = new Date().getTime();
+          this.previewFoto = `${this.urlUploads}${this.usuario.foto_perfil}?t=${timestamp}`;
         }
       },
       error: (err) => console.error('Erro ao buscar dados do perfil:', err)
     });
   }
 
-  // 🟢 Seleciona uma nova foto e exibe na hora
   selecionarFoto(event: any) {
     if (event.target.files && event.target.files.length > 0) {
       this.fotoSelecionada = event.target.files[0];
@@ -62,7 +61,6 @@ export class EditarPerfilPage implements OnInit {
     }
   }
 
-  // 🟢 Envia para o banco
   salvarPerfil() {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -72,9 +70,7 @@ export class EditarPerfilPage implements OnInit {
 
     const formData = new FormData();
     formData.append('nome', this.usuario.nome || '');
-    formData.append('telefone', this.usuario.telefone || '');
 
-    // 🟢 Novos campos exclusivos da ONG adicionados ao FormData
     if (this.usuario.admin == 2) {
       formData.append('bio', this.usuario.bio || '');
       formData.append('cidade', this.usuario.cidade || '');
@@ -86,13 +82,12 @@ export class EditarPerfilPage implements OnInit {
       formData.append('foto', this.fotoSelecionada);
     }
 
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-    this.http.put('http://localhost:3000/api/perfiledit', formData, { headers }).subscribe({
-      next: (response: any) => {
+    this.http.put(`${this.apiUrl}/perfiledit`, formData, { headers }).subscribe({
+      next: async () => {
         window.dispatchEvent(new CustomEvent('fotoAtualizada'));
+        await this.mostrarToast('Perfil atualizado!', 'success');
         this.navCtrl.back();
       },
       error: (err) => {

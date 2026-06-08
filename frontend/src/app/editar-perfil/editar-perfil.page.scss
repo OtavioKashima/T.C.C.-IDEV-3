@@ -23,7 +23,7 @@
 
     .seta-voltar {
       font-size: 22px;
-      color: #3ecf8e; // Cor principal
+      color: #3ecf8e;
     }
 
     &:active {
@@ -33,18 +33,25 @@
 }
 
 // ==========================================
+// FUNDO GERAL DA PÁGINA
+// ==========================================
+ion-content {
+  --background: #ffffff;
+}
+
+// ==========================================
 // CABEÇALHO HERO E ÁREA DO AVATAR
 // ==========================================
 .hero-image-wrapper {
   position: relative;
   width: 100%;
-  background: linear-gradient(135deg, #3ecf8e 0%, #2db376 100%);
-  padding-top: 60px; // Espaço para não bater no botão voltar
-  padding-bottom: 40px;
-  border-bottom-left-radius: 30px;
-  border-bottom-right-radius: 30px;
-  box-shadow: 0 6px 20px rgba(62, 207, 142, 0.25);
-  margin-bottom: 20px;
+  background: linear-gradient(135deg, #4dd9a0 0%, #3ecf8e 100%);
+  padding-top: 60px;
+  padding-bottom: 36px;
+  border-bottom-left-radius: 32px;
+  border-bottom-right-radius: 32px;
+  box-shadow: 0 8px 24px rgba(62, 207, 142, 0.3);
+  margin-bottom: 24px;
 }
 
 .hero-avatar-area {
@@ -59,18 +66,14 @@
 // O Container da Foto
 .avatar-wrapper {
   position: relative;
-  width: 120px;
-  height: 120px;
-  background: #f0fdf6; // Pode manter a cor que você já usava
-
-  // 🟢 CORREÇÃO 1: A borda branca é aplicada APENAS no container
+  width: 110px;
+  height: 110px;
+  background: #f0fdf6;
   border: 4px solid white;
   border-radius: 50%;
-  box-shadow: 0 4px 16px rgba(102, 217, 166, 0.3);
-
-  // 🟢 CORREÇÃO 2: Permite que o botão da câmera vaze para fora sem ser cortado
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
   overflow: visible;
-  margin: 0 auto;
+  margin: 0 auto 14px;
 }
 
 .avatar-img {
@@ -78,8 +81,6 @@
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
-
-  // 🟢 CORREÇÃO 3: Força a remoção de qualquer borda na tag img (evita a borda dupla)
   border: none !important;
   display: block;
 }
@@ -88,29 +89,23 @@
 .trocar-foto-btn {
   position: absolute;
   bottom: 0px;
-  right: -4px; // Faz o botão ficar um pouquinho para fora do círculo principal
-
-  background: var(--ion-color-primary, #3ecf8e);
+  right: -4px;
+  background: #3ecf8e;
   color: white;
-
-  // Borda branca no botão para destacá-lo da foto
   border: 3px solid white;
   border-radius: 50%;
-  width: 38px;
-  height: 38px;
-
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-
-  // 🟢 CORREÇÃO 4: Z-index alto para garantir que fique sempre por cima da imagem
   z-index: 10;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
   transition: transform 0.1s ease;
 
   ion-icon {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
   }
 
   &:active {
@@ -120,56 +115,59 @@
 
 .hero-nome {
   color: white;
-  font-size: 1.4rem;
+  font-size: 1.35rem;
   font-weight: 700;
-  margin: 0;
+  margin: 0 0 4px;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .hero-sub {
   color: rgba(255, 255, 255, 0.85);
-  font-size: 0.9rem;
-  margin-top: 4px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  margin-top: 2px;
 }
 
 // ==========================================
-// CORPO DO FORMULÁRIO (INPUTS E BOTÃO)
+// CORPO DO FORMULÁRIO
 // ==========================================
 .content-body {
-  padding: 10px 24px 30px;
+  padding: 0 20px 40px;
+  background: #ffffff;
 }
 
 .input-group {
-  margin-bottom: 20px;
+  margin-bottom: 14px;
 }
 
 .input-wrapper {
   display: flex;
   align-items: center;
-  background: #f4f5f8;
-  border: 1.5px solid #e0e0e0;
+  background: #ffffff;
+  border: 1.5px solid #e8e8e8;
   border-radius: 14px;
   padding: 0 16px;
   height: 56px;
-  box-sizing: border-box !important;
-  /* 🟢 CORREÇÃO: Garante que largura/altura incluam padding e borda */
-  transition: all 0.3s ease;
+  box-sizing: border-box;
+  transition: all 0.25s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 
   &:focus-within {
     border-color: #3ecf8e;
     background: white;
-    box-shadow: 0 0 0 4px rgba(62, 207, 142, 0.15);
+    box-shadow: 0 0 0 4px rgba(62, 207, 142, 0.12);
   }
 }
 
 .input-icon {
-  font-size: 22px;
-  color: #999;
+  font-size: 20px;
+  color: #b0b0b0;
   margin-right: 12px;
-  transition: color 0.3s ease;
+  transition: color 0.25s ease;
 }
 
-// Muda a cor do ícone quando o input está em foco
 .input-wrapper:focus-within .input-icon {
   color: #3ecf8e;
 }
@@ -179,13 +177,13 @@
   border: none;
   background: transparent;
   outline: none;
-  font-size: 1rem;
+  font-size: 0.97rem;
   color: #333;
   height: 100%;
   font-family: inherit;
 
   &::placeholder {
-    color: #a0a0a0;
+    color: #b8b8b8;
   }
 }
 
@@ -194,35 +192,68 @@
 // ==========================================
 .salvar-btn {
   width: 100%;
-  height: 56px;
-  background: #3ecf8e;
+  height: 54px;
+  background: linear-gradient(135deg, #4dd9a0, #3ecf8e);
   color: white;
-  font-size: 1.05rem;
-  font-weight: bold;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
   border: none;
   border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 36px;
-  box-shadow: 0 6px 16px rgba(62, 207, 142, 0.3);
-  transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+  gap: 8px;
+  margin-top: 28px;
+  box-shadow: 0 6px 18px rgba(62, 207, 142, 0.35);
+  transition: transform 0.2s, box-shadow 0.2s;
   cursor: pointer;
 
   ion-icon {
-    font-size: 1.4rem;
-    margin-right: 8px;
+    font-size: 1.3rem;
   }
 
   &:active {
     transform: translateY(2px) scale(0.98);
-    background: #2db376;
-    box-shadow: 0 2px 8px rgba(62, 207, 142, 0.3);
+    box-shadow: 0 2px 8px rgba(62, 207, 142, 0.25);
   }
 }
 
 // ==========================================
-// GRUPO DE INPUTS LADO A LADO (CIDADE / UF)
+// BOTÃO DELETAR CONTA
+// ==========================================
+.deletar-btn {
+  width: 100%;
+  height: 54px;
+  background: transparent;
+  color: #e05555;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  border: 2px solid #f0c0c0;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  ion-icon {
+    font-size: 1.2rem;
+  }
+
+  &:active {
+    background: #fff0f0;
+    transform: scale(0.98);
+  }
+}
+
+// ==========================================
+// INPUTS LADO A LADO (CIDADE / UF)
 // ==========================================
 .row-inputs {
   display: flex !important;
@@ -234,21 +265,15 @@
 .input-cidade {
   flex: 1 !important;
   width: auto !important;
-  /* 🟢 CORREÇÃO: Cancela o 'width: 100%' padrão que fazia ele nascer gigante */
   min-width: 0 !important;
-  /* 🟢 CORREÇÃO: Força o Flexbox a ter permissão de encolher o campo */
   box-sizing: border-box !important;
 }
 
 .input-uf {
   width: 75px !important;
-  /* 🟢 Largura fixa perfeita para o quadradinho do estado */
   flex-shrink: 0 !important;
-  /* Impede o estado de ser esmagado de qualquer forma */
   flex-grow: 0 !important;
-  /* Impede o estado de tentar crescer */
   padding: 0 !important;
-  /* Remove paddings laterais para centralizar perfeitamente o texto */
   justify-content: center !important;
   box-sizing: border-box !important;
 }
@@ -257,9 +282,7 @@
   width: 100% !important;
   height: 100% !important;
   text-align: center !important;
-  /* Centraliza o placeholder 'UF' e o texto digitado */
   text-transform: uppercase !important;
-  /* Força letras maiúsculas automaticamente */
   padding: 0 !important;
   margin: 0 !important;
   border: none !important;
@@ -270,6 +293,28 @@
   box-sizing: border-box !important;
 
   &::placeholder {
-    color: #a0a0a0 !important;
+    color: #b8b8b8 !important;
+  }
+}
+
+// ==========================================
+// ÍCONE DE OLHO (SENHA)
+// ==========================================
+.eye-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+
+  ion-icon {
+    font-size: 20px;
+    color: #b0b0b0;
+    transition: color 0.2s;
+  }
+
+  &:hover ion-icon {
+    color: #3ecf8e;
   }
 }

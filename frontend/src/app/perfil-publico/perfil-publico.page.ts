@@ -12,29 +12,24 @@ import { Location } from '@angular/common';
 })
 export class PerfilPublicoPage implements OnInit {
 
-  // Controle da Aba Selecionada ('adocoes' ou 'denuncias')
   tabAtiva: string = 'adocoes';
   adocoes: any[] = [];
 
-  // Objeto principal da ONG/Usuário
   ong: any = {
     nome: '',
     cidade: '',
     estado: '',
     descricao: '',
     avatar: 'https://ionicframework.com/docs/img/demos/avatar.svg',
-    admin: null // 🟢 Começa nulo até o banco responder
+    admin: null
   };
 
-  // Arrays para armazenar as postagens
   postagens: any[] = [];
   denuncias: any[] = [];
   comunicados: any[] = [];
 
-  // ID do usuário recebido da navegação
   usuarioId: number = 0;
 
-  // URL base do servidor
   readonly urlUploads = 'http://localhost:3000/uploads/';
   readonly apiUrl = 'http://localhost:3000/api';
 
@@ -47,18 +42,15 @@ export class PerfilPublicoPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    // 1. Receber os dados da navegação (o state passado da tela Início)
     const nav = this.router.getCurrentNavigation();
     if (nav?.extras?.state?.['usuario_id']) {
       this.usuarioId = nav.extras.state['usuario_id'];
       this.carregarPerfil();
     } else {
-      // Se não houver ID (acesso direto à tela, etc.), volta pro início
       this.goBack();
     }
   }
 
-  // Busca os dados do usuário (ONG/Protetor)
   carregarPerfil() {
     this.http.get(`${this.apiUrl}/usuarios/${this.usuarioId}`).subscribe({
       next: (res: any) => {
@@ -68,13 +60,13 @@ export class PerfilPublicoPage implements OnInit {
           cidade: res.cidade || 'Local não informado',
           estado: res.estado || '',
           descricao: res.bio || '',
-          avatar: res.foto_perfil ? `${this.urlUploads}${res.foto_perfil}` : 'https://ionicframework.com/docs/img/demos/avatar.svg',
+          avatar: res.foto_perfil
+            ? `${this.urlUploads}${res.foto_perfil}`
+            : 'https://ionicframework.com/docs/img/demos/avatar.svg',
           foto_perfil: res.foto_perfil,
-          // 🟢 Garante que 'admin' seja tratado estritamente como número (0, 1 ou 2)
           admin: res.admin !== undefined ? Number(res.admin) : 0
         };
 
-        // 🟢 SE FOR USUÁRIO COMUM (admin === 0): Força a aba ativa a ser 'denuncias'
         if (this.ong.admin === 0) {
           this.tabAtiva = 'denuncias';
         }
@@ -88,7 +80,6 @@ export class PerfilPublicoPage implements OnInit {
     });
   }
 
-  // Busca TODAS as postagens desse usuário específico
   carregarPostagensUsuario() {
     this.http.get(`${this.apiUrl}/postagens/usuario/${this.usuarioId}`).subscribe({
       next: (res: any) => {
@@ -97,7 +88,6 @@ export class PerfilPublicoPage implements OnInit {
         this.comunicados = [];
 
         res.forEach((post: any) => {
-          // ... (seu código de formatação de imagens e postFormatado continua igual) ...
           let fotosArray: string[] = [];
           let imagemUrl = 'assets/img/placeholder.png';
 
@@ -118,7 +108,10 @@ export class PerfilPublicoPage implements OnInit {
             imagem: imagemUrl,
             fotosArray: fotosArray,
             saved: false,
-            autor: this.ong.nome, // Post feito pela própria ONG
+            autor: this.ong.nome,
+            // Dados do criador para usar no comunicado
+            usuario_nome: this.ong.nome,
+            usuario_foto: this.ong.foto_perfil,
             usuario: {
               id: this.ong.id,
               nome: this.ong.nome,
@@ -136,11 +129,9 @@ export class PerfilPublicoPage implements OnInit {
           }
         });
 
-        // 🟢 AQUI ESTÁ A MUDANÇA: Se for uma ONG, busca também as denúncias direcionadas a ela
         if (this.ong.admin === 2) {
           this.carregarDenunciasDirecionadas();
         }
-
       },
       error: (err) => {
         console.error('Erro ao buscar postagens:', err);
@@ -148,12 +139,10 @@ export class PerfilPublicoPage implements OnInit {
     });
   }
 
-  // 🟢 NOVA FUNÇÃO: Busca as denúncias feitas POR OUTROS para esta ONG
   carregarDenunciasDirecionadas() {
     this.http.get(`${this.apiUrl}/postagens/direcionadas/${this.usuarioId}`).subscribe({
       next: (res: any) => {
         res.forEach((post: any) => {
-          // Formatação da imagem
           let fotosArray: string[] = [];
           let imagemUrl = 'assets/img/placeholder.png';
 
@@ -187,16 +176,15 @@ export class PerfilPublicoPage implements OnInit {
             }
           };
 
-          // 🚨 TRAVA CONTRA DUPLICATAS: Só adiciona se o ID ainda não existir na lista
           const jaExiste = this.denuncias.some(d => d.id === postFormatado.id);
-
           if (!jaExiste) {
             this.denuncias.push(postFormatado);
           }
         });
 
-        // Reordenar por data mais recente
-        this.denuncias.sort((a, b) => new Date(b.data_criacao).getTime() - new Date(a.data_criacao).getTime());
+        this.denuncias.sort((a, b) =>
+          new Date(b.data_criacao).getTime() - new Date(a.data_criacao).getTime()
+        );
       },
       error: (err) => console.error('Erro ao buscar denúncias direcionadas:', err)
     });
@@ -228,11 +216,8 @@ export class PerfilPublicoPage implements OnInit {
     this.mostrarToast(msg);
   }
 
-  // Abrir detalhes de Adoção
   abrirDetalhe(post: any) {
-    // Salva a ONG atual no "espelho de segurança" do navegador
     localStorage.setItem('ong_perfil_atual', JSON.stringify(this.ong));
-
     this.router.navigate(['/adocoes-detalhes'], {
       state: { pet: post, postagemSelecionada: post }
     });
@@ -240,39 +225,45 @@ export class PerfilPublicoPage implements OnInit {
 
   abrirDenuncia(d: any) {
     localStorage.setItem('ong_perfil_atual', JSON.stringify(this.ong));
-
     this.router.navigate(['/denuncias-detalhes'], {
       state: { pet: d, postagemSelecionada: d }
     });
   }
 
   abrirComunicado(aviso: any) {
+    // Salva no localStorage como fallback
     localStorage.setItem('ong_perfil_atual', JSON.stringify(this.ong));
 
-    // Ajuste a rota abaixo de acordo com o nome real da sua página de detalhes de comunicados
+    // Passa a ONG diretamente no state para garantir foto/nome corretos
     this.router.navigate(['/comunicado'], {
-      state: { comunicado: aviso }
+      state: {
+        comunicado: aviso,
+        ong: this.ong  // ← CORREÇÃO: passa a ONG junto
+      }
     });
   }
 
   irParaDoacao() {
-    this.navCtrl.navigateForward('/doacoes', { state: { ongSelecionada: this.ong } });
+    this.navCtrl.navigateForward('/doacoes', {
+      state: { ongSelecionada: this.ong }
+    });
   }
 
   abrirDetalhes(post: any) {
-    this.router.navigate(['/comunicado'], { state: { postagemSelecionada: post } });
+    this.router.navigate(['/comunicado'], {
+      state: { postagemSelecionada: post }
+    });
   }
 
   abrirChat() {
     this.router.navigate(['/chat-ong'], {
       state: {
         ong: this.ong,
-        pet: null // Como entrou direto pelo perfil, não há contexto de um pet específico
+        pet: null
       }
     });
   }
 
-  // Helper para exibir mensagens rápidas na tela
   async mostrarToast(mensagem: string) {
     const toast = await this.toastCtrl.create({
       message: mensagem,

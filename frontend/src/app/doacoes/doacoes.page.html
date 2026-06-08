@@ -2,8 +2,9 @@
   <ion-toolbar class="custom-toolbar">
     <div class="header-content">
       <div class="title-section">
-        <ion-icon name="arrow-back-outline" size="large" class="header-icon" (click)="goBack()"></ion-icon>
-        <span class="header-title">Voltar</span>
+        <div class="back-btn" (click)="goBack()">
+          <ion-icon name="arrow-back-outline"></ion-icon>
+        </div>
       </div>
     </div>
   </ion-toolbar>
@@ -48,21 +49,24 @@
       />
     </div>
 
-    <!-- AVISO DOAÇÃO RELEVANTE (>=R$500 notifica a ONG) -->
+    <!-- AVISO DOAÇÃO RELEVANTE -->
     <div class="aviso-relevante" *ngIf="valorDoacao && valorDoacao >= 500">
       ⭐ Doação de <strong>R$ {{ valorDoacao }}</strong> — a ONG será notificada automaticamente!
     </div>
 
     <!-- SEÇÃO PIX -->
     <div class="qrcode-container">
+
+      <!-- ✅ Número da chave em cima -->
+      <small class="chave-pix-valor">
+        {{ ong?.chave_pix || 'Chave PIX não cadastrada' }}
+      </small>
+
+      <!-- ✅ Botão copiar embaixo -->
       <button class="copiar-pix-btn" (click)="copiarPix()" [disabled]="!ong?.chave_pix">
         <ion-icon name="copy-outline"></ion-icon>
         Copiar chave PIX
       </button>
-
-      <small style="margin-top: 10px; color: #888; word-break: break-all; text-align: center;">
-        {{ ong?.chave_pix || 'Chave PIX não cadastrada' }}
-      </small>
 
       <!-- Instruções passo a passo -->
       <div class="pix-steps" *ngIf="ong?.chave_pix">
@@ -76,20 +80,21 @@
     <!-- BOTÃO REGISTRAR DOAÇÃO -->
     <button
       class="adopt-btn"
+      [class.registrada]="doacaoRegistrada"
       (click)="registrarDoacao()"
-      [disabled]="processando || doacaoRegistrada || !valorDoacao || valorDoacao <= 0"
+      [disabled]="processando || !valorDoacao || valorDoacao <= 0"
     >
       <ion-spinner name="crescent" *ngIf="processando" style="width:18px;height:18px;margin-right:6px;"></ion-spinner>
-      <ion-icon name="checkmark-circle-outline" *ngIf="!processando && !doacaoRegistrada"></ion-icon>
-      <ion-icon name="checkmark-done-outline" *ngIf="doacaoRegistrada"></ion-icon>
-      {{ processando ? 'Registrando...' : doacaoRegistrada ? 'Doação Registrada ✓' : 'Registrar Doação' }}
+      <ion-icon name="paw" *ngIf="!processando && !doacaoRegistrada"></ion-icon>
+      <ion-icon name="checkmark-circle" *ngIf="!processando && doacaoRegistrada"></ion-icon>
+      {{ processando ? 'Registrando...' : doacaoRegistrada ? 'Doação Registrada' : 'Realizar Pagamento' }}
     </button>
 
     <p class="seguro-label" *ngIf="!doacaoRegistrada">
-      🔒 Registre a doação e depois copie a chave PIX para pagar no seu banco.
+      Registre a doação e depois copie a chave PIX para pagar no seu banco.
     </p>
-    <p class="seguro-label" *ngIf="doacaoRegistrada" style="color: #3ecf8e; font-weight: 700;">
-      ✅ Doação registrada! Copie a chave PIX acima e realize a transferência.
+    <p class="seguro-label registrada-label" *ngIf="doacaoRegistrada">
+      Doação registrada! Copie a chave PIX acima e realize a transferência.
     </p>
   </div>
 
@@ -100,29 +105,6 @@
       Sobre a ONG
     </div>
     <p>{{ ong.descricao }}</p>
-  </div>
-
-  <!-- SEPARADOR -->
-  <div class="section-header" *ngIf="cardsFiltrados.length > 0">
-    <div class="section-header-line"></div>
-    <span class="section-title">Para onde vai sua doação</span>
-    <div class="section-header-line"></div>
-  </div>
-
-  <!-- CARDS DESTINO -->
-  <div class="donation-card" *ngFor="let card of cardsFiltrados">
-    <div class="donation-content">
-      <img
-        [src]="card.imagem"
-        [alt]="card.titulo"
-        class="donation-image"
-        onerror="this.style.display='none'"
-      />
-      <div class="donation-info">
-        <strong>{{ card.titulo }}</strong>
-        <p>{{ card.descricao }}</p>
-      </div>
-    </div>
   </div>
 
   <div style="height: 32px;"></div>

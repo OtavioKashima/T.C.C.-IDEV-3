@@ -13,7 +13,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 export class DoacoesPage implements OnInit {
 
   ong: any = null;
-  valoresRapidos: number[] = [10, 20, 50, 100, 200, 500];
+  valoresRapidos: number[] = [10, 25, 50, 100];
   valorSelecionado: number | null = null;
   valorDoacao: number | null = null;
   processando: boolean = false;
@@ -30,7 +30,6 @@ export class DoacoesPage implements OnInit {
     private location: Location,
     private http: HttpClient
   ) {
-    // Tenta pegar a ONG pela navegação normal (navigateForward com state)
     const navigation = this.router.getCurrentNavigation();
     if (navigation?.extras?.state) {
       this.ong = navigation.extras.state['ongSelecionada'];
@@ -38,7 +37,6 @@ export class DoacoesPage implements OnInit {
   }
 
   ngOnInit() {
-    // Fallback: tenta recuperar do history.state (recarregamento de página)
     if (!this.ong) {
       const state = history.state;
       this.ong = state?.['ongSelecionada'] || state?.['ong'] || null;
@@ -46,7 +44,30 @@ export class DoacoesPage implements OnInit {
 
     if (!this.ong) {
       this.router.navigate(['/tabs/inicio']);
+      return;
     }
+
+    // ✅ Sempre busca os dados atualizados da ONG (incluindo chave_pix)
+    // usando o mesmo endpoint que já existe e retorna todos os campos
+    if (this.ong.id) {
+      this.buscarDadosOng();
+    }
+  }
+
+  // ✅ Busca pelo endpoint /api/usuarios/:id que já retorna chave_pix
+  buscarDadosOng() {
+    this.http.get<any>(`http://localhost:3000/api/usuarios/${this.ong.id}`).subscribe({
+      next: (res) => {
+        // Atualiza a chave PIX (e outros campos) sem perder os dados que já tínhamos
+        this.ong = {
+          ...this.ong,
+          chave_pix: res.chave_pix || '',
+          nome: res.nome || this.ong.nome,
+          descricao: res.bio || this.ong.descricao,
+        };
+      },
+      error: (err) => console.error('Erro ao buscar dados da ONG:', err)
+    });
   }
 
   setValor(v: number) {
@@ -54,9 +75,6 @@ export class DoacoesPage implements OnInit {
     this.valorDoacao = v;
   }
 
-  // ─────────────────────────────────────────────────────────
-  // Copia a chave PIX da ONG para a área de transferência
-  // ─────────────────────────────────────────────────────────
   async copiarPix() {
     if (!this.ong?.chave_pix) {
       await this.mostrarToast('Esta ONG não cadastrou uma chave PIX.', 'warning');
@@ -67,7 +85,6 @@ export class DoacoesPage implements OnInit {
       await navigator.clipboard.writeText(this.ong.chave_pix);
       await this.mostrarToast('✅ Chave PIX copiada! Abra o app do seu banco e cole.', 'success');
     } catch (err) {
-      // Fallback para browsers que bloqueiam clipboard sem interação direta
       this.copiarPixFallback(this.ong.chave_pix);
     }
   }
@@ -84,11 +101,6 @@ export class DoacoesPage implements OnInit {
     this.mostrarToast('✅ Chave PIX copiada! Abra o app do seu banco e cole.', 'success');
   }
 
-  // ─────────────────────────────────────────────────────────
-  // Registra a doação no banco.
-  // Se valor >= R$500, o backend notifica a ONG automaticamente.
-  // NÃO processa pagamento — o usuário paga via PIX no próprio banco.
-  // ─────────────────────────────────────────────────────────
   async registrarDoacao() {
     if (!this.valorDoacao || this.valorDoacao <= 0) {
       await this.mostrarToast('Por favor, informe um valor.', 'warning');
@@ -109,27 +121,28 @@ export class DoacoesPage implements OnInit {
     });
 
     const payload = {
-      tipo_postagem: 'doacao',
-      titulo: `Doação para ${this.ong.nome}`,
-      descricao: `Doação de R$ ${this.valorDoacao.toFixed(2)} via PIX para ${this.ong.nome}.`,
-      ong_id: this.ong.id,        // necessário para a notificação de doação relevante
-      valor_doacao: this.valorDoacao,
+      ong_id: this.ong.id,
+      valor: this.valorDoacao,
     };
 
-    this.http.post('http://localhost:3000/api/postagens', payload, { headers }).subscribe({
-      next: async () => {
+    this.http.post<any>('http://localhost:3000/api/doacoes/registrar', payload, { headers }).subscribe({
+      next: async (res) => {
         this.processando = false;
         this.doacaoRegistrada = true;
 
-        const isRelevante = this.valorDoacao! >= 500;
-        const msg = isRelevante
-          ? `🎉 Doação de R$ ${this.valorDoacao} registrada! A ONG foi notificada. Copie a chave PIX e transfira.`
-          : `✅ Doação registrada! Copie a chave PIX acima e pague no seu banco.`;
+        // Se o backend devolver chave_pix no response, atualiza também
+        if (res.chave_pix) {
+          this.ong = { ...this.ong, chave_pix: res.chave_pix };
+        }
 
-        await this.mostrarToast(msg, 'success');
-
-        // Copia o PIX automaticamente após registrar para facilitar o fluxo
+        await this.mostrarToast(res.mensagem || '✅ Doação registrada!', 'success');
         await this.copiarPix();
+
+        setTimeout(() => {
+          this.doacaoRegistrada = false;
+          this.valorDoacao = null;
+          this.valorSelecionado = null;
+        }, 3000);
       },
       error: async (err) => {
         this.processando = false;
