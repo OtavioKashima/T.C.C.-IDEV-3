@@ -110,6 +110,7 @@ export class AdocoesPage implements OnInit {
   filtrar() {
     let resultado = [...this.adocoes];
 
+    // --- Busca por texto ---
     const termo = this.termoBusca.toLowerCase().trim();
     if (termo) {
       resultado = resultado.filter(a =>
@@ -119,44 +120,60 @@ export class AdocoesPage implements OnInit {
       );
     }
 
+    // --- Filtro de prioridade ---
     if (this.filtros.prioridade) {
       resultado = resultado.filter(a => a.prioridade === this.filtros.prioridade);
     }
 
+    // --- Filtro de animal (CORRIGIDO: usa includes em todos os campos) ---
     if (this.filtros.animal) {
       const animalAlvo = this.filtros.animal.toLowerCase();
       resultado = resultado.filter(a =>
-        (a.animal && a.animal.toLowerCase() === animalAlvo) ||
+        (a.animal && a.animal.toLowerCase().includes(animalAlvo)) ||
         (a.raca && a.raca.toLowerCase().includes(animalAlvo)) ||
-        (a.titulo && a.titulo.toLowerCase().includes(animalAlvo))
+        (a.titulo && a.titulo.toLowerCase().includes(animalAlvo)) ||
+        (a.descricaoCompleta && a.descricaoCompleta.toLowerCase().includes(animalAlvo))
       );
     }
 
+    // --- Filtro de estado (CORRIGIDO: usa includes e normaliza string) ---
     if (this.filtros.estado) {
-      const estadoAlvo = this.filtros.estado.toLowerCase();
-      resultado = resultado.filter(a =>
-        (a.estado && a.estado.toLowerCase() === estadoAlvo) ||
-        (a.localizacao && a.localizacao.toLowerCase().includes(estadoAlvo))
-      );
+      const estadoAlvo = this.filtros.estado.toLowerCase().trim();
+      resultado = resultado.filter(a => {
+        const estado = (a.estado || '').toLowerCase().trim();
+        const localizacao = (a.localizacao || '').toLowerCase();
+        return estado === estadoAlvo ||
+               estado.includes(estadoAlvo) ||
+               localizacao.includes(estadoAlvo);
+      });
     }
 
+    // --- Filtro de cidade (CORRIGIDO: usa includes e normaliza string) ---
     if (this.filtros.cidade) {
-      const cidadeAlvo = this.filtros.cidade.toLowerCase();
-      resultado = resultado.filter(a =>
-        (a.cidade && a.cidade.toLowerCase() === cidadeAlvo) ||
-        (a.localizacao && a.localizacao.toLowerCase().includes(cidadeAlvo))
-      );
+      const cidadeAlvo = this.filtros.cidade.toLowerCase().trim();
+      resultado = resultado.filter(a => {
+        const cidade = (a.cidade || '').toLowerCase().trim();
+        const localizacao = (a.localizacao || '').toLowerCase();
+        return cidade === cidadeAlvo ||
+               cidade.includes(cidadeAlvo) ||
+               localizacao.includes(cidadeAlvo);
+      });
     }
 
+    // --- Filtro de idade ---
     if (this.filtros.idade) {
       resultado = resultado.filter(a => {
         if (!a.idade) return false;
         const idadeStr = a.idade.toLowerCase();
         if (this.filtros.idade === 'menos1') {
-          return idadeStr.includes('meses') || idadeStr.includes('0 ano');
+          return idadeStr.includes('meses') ||
+                 idadeStr.includes('0 ano') ||
+                 idadeStr.includes('filhote');
         }
         const numeroBuscado = this.filtros.idade;
-        return idadeStr.startsWith(numeroBuscado + ' ') || idadeStr.includes(' ' + numeroBuscado + ' ');
+        return idadeStr.startsWith(numeroBuscado + ' ') ||
+               idadeStr.includes(' ' + numeroBuscado + ' ') ||
+               idadeStr === numeroBuscado;
       });
     }
 

@@ -92,8 +92,6 @@ export class DenunciasPage implements OnInit {
         this.cidadesDisponiveis = Array.from(cidadesSet).sort();
         this.estadosDisponiveis = Array.from(estadosSet).sort();
 
-        // Ordenação: fixados → urgente → alta → normal → score desc → id desc
-        // O backend já retorna ordenado mas garantimos aqui
         const prioridadeOrdem: Record<string, number> = { urgente: 1, alta: 2, normal: 3 };
         this.denuncias.sort((a, b) => {
           const aFixado = (a.fixado === 1 || a.fixado === 2) ? 1 : 0;
@@ -129,6 +127,7 @@ export class DenunciasPage implements OnInit {
   filtrar() {
     let resultado = [...this.denuncias];
 
+    // --- Busca por texto ---
     const termo = this.termoBusca.toLowerCase().trim();
     if (termo) {
       resultado = resultado.filter(d =>
@@ -139,10 +138,12 @@ export class DenunciasPage implements OnInit {
       );
     }
 
+    // --- Filtro de prioridade ---
     if (this.filtros.prioridade) {
       resultado = resultado.filter(d => d.prioridade === this.filtros.prioridade);
     }
 
+    // --- Filtro de data ---
     if (this.filtros.data) {
       resultado = resultado.filter(d => {
         const dataCriacao = (d as any).data_criacao || (d as any).created_at || '';
@@ -150,23 +151,39 @@ export class DenunciasPage implements OnInit {
       });
     }
 
+    // --- Filtro de tipo de animal (CORRIGIDO: includes em todos os campos) ---
     if (this.filtros.tipoAnimal) {
       const animalAlvo = this.filtros.tipoAnimal.toLowerCase();
       resultado = resultado.filter(d =>
-        ((d as any).animal && (d as any).animal.toLowerCase() === animalAlvo) ||
+        ((d as any).animal && (d as any).animal.toLowerCase().includes(animalAlvo)) ||
         (d.titulo && d.titulo.toLowerCase().includes(animalAlvo)) ||
-        (d.descricao && d.descricao.toLowerCase().includes(animalAlvo))
+        (d.descricao && d.descricao.toLowerCase().includes(animalAlvo)) ||
+        (d.descricaoCompleta && d.descricaoCompleta.toLowerCase().includes(animalAlvo))
       );
     }
 
+    // --- Filtro de cidade (CORRIGIDO: usa includes igual às adoções) ---
     if (this.filtros.cidade) {
-      const cidadeAlvo = this.filtros.cidade.toLowerCase();
-      resultado = resultado.filter(d => d.cidade && d.cidade.toLowerCase() === cidadeAlvo);
+      const cidadeAlvo = this.filtros.cidade.toLowerCase().trim();
+      resultado = resultado.filter(d => {
+        const cidade = (d.cidade || '').toLowerCase().trim();
+        const localizacao = (d.localizacao || '').toLowerCase();
+        return cidade === cidadeAlvo ||
+               cidade.includes(cidadeAlvo) ||
+               localizacao.includes(cidadeAlvo);
+      });
     }
 
+    // --- Filtro de estado (CORRIGIDO: usa includes igual às adoções) ---
     if (this.filtros.estado) {
-      const estadoAlvo = this.filtros.estado.toLowerCase();
-      resultado = resultado.filter(d => (d as any).estado && (d as any).estado.toLowerCase() === estadoAlvo);
+      const estadoAlvo = this.filtros.estado.toLowerCase().trim();
+      resultado = resultado.filter(d => {
+        const estado = ((d as any).estado || '').toLowerCase().trim();
+        const localizacao = (d.localizacao || '').toLowerCase();
+        return estado === estadoAlvo ||
+               estado.includes(estadoAlvo) ||
+               localizacao.includes(estadoAlvo);
+      });
     }
 
     this.denunciasFiltradas = resultado;

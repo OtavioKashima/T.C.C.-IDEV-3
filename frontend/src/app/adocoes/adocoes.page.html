@@ -42,10 +42,10 @@
         <div class="filtro-pill">
           <select [(ngModel)]="filtros.animal" (change)="filtrar()">
             <option value="">Tipo de animal</option>
-            <option value="Gato">Gato</option>
-            <option value="Cachorro">Cachorro</option>
-            <option value="Coelho">Coelho</option>
-            <option value="Ave">Ave</option>
+            <option value="gato">Gato</option>
+            <option value="cachorro">Cachorro</option>
+            <option value="coelho">Coelho</option>
+            <option value="ave">Ave</option>
           </select>
         </div>
 
@@ -134,7 +134,7 @@
         <ion-icon name="close-outline" (click)="limparCampo('prioridade')"></ion-icon>
       </span>
       <span class="badge-chip" *ngIf="filtros.animal">
-        {{ filtros.animal }}
+        {{ filtros.animal | titlecase }}
         <ion-icon name="close-outline" (click)="limparCampo('animal')"></ion-icon>
       </span>
       <span class="badge-chip" *ngIf="filtros.estado">
