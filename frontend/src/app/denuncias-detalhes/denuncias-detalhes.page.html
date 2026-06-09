@@ -11,7 +11,8 @@
 
   <div class="hero-image-wrapper">
     <img *ngIf="denuncia.fotosArray && denuncia.fotosArray.length > 0"
-      [src]="'http://localhost:3000/uploads/' + denuncia.fotosArray[0]" [alt]="denuncia.titulo" class="hero-image">
+      [src]="'http://localhost:3000/uploads/' + denuncia.fotosArray[0]"
+      [alt]="denuncia.titulo" class="hero-image">
 
     <div *ngIf="!denuncia.fotosArray || denuncia.fotosArray.length === 0" class="sem-foto-hero">
       <ion-icon name="camera-outline"></ion-icon>
@@ -25,11 +26,11 @@
 
   <div class="content-body">
 
+    <!-- Card do Usuário -->
     <div class="owner-card" (click)="verPerfilUsuario()" *ngIf="denuncia.usuario as usuario">
-
-      <img [src]="usuario.avatar" onerror="this.src='https://ionicframework.com/docs/img/demos/avatar.svg'" [alt]="usuario.nome"
-        class="owner-avatar">
-
+      <img [src]="usuario.avatar"
+        onerror="this.src='https://ionicframework.com/docs/img/demos/avatar.svg'"
+        [alt]="usuario.nome" class="owner-avatar">
       <div class="owner-info">
         <span class="owner-label">Publicado por</span>
         <span class="owner-name">{{ usuario.nome }}</span>
@@ -37,6 +38,21 @@
       <ion-icon name="chevron-forward-outline" class="owner-arrow"></ion-icon>
     </div>
 
+    <!-- Card da ONG -->
+    <div class="owner-card ong-card" (click)="verPerfilOng()" *ngIf="denuncia.ong as ong">
+      <div class="ong-icon-wrapper">
+        <img [src]="ong.avatar"
+          onerror="this.src='https://ionicframework.com/docs/img/demos/avatar.svg'"
+          [alt]="ong.nome" class="owner-avatar">
+      </div>
+      <div class="owner-info">
+        <span class="owner-label">Denúncia direcionada à ONG</span>
+        <span class="owner-name">{{ ong.nome }}</span>
+      </div>
+      <ion-icon name="chevron-forward-outline" class="owner-arrow"></ion-icon>
+    </div>
+
+    <!-- Descrição -->
     <div class="section">
       <h2 class="section-title">Descrição da Denúncia</h2>
       <p class="section-text">{{ denuncia.descricaoCompleta || denuncia.descricao }}</p>

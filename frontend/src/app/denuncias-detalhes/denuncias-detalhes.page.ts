@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NavController, ToastController } from '@ionic/angular';
 import { Location } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 
 interface Denuncia {
   titulo: string;
@@ -13,12 +14,21 @@ interface Denuncia {
   dataFormatada?: string;
   created_at?: string;
   data_criacao?: string;
+  ong_destino_id?: number;
+  ong_nome?: string;
+  ong_avatar?: string;
 
   usuario?: {
     id?: number;
     nome: string;
     avatar: string;
     localizacao?: string;
+  };
+
+  ong?: {
+    id?: number;
+    nome: string;
+    avatar: string;
   };
 }
 
@@ -44,7 +54,8 @@ export class DenunciasDetalhesPage implements OnInit {
     private location: Location,
     private router: Router,
     private navCtrl: NavController,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    private http: HttpClient
   ) { }
 
   ngOnInit() {
@@ -54,17 +65,17 @@ export class DenunciasDetalhesPage implements OnInit {
     if (dadosDenuncia) {
       this.denuncia = { ...dadosDenuncia };
 
-      // 1. Ajuste da Descrição
+      // 1. Descrição
       if (!this.denuncia.descricaoCompleta && this.denuncia.descricao) {
         this.denuncia.descricaoCompleta = this.denuncia.descricao;
       }
 
-      // 2. Ajuste da Data
+      // 2. Data
       if (dadosDenuncia.data_criacao && !this.denuncia.created_at) {
         this.denuncia.created_at = dadosDenuncia.data_criacao;
       }
 
-      // 3. Ajuste de Fotos
+      // 3. Fotos
       if (!this.denuncia.fotosArray) {
         if (dadosDenuncia.foto) {
           try {
@@ -79,32 +90,70 @@ export class DenunciasDetalhesPage implements OnInit {
         }
       }
 
-      // 4. Ajuste do Usuário
+      // 4. Usuário
       if (!this.denuncia.usuario) {
         this.denuncia.usuario = {
           id: dadosDenuncia.usuarios_id || dadosDenuncia.usuario_id,
-          nome: dadosDenuncia.usuario_nome || dadosDenuncia.nome_usuario || dadosDenuncia.nome_ong || 'Usuário Desconhecido',
-          avatar: dadosDenuncia.usuario_foto || dadosDenuncia.foto_usuario || dadosDenuncia.avatar_ong || dadosDenuncia.avatar || '',
+          nome: dadosDenuncia.usuario_nome || dadosDenuncia.nome_usuario || 'Usuário Desconhecido',
+          avatar: dadosDenuncia.usuario_foto || dadosDenuncia.foto_usuario || dadosDenuncia.avatar || '',
           localizacao: dadosDenuncia.localizacao_usuario || dadosDenuncia.localizacao || ''
         };
       }
+
+      // 5. ONG — tenta montar do que já veio na postagem
+      const ongId = dadosDenuncia.ong_destino_id;
+      const ongNome = dadosDenuncia.ong_nome || dadosDenuncia.nome_ong || dadosDenuncia.ong_destino_nome || null;
+      const ongAvatar = dadosDenuncia.ong_avatar || dadosDenuncia.foto_ong || dadosDenuncia.ong_destino_foto || null;
+
+      if (ongNome) {
+        // API já trouxe os dados da ONG no JOIN
+        this.denuncia.ong = {
+          id: ongId,
+          nome: ongNome,
+          avatar: this.tratarAvatar(ongAvatar)
+        };
+      } else if (ongId) {
+        // API só trouxe o ID — busca separado
+        this.buscarOng(ongId);
+      }
     }
 
-    // 🟢 Aplica os dados do seu perfil logado APENAS se a denúncia for sua
     this.aplicarCriadorSeguranca();
-
-    // 🟢 Validação e formatação final do Avatar do Usuário
     this.tratarAvatarUsuario();
+  }
+
+  buscarOng(ongId: number) {
+    this.http.get<any>(`http://localhost:3000/api/usuarios/${ongId}`).subscribe({
+      next: (ong) => {
+        if (ong) {
+          this.denuncia.ong = {
+            id: ong.id,
+            nome: ong.nome || 'ONG',
+            avatar: this.tratarAvatar(ong.foto_perfil || ong.avatar || '')
+          };
+        }
+      },
+      error: () => {
+        // Se não conseguir buscar, não exibe o card da ONG
+      }
+    });
+  }
+
+  tratarAvatar(avatar: string): string {
+    const av = String(avatar || '').trim();
+    if (!av || av === 'null' || av === 'undefined' || av === '') {
+      return 'assets/images/default-avatar.png';
+    }
+    if (!av.startsWith('http') && !av.startsWith('assets')) {
+      return 'http://localhost:3000/uploads/' + av;
+    }
+    return av;
   }
 
   aplicarCriadorSeguranca() {
     const ongSalva = localStorage.getItem('ong_perfil_atual');
-
     if (ongSalva && this.denuncia.usuario) {
       const ongData = JSON.parse(ongSalva);
-
-      // 🚨 ERRO CORRIGIDO: Verifica se o ID de quem postou é IGUAL ao seu ID!
-      // Antes, ele injetava sua foto na postagem dos outros se eles não tivessem foto.
       if (this.denuncia.usuario.id && ongData.id && this.denuncia.usuario.id === ongData.id) {
         this.denuncia.usuario.nome = ongData.nome;
         this.denuncia.usuario.avatar = ongData.avatar;
@@ -114,15 +163,10 @@ export class DenunciasDetalhesPage implements OnInit {
 
   tratarAvatarUsuario() {
     if (this.denuncia.usuario) {
-      // Força a variável a virar string para não quebrar em nulls puros e tira espaços
       let avatar = String(this.denuncia.usuario.avatar).trim();
-
-      // Bloqueia qualquer variação de vazio ou erro do banco
       if (!avatar || avatar === 'null' || avatar === 'undefined' || avatar === '[object Object]' || avatar === '') {
         this.denuncia.usuario.avatar = 'assets/images/default-avatar.png';
-      }
-      // Se for uma foto real, mas sem o caminho do servidor, nós adicionamos
-      else if (!avatar.startsWith('http') && !avatar.startsWith('assets')) {
+      } else if (!avatar.startsWith('http') && !avatar.startsWith('assets')) {
         this.denuncia.usuario.avatar = 'http://localhost:3000/uploads/' + avatar;
       }
     }
@@ -148,14 +192,17 @@ export class DenunciasDetalhesPage implements OnInit {
 
   verPerfilUsuario() {
     const criadorId = this.denuncia.usuario?.id;
-
-    if (!criadorId) {
-      console.error('ID do usuário não encontrado.');
-      return;
-    }
-
+    if (!criadorId) return;
     this.navCtrl.navigateForward('/perfil-publico', {
       state: { usuario_id: criadorId }
+    });
+  }
+
+  verPerfilOng() {
+    const ongId = this.denuncia.ong?.id;
+    if (!ongId) return;
+    this.navCtrl.navigateForward('/perfil-publico', {
+      state: { usuario_id: ongId }
     });
   }
 }
