@@ -313,9 +313,13 @@ exports.listarPorTipo = (req, res) => {
       p.*,
       u.nome        AS usuario_nome,
       u.foto_perfil AS usuario_foto,
-      u.admin       AS usuario_admin
+      u.admin       AS usuario_admin,
+      o.id          AS ong_id,
+      o.nome        AS ong_nome,
+      o.foto_perfil AS ong_foto
     FROM postagens p
     INNER JOIN usuarios u ON p.usuarios_id = u.id
+    LEFT JOIN usuarios o ON p.ong_destino_id = o.id
     WHERE p.tipo_postagem = ?
     ORDER BY
       p.fixado DESC,

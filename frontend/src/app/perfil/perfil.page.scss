@@ -13,10 +13,10 @@ $verde-light: #edfaf4;
 $verde-mid:   #2eaf7a;
 
 // ==========================================================================
-// TOOLBAR & POPOVER (Menu Superior Modificado)
+// TOOLBAR & POPOVER
 // ==========================================================================
 ion-toolbar.custom-toolbar {
-  --background: #5ad9a3; 
+  --background: #5ad9a3;
   --color: white;
   font-family: 'Nunito', sans-serif;
 
@@ -63,7 +63,7 @@ ion-popover {
 }
 
 // ==========================================================================
-// HERO DO PERFIL (Cabeçalho com Avatar e Nome)
+// HERO DO PERFIL
 // ==========================================================================
 .perfil-hero {
   position: relative;
@@ -115,7 +115,7 @@ ion-popover {
 }
 
 // ==========================================================================
-// BLOCOS DE INFORMAÇÃO DA ONG (Bio/Sobre)
+// BLOCOS DE INFORMAÇÃO DA ONG
 // ==========================================================================
 .ong-info-container {
   padding: 10px 20px 15px;
@@ -136,28 +136,29 @@ ion-popover {
     align-items: center;
     gap: 8px;
     margin-bottom: 8px;
-    
-    ion-icon { 
-      font-size: 1.2rem; 
-      color: #3ecf8e; 
+
+    ion-icon {
+      font-size: 1.2rem;
+      color: #3ecf8e;
     }
-    h3 { 
-      margin: 0; 
-      font-size: 1.05rem; 
-      font-weight: 700; 
-      color: #333; 
+    h3 {
+      margin: 0;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #333;
     }
   }
-  .ong-text { 
-    margin: 0; 
-    font-size: 0.95rem; 
-    color: #555; 
-    line-height: 1.5; 
+
+  .ong-text {
+    margin: 0;
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.5;
   }
 }
 
 // ==========================================================================
-// FILTROS (Barra de Pesquisa)
+// FILTROS
 // ==========================================================================
 .filtros-container {
   padding: 0 16px;
@@ -173,7 +174,7 @@ ion-popover {
 }
 
 // ==========================================================================
-// BARRA DE NAVEGAÇÃO POR ABAS (TABS-BAR)
+// TABS BAR
 // ==========================================================================
 .tabs-bar {
   display: flex;
@@ -197,10 +198,12 @@ ion-popover {
     cursor: pointer;
 
     ion-icon { font-size: 1.4rem; }
+
     .tab-label {
       font-size: 0.8rem;
       font-weight: 600;
     }
+
     &.active {
       color: $verde;
       &::after {
@@ -218,7 +221,7 @@ ion-popover {
 }
 
 // ==========================================================================
-// CABEÇALHOS DA SEÇÃO E COMPONENTES VAZIOS
+// CABEÇALHO DA SEÇÃO E ESTADO VAZIO
 // ==========================================================================
 .secao-header {
   display: flex;
@@ -272,7 +275,7 @@ ion-popover {
 }
 
 // ==========================================================================
-// FEED PRINCIPAL E ANIMAÇÕES
+// FEED PRINCIPAL
 // ==========================================================================
 .feed {
   padding: 5px 0 10px;
@@ -282,11 +285,11 @@ ion-popover {
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 // ==========================================================================
-// FEED CLÁSSICO COM BORDAS: ADOÇÕES E DENÚNCIAS
+// CARD DE ADOÇÕES E DENÚNCIAS
 // ==========================================================================
 .denuncia-card {
   margin: 10px 16px;
@@ -303,6 +306,7 @@ ion-popover {
     box-shadow: 0 6px 20px rgba(102, 217, 166, 0.2);
     transform: translateY(-2px);
   }
+
   &:active { transform: scale(0.99); }
 }
 
@@ -319,12 +323,57 @@ ion-popover {
     font-weight: 700;
     color: #ffffff;
   }
+
+  // ── Autor externo (denúncias direcionadas) ──────────────────────────────
+  .criador-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+
+    .criador-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(255, 255, 255, 0.6);
+      flex-shrink: 0;
+    }
+
+    .criador-texto {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+
+      .criador-nome {
+        font-family: 'Nunito', sans-serif;
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: white;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .criador-subtitulo {
+        font-family: 'Nunito', sans-serif;
+        font-size: 0.78rem;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.85);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
 }
 
 .denuncia-acoes {
   display: flex;
   align-items: center;
   gap: 5px;
+  flex-shrink: 0;
 }
 
 .acao-btn {
@@ -336,8 +385,15 @@ ion-popover {
   align-items: center;
   justify-content: center;
   border-radius: 6px;
+  transition: background 0.15s ease;
 
-  ion-icon { font-size: 1.15rem; color: #ffffff; }
+  ion-icon {
+    font-size: 1.15rem;
+    color: #ffffff;
+  }
+
+  &:hover { background: rgba(255, 255, 255, 0.35); }
+  &:active { transform: scale(0.9); }
 }
 
 .denuncia-content {
@@ -354,7 +410,8 @@ ion-popover {
   overflow: hidden;
   background: #f0fdf6;
 
-  .post-imagem-padrao, .post-imagem-unica {
+  .post-imagem-padrao,
+  .post-imagem-unica {
     width: 100%;
     height: 220px;
     object-fit: cover;
@@ -397,14 +454,14 @@ ion-popover {
 }
 
 // ==========================================================================
-// FEED CARD LATERAL LIMPO: COMUNICADOS E DOAÇÕES
+// CARD DE COMUNICADOS E DOAÇÕES
 // ==========================================================================
 .comunicado-card-perfil {
   margin: 10px 16px;
-  background: #edfaf4; 
+  background: #edfaf4;
   border-radius: 16px;
   padding: 16px;
-  border-left: 6px solid #3ecf8e; 
+  border-left: 6px solid #3ecf8e;
   box-shadow: 0 4px 12px rgba(62, 207, 142, 0.08);
   animation: fadeIn 0.3s ease both;
 
@@ -418,13 +475,11 @@ ion-popover {
       display: flex;
       align-items: center;
       gap: 8px;
-      color: #3ecf8e; 
+      color: #3ecf8e;
       font-weight: 700;
       font-size: 0.85rem;
 
-      ion-icon {
-        font-size: 1.2rem;
-      }
+      ion-icon { font-size: 1.2rem; }
     }
 
     .card-lateral-acoes {
@@ -447,9 +502,7 @@ ion-popover {
           color: #3ecf8e;
         }
 
-        &:active {
-          transform: scale(0.85);
-        }
+        &:active { transform: scale(0.85); }
       }
     }
   }
@@ -459,7 +512,7 @@ ion-popover {
       margin: 0;
       font-size: 1.2rem;
       font-weight: 800;
-      color: #2eaf7a; 
+      color: #2eaf7a;
       font-family: 'Nunito', sans-serif;
     }
     p {
@@ -472,7 +525,7 @@ ion-popover {
 }
 
 // ==========================================================================
-// PAGINAÇÃO E ESPAÇAMENTOS EXTRAS
+// PAGINAÇÃO
 // ==========================================================================
 .paginacao-container {
   display: flex;
@@ -496,6 +549,9 @@ ion-popover {
   }
 }
 
-.bottom-space { 
-  height: 80px; 
+// ==========================================================================
+// ESPAÇAMENTO FINAL
+// ==========================================================================
+.bottom-space {
+  height: 80px;
 }

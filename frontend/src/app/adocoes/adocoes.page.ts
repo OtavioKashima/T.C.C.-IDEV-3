@@ -1,209 +1,209 @@
-import { Component, OnInit } from '@angular/core';
-import { Location } from '@angular/common';
-import { NavController } from '@ionic/angular';
-import { HttpClient } from '@angular/common/http';
+  import { Component, OnInit } from '@angular/core';
+  import { Location } from '@angular/common';
+  import { NavController } from '@ionic/angular';
+  import { HttpClient } from '@angular/common/http';
 
-interface Adocao {
-  id?: number;
-  titulo: string;
-  descricao: string;
-  descricaoCompleta?: string;
-  idade?: string;
-  raca?: string;
-  genero?: string;
-  foto?: string;
-  fotosArray?: string[];
-  fixado?: number;
-  prioridade?: string;
-  prioridade_score?: number;
-  animal?: string;
-  cidade?: string;
-  estado?: string;
-  localizacao?: string;
-}
-
-@Component({
-  selector: 'app-adocoes',
-  templateUrl: './adocoes.page.html',
-  styleUrls: ['./adocoes.page.scss'],
-  standalone: false,
-})
-export class AdocoesPage implements OnInit {
-
-  showSearch = false;
-  showFiltros = false;
-  termoBusca = '';
-
-  filtros = {
-    prioridade: '',
-    animal: '',
-    estado: '',
-    cidade: '',
-    idade: ''
-  };
-
-  adocoes: Adocao[] = [];
-  adocoesFiltradas: Adocao[] = [];
-
-  constructor(
-    private location: Location,
-    private navCtrl: NavController,
-    private http: HttpClient
-  ) {}
-
-  ngOnInit() {
-    this.carregarAdocoes();
+  interface Adocao {
+    id?: number;
+    titulo: string;
+    descricao: string;
+    descricaoCompleta?: string;
+    idade?: string;
+    raca?: string;
+    genero?: string;
+    foto?: string;
+    fotosArray?: string[];
+    fixado?: number;
+    prioridade?: string;
+    prioridade_score?: number;
+    animal?: string;
+    cidade?: string;
+    estado?: string;
+    localizacao?: string;
   }
 
-  carregarAdocoes() {
-    this.http.get<any[]>('http://localhost:3000/api/postagens/tipo/adocao').subscribe({
-      next: (res) => {
-        const dadosReais = Array.isArray(res) ? res : [];
+  @Component({
+    selector: 'app-adocoes',
+    templateUrl: './adocoes.page.html',
+    styleUrls: ['./adocoes.page.scss'],
+    standalone: false,
+  })
+  export class AdocoesPage implements OnInit {
 
-        this.adocoes = dadosReais.map((adocao: any) => {
-          if (adocao.foto) {
-            try { adocao.fotosArray = JSON.parse(adocao.foto); }
-            catch { adocao.fotosArray = [adocao.foto]; }
-          } else {
-            adocao.fotosArray = [];
-          }
+    showSearch = false;
+    showFiltros = false;
+    termoBusca = '';
 
-          if (!adocao.descricaoCompleta) {
-            adocao.descricaoCompleta = adocao.descricao || '';
-          }
+    filtros = {
+      prioridade: '',
+      animal: '',
+      estado: '',
+      cidade: '',
+      idade: ''
+    };
 
-          adocao.fixado = Number(adocao.fixado) || 0;
-          adocao.prioridade = adocao.prioridade || 'normal';
-          adocao.prioridade_score = Number(adocao.prioridade_score) || 0;
+    adocoes: Adocao[] = [];
+    adocoesFiltradas: Adocao[] = [];
 
-          return adocao;
+    constructor(
+      private location: Location,
+      private navCtrl: NavController,
+      private http: HttpClient
+    ) {}
+
+    ngOnInit() {
+      this.carregarAdocoes();
+    }
+
+    carregarAdocoes() {
+      this.http.get<any[]>('http://localhost:3000/api/postagens/tipo/adocao').subscribe({
+        next: (res) => {
+          const dadosReais = Array.isArray(res) ? res : [];
+
+          this.adocoes = dadosReais.map((adocao: any) => {
+            if (adocao.foto) {
+              try { adocao.fotosArray = JSON.parse(adocao.foto); }
+              catch { adocao.fotosArray = [adocao.foto]; }
+            } else {
+              adocao.fotosArray = [];
+            }
+
+            if (!adocao.descricaoCompleta) {
+              adocao.descricaoCompleta = adocao.descricao || '';
+            }
+
+            adocao.fixado = Number(adocao.fixado) || 0;
+            adocao.prioridade = adocao.prioridade || 'normal';
+            adocao.prioridade_score = Number(adocao.prioridade_score) || 0;
+
+            return adocao;
+          });
+
+          this.adocoes.sort((a, b) => {
+            const aFixado = (a.fixado === 1 || a.fixado === 2) ? 1 : 0;
+            const bFixado = (b.fixado === 1 || b.fixado === 2) ? 1 : 0;
+            if (aFixado !== bFixado) return bFixado - aFixado;
+
+            const prioridadeOrdem: Record<string, number> = { prioritario: 1, normal: 2 };
+            const aPrio = prioridadeOrdem[a.prioridade || 'normal'] || 2;
+            const bPrio = prioridadeOrdem[b.prioridade || 'normal'] || 2;
+            if (aPrio !== bPrio) return aPrio - bPrio;
+
+            return (b.id || 0) - (a.id || 0);
+          });
+
+          this.adocoesFiltradas = [...this.adocoes];
+        },
+        error: (err) => console.error('Erro ao buscar adoções', err)
+      });
+    }
+
+    toggleSearch() {
+      this.showSearch = !this.showSearch;
+      if (!this.showSearch) this.limparBusca();
+    }
+
+    toggleFiltros() {
+      this.showFiltros = !this.showFiltros;
+    }
+
+    filtrar() {
+      let resultado = [...this.adocoes];
+
+      // --- Busca por texto ---
+      const termo = this.termoBusca.toLowerCase().trim();
+      if (termo) {
+        resultado = resultado.filter(a =>
+          (a.titulo && a.titulo.toLowerCase().includes(termo)) ||
+          (a.descricaoCompleta && a.descricaoCompleta.toLowerCase().includes(termo)) ||
+          (a.raca && a.raca.toLowerCase().includes(termo))
+        );
+      }
+
+      // --- Filtro de prioridade ---
+      if (this.filtros.prioridade) {
+        resultado = resultado.filter(a => a.prioridade === this.filtros.prioridade);
+      }
+
+      // --- Filtro de animal (CORRIGIDO: usa includes em todos os campos) ---
+      if (this.filtros.animal) {
+        const animalAlvo = this.filtros.animal.toLowerCase();
+        resultado = resultado.filter(a =>
+          (a.animal && a.animal.toLowerCase().includes(animalAlvo)) ||
+          (a.raca && a.raca.toLowerCase().includes(animalAlvo)) ||
+          (a.titulo && a.titulo.toLowerCase().includes(animalAlvo)) ||
+          (a.descricaoCompleta && a.descricaoCompleta.toLowerCase().includes(animalAlvo))
+        );
+      }
+
+      // --- Filtro de estado (CORRIGIDO: usa includes e normaliza string) ---
+      if (this.filtros.estado) {
+        const estadoAlvo = this.filtros.estado.toLowerCase().trim();
+        resultado = resultado.filter(a => {
+          const estado = (a.estado || '').toLowerCase().trim();
+          const localizacao = (a.localizacao || '').toLowerCase();
+          return estado === estadoAlvo ||
+                estado.includes(estadoAlvo) ||
+                localizacao.includes(estadoAlvo);
         });
+      }
 
-        this.adocoes.sort((a, b) => {
-          const aFixado = (a.fixado === 1 || a.fixado === 2) ? 1 : 0;
-          const bFixado = (b.fixado === 1 || b.fixado === 2) ? 1 : 0;
-          if (aFixado !== bFixado) return bFixado - aFixado;
-
-          const prioridadeOrdem: Record<string, number> = { prioritario: 1, normal: 2 };
-          const aPrio = prioridadeOrdem[a.prioridade || 'normal'] || 2;
-          const bPrio = prioridadeOrdem[b.prioridade || 'normal'] || 2;
-          if (aPrio !== bPrio) return aPrio - bPrio;
-
-          return (b.id || 0) - (a.id || 0);
+      // --- Filtro de cidade (CORRIGIDO: usa includes e normaliza string) ---
+      if (this.filtros.cidade) {
+        const cidadeAlvo = this.filtros.cidade.toLowerCase().trim();
+        resultado = resultado.filter(a => {
+          const cidade = (a.cidade || '').toLowerCase().trim();
+          const localizacao = (a.localizacao || '').toLowerCase();
+          return cidade === cidadeAlvo ||
+                cidade.includes(cidadeAlvo) ||
+                localizacao.includes(cidadeAlvo);
         });
+      }
 
-        this.adocoesFiltradas = [...this.adocoes];
-      },
-      error: (err) => console.error('Erro ao buscar adoções', err)
-    });
-  }
+      // --- Filtro de idade ---
+      if (this.filtros.idade) {
+        resultado = resultado.filter(a => {
+          if (!a.idade) return false;
+          const idadeStr = a.idade.toLowerCase();
+          if (this.filtros.idade === 'menos1') {
+            return idadeStr.includes('meses') ||
+                  idadeStr.includes('0 ano') ||
+                  idadeStr.includes('filhote');
+          }
+          const numeroBuscado = this.filtros.idade;
+          return idadeStr.startsWith(numeroBuscado + ' ') ||
+                idadeStr.includes(' ' + numeroBuscado + ' ') ||
+                idadeStr === numeroBuscado;
+        });
+      }
 
-  toggleSearch() {
-    this.showSearch = !this.showSearch;
-    if (!this.showSearch) this.limparBusca();
-  }
-
-  toggleFiltros() {
-    this.showFiltros = !this.showFiltros;
-  }
-
-  filtrar() {
-    let resultado = [...this.adocoes];
-
-    // --- Busca por texto ---
-    const termo = this.termoBusca.toLowerCase().trim();
-    if (termo) {
-      resultado = resultado.filter(a =>
-        (a.titulo && a.titulo.toLowerCase().includes(termo)) ||
-        (a.descricaoCompleta && a.descricaoCompleta.toLowerCase().includes(termo)) ||
-        (a.raca && a.raca.toLowerCase().includes(termo))
-      );
+      this.adocoesFiltradas = resultado;
     }
 
-    // --- Filtro de prioridade ---
-    if (this.filtros.prioridade) {
-      resultado = resultado.filter(a => a.prioridade === this.filtros.prioridade);
+    temFiltroAtivo(): boolean {
+      return Object.values(this.filtros).some(v => v !== '');
     }
 
-    // --- Filtro de animal (CORRIGIDO: usa includes em todos os campos) ---
-    if (this.filtros.animal) {
-      const animalAlvo = this.filtros.animal.toLowerCase();
-      resultado = resultado.filter(a =>
-        (a.animal && a.animal.toLowerCase().includes(animalAlvo)) ||
-        (a.raca && a.raca.toLowerCase().includes(animalAlvo)) ||
-        (a.titulo && a.titulo.toLowerCase().includes(animalAlvo)) ||
-        (a.descricaoCompleta && a.descricaoCompleta.toLowerCase().includes(animalAlvo))
-      );
+    limparCampo(campo: keyof typeof this.filtros) {
+      this.filtros[campo] = '';
+      this.filtrar();
     }
 
-    // --- Filtro de estado (CORRIGIDO: usa includes e normaliza string) ---
-    if (this.filtros.estado) {
-      const estadoAlvo = this.filtros.estado.toLowerCase().trim();
-      resultado = resultado.filter(a => {
-        const estado = (a.estado || '').toLowerCase().trim();
-        const localizacao = (a.localizacao || '').toLowerCase();
-        return estado === estadoAlvo ||
-               estado.includes(estadoAlvo) ||
-               localizacao.includes(estadoAlvo);
-      });
+    limparTodosFiltros() {
+      this.filtros = { prioridade: '', animal: '', estado: '', cidade: '', idade: '' };
+      this.filtrar();
     }
 
-    // --- Filtro de cidade (CORRIGIDO: usa includes e normaliza string) ---
-    if (this.filtros.cidade) {
-      const cidadeAlvo = this.filtros.cidade.toLowerCase().trim();
-      resultado = resultado.filter(a => {
-        const cidade = (a.cidade || '').toLowerCase().trim();
-        const localizacao = (a.localizacao || '').toLowerCase();
-        return cidade === cidadeAlvo ||
-               cidade.includes(cidadeAlvo) ||
-               localizacao.includes(cidadeAlvo);
-      });
+    limparBusca() {
+      this.termoBusca = '';
+      this.filtrar();
     }
 
-    // --- Filtro de idade ---
-    if (this.filtros.idade) {
-      resultado = resultado.filter(a => {
-        if (!a.idade) return false;
-        const idadeStr = a.idade.toLowerCase();
-        if (this.filtros.idade === 'menos1') {
-          return idadeStr.includes('meses') ||
-                 idadeStr.includes('0 ano') ||
-                 idadeStr.includes('filhote');
-        }
-        const numeroBuscado = this.filtros.idade;
-        return idadeStr.startsWith(numeroBuscado + ' ') ||
-               idadeStr.includes(' ' + numeroBuscado + ' ') ||
-               idadeStr === numeroBuscado;
-      });
+    abrirDetalhe(adocao: Adocao) {
+      this.navCtrl.navigateForward('/adocoes-detalhes', { state: { pet: adocao } });
     }
 
-    this.adocoesFiltradas = resultado;
+    goBack() {
+      this.location.back();
+    }
   }
-
-  temFiltroAtivo(): boolean {
-    return Object.values(this.filtros).some(v => v !== '');
-  }
-
-  limparCampo(campo: keyof typeof this.filtros) {
-    this.filtros[campo] = '';
-    this.filtrar();
-  }
-
-  limparTodosFiltros() {
-    this.filtros = { prioridade: '', animal: '', estado: '', cidade: '', idade: '' };
-    this.filtrar();
-  }
-
-  limparBusca() {
-    this.termoBusca = '';
-    this.filtrar();
-  }
-
-  abrirDetalhe(adocao: Adocao) {
-    this.navCtrl.navigateForward('/adocoes-detalhes', { state: { pet: adocao } });
-  }
-
-  goBack() {
-    this.location.back();
-  }
-}

@@ -88,8 +88,9 @@
   </div>
 
   <div class="feed" *ngIf="postagensExibidas.length > 0">
-    
-    <ng-container *ngIf="tabAtiva === 'adocoes' || tabAtiva === 'denuncias'">
+
+    <!-- ADOÇÕES -->
+    <ng-container *ngIf="tabAtiva === 'adocoes'">
       <div class="denuncia-card" *ngFor="let post of postagensExibidas">
         <div class="denuncia-header">
           <span>{{ post.titulo }}</span>
@@ -119,6 +120,50 @@
       </div>
     </ng-container>
 
+    <!-- DENÚNCIAS: próprias da ONG + direcionadas por usuários -->
+    <ng-container *ngIf="tabAtiva === 'denuncias'">
+      <div class="denuncia-card" *ngFor="let post of postagensExibidas">
+        <div class="denuncia-header">
+          <!-- Se vier de um usuário externo, mostra avatar + nome dele; senão mostra só o título -->
+          <div class="criador-info" *ngIf="post.autor; else semAutor">
+            <img
+              [src]="post.avatarAutor || 'https://ionicframework.com/docs/img/demos/avatar.svg'"
+              class="criador-avatar">
+            <div class="criador-texto">
+              <span class="criador-nome">{{ post.autor }}</span>
+              <span class="criador-subtitulo">{{ post.titulo }}</span>
+            </div>
+          </div>
+          <ng-template #semAutor>
+            <span>{{ post.titulo }}</span>
+          </ng-template>
+          <div class="denuncia-acoes">
+            <button class="acao-btn" (click)="editarDenuncia(post); $event.stopPropagation()">
+              <ion-icon name="create-outline"></ion-icon>
+            </button>
+            <button class="acao-btn" (click)="excluirDenuncia(post); $event.stopPropagation()">
+              <ion-icon name="trash-outline"></ion-icon>
+            </button>
+          </div>
+        </div>
+        <div class="denuncia-content">
+          <div class="post-imagem-container">
+            <img *ngIf="post.fotosArray && post.fotosArray.length > 0"
+              [src]="'http://localhost:3000/uploads/' + post.fotosArray[0]" class="post-imagem-unica">
+            <img *ngIf="!post.fotosArray || post.fotosArray.length === 0" src="assets/img-padrao.png" class="post-imagem-padrao" />
+          </div>
+          <div class="denuncia-info">
+            <div class="badge-container">
+              <span class="denuncia-badge">{{ post.tipo_postagem | uppercase }}</span>
+              <span class="denuncia-badge" *ngIf="post.idade">{{ post.idade }}</span>
+            </div>
+            <p class="denuncia-descricao">{{ post.descricao }}</p>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- COMUNICADOS -->
     <ng-container *ngIf="tabAtiva === 'comunicados'">
       <div class="comunicado-card-perfil" *ngFor="let aviso of postagensExibidas">
         <div class="comunicado-header">
@@ -141,6 +186,7 @@
       </div>
     </ng-container>
 
+    <!-- DOAÇÕES -->
     <ng-container *ngIf="tabAtiva === 'doacoes'">
       <div class="comunicado-card-perfil" *ngFor="let doacao of postagensExibidas">
         <div class="comunicado-header">

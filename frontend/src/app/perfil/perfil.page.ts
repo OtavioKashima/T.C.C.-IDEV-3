@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
   standalone: false
 })
 export class PerfilPage implements OnInit {
-  
+
   usuario: any = {
     nome: 'Carregando...',
     telefone: '',
@@ -21,6 +21,7 @@ export class PerfilPage implements OnInit {
   tabAtiva: string = 'adocoes';
 
   minhasPostagens: any[] = [];
+  denunciasDirecionadas: any[] = []; // ← NOVO: denúncias que usuários enviaram para esta ONG
   postagensFiltradas: any[] = [];
   postagensExibidas: any[] = [];
 
@@ -67,7 +68,7 @@ export class PerfilPage implements OnInit {
         next: (res: any) => {
           this.usuario = res;
           this.usuario.admin = res.admin !== undefined ? Number(res.admin) : 0;
-          
+
           if (this.usuario.foto_perfil) {
             const imgTimestamp = new Date().getTime();
             this.usuario.fotoUrl = `http://localhost:3000/uploads/${this.usuario.foto_perfil}?t=${imgTimestamp}`;
@@ -75,6 +76,11 @@ export class PerfilPage implements OnInit {
 
           if (this.usuario.admin === 0) {
             this.tabAtiva = 'denuncias';
+          }
+
+          // Se for ONG, carrega também as denúncias direcionadas
+          if (this.usuario.admin === 2) {
+            this.carregarDenunciasDirecionadas();
           }
 
           this.aplicarFiltrosEPaginacao();
@@ -111,6 +117,52 @@ export class PerfilPage implements OnInit {
       });
   }
 
+  // ← NOVO: busca denúncias de usuários direcionadas a esta ONG
+  carregarDenunciasDirecionadas() {
+    const token = localStorage.getItem('token');
+    if (!token || !this.usuario?.id) return;
+    const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
+
+    this.http.get(`http://localhost:3000/api/postagens/direcionadas/${this.usuario.id}`, { headers })
+      .subscribe({
+        next: (res: any) => {
+          this.denunciasDirecionadas = res.map((post: any) => {
+            let fotosArray: string[] = [];
+            if (post.foto) {
+              try {
+                const parsed = JSON.parse(post.foto);
+                fotosArray = Array.isArray(parsed) ? parsed : [post.foto];
+              } catch (e) {
+                fotosArray = [post.foto];
+              }
+            }
+
+            const avatarAutor = post.foto_autor
+              ? `http://localhost:3000/uploads/${post.foto_autor}`
+              : 'https://ionicframework.com/docs/img/demos/avatar.svg';
+
+            return {
+              ...post,
+              fotosArray,
+              tipo_postagem: 'denuncia',
+              autor: post.nome_autor,
+              avatarAutor,
+              usuario: {
+                id: post.usuarios_id,
+                nome: post.nome_autor,
+                foto_perfil: post.foto_autor,
+                avatar: avatarAutor
+              }
+            };
+          });
+
+          this.aplicarFiltrosEPaginacao();
+          this.cdr.detectChanges();
+        },
+        error: (err) => console.error('Erro ao buscar denúncias direcionadas:', err)
+      });
+  }
+
   mudarTab(novaTab: string) {
     this.tabAtiva = novaTab;
     this.paginaAtual = 1;
@@ -118,30 +170,40 @@ export class PerfilPage implements OnInit {
   }
 
   aplicarFiltrosEPaginacao() {
-    let listaBase = this.minhasPostagens;
+    let listaBase: any[] = [];
 
-    // Filtros por Abas
     if (this.usuario?.admin === 2) {
       if (this.tabAtiva === 'adocoes') {
-        listaBase = listaBase.filter(post => post.tipo_postagem === 'adocao');
+        listaBase = this.minhasPostagens.filter(post => post.tipo_postagem === 'adocao');
       } else if (this.tabAtiva === 'denuncias') {
-        listaBase = listaBase.filter(post => post.tipo_postagem === 'denuncia');
+        // ← CORRIGIDO: une as próprias denúncias da ONG com as direcionadas por usuários
+        const proprias = this.minhasPostagens.filter(post => post.tipo_postagem === 'denuncia');
+        const direcionadas = this.denunciasDirecionadas;
+        // evita duplicatas pelo id
+        const idsJaAdicionados = new Set(proprias.map((p: any) => p.id));
+        const novas = direcionadas.filter((d: any) => !idsJaAdicionados.has(d.id));
+        listaBase = [...proprias, ...novas].sort((a, b) =>
+          new Date(b.data_criacao).getTime() - new Date(a.data_criacao).getTime()
+        );
       } else if (this.tabAtiva === 'doacoes') {
-        listaBase = listaBase.filter(post => post.tipo_postagem === 'doacao' || post.tipo === 'doacao');
+        listaBase = this.minhasPostagens.filter(post => post.tipo_postagem === 'doacao' || post.tipo === 'doacao');
       } else if (this.tabAtiva === 'comunicados') {
-        listaBase = listaBase.filter(post => post.tipo_postagem === 'comunicado');
+        listaBase = this.minhasPostagens.filter(post => post.tipo_postagem === 'comunicado');
       }
+    } else {
+      // usuário comum: apenas suas próprias denúncias
+      listaBase = this.minhasPostagens;
     }
 
-    // Filtro de Busca Textual
-    let resultado = listaBase.filter(post => {
+    // Filtro de busca textual
+    const resultado = listaBase.filter(post => {
       const termo = this.termoBusca.toLowerCase().trim();
       if (!termo) return true;
-
-      const tituloMatch = post.titulo?.toLowerCase().includes(termo);
-      const descMatch = post.descricao?.toLowerCase().includes(termo);
-      const textoMatch = post.texto?.toLowerCase().includes(termo);
-      return tituloMatch || descMatch || textoMatch;
+      return (
+        post.titulo?.toLowerCase().includes(termo) ||
+        post.descricao?.toLowerCase().includes(termo) ||
+        post.texto?.toLowerCase().includes(termo)
+      );
     });
 
     this.postagensFiltradas = resultado;
@@ -152,8 +214,7 @@ export class PerfilPage implements OnInit {
     }
 
     const indexInicio = (this.paginaAtual - 1) * this.itensPorPagina;
-    const indexFim = indexInicio + this.itensPorPagina;
-    this.postagensExibidas = this.postagensFiltradas.slice(indexInicio, indexFim);
+    this.postagensExibidas = this.postagensFiltradas.slice(indexInicio, indexInicio + this.itensPorPagina);
 
     this.cdr.detectChanges();
   }
@@ -214,13 +275,13 @@ export class PerfilPage implements OnInit {
           handler: () => {
             const token = localStorage.getItem('token');
             if (!token) return;
-
             const headers = new HttpHeaders({ 'Authorization': `Bearer ${token}` });
 
             this.http.delete(`http://localhost:3000/api/postagensDelete/${post.id}`, { headers })
               .subscribe({
                 next: () => {
                   this.minhasPostagens = this.minhasPostagens.filter(p => p.id !== post.id);
+                  this.denunciasDirecionadas = this.denunciasDirecionadas.filter(p => p.id !== post.id);
                   this.aplicarFiltrosEPaginacao();
                   this.mostrarAviso('Postagem excluída com sucesso!', 'success');
                 },
