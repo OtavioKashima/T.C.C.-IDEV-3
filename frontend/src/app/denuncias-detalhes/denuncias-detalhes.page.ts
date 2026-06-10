@@ -95,23 +95,27 @@ export class DenunciasDetalhesPage implements OnInit {
           localizacao: dadosDenuncia.localizacao_usuario || dadosDenuncia.localizacao || ''
         };
       }
+        // 5. Ajuste da ONG vinculada
+        const nomeOng   = dadosDenuncia.ong_nome;
+        const avatarOng = dadosDenuncia.ong_foto || '';
+        const idOng     = dadosDenuncia.ong_id;
 
-    // 5. Ajuste da ONG vinculada
-const nomeOng   = dadosDenuncia.ong_nome;
-const avatarOng = dadosDenuncia.ong_foto || '';
-const idOng     = dadosDenuncia.ong_id;
+        if (nomeOng) {
+          this.denuncia.ong = {
+            id:     idOng,
+            nome:   nomeOng,
+            avatar: avatarOng,
+            tipo:   'ong'
+          };
+        }
 
-if (nomeOng) {
-  this.denuncia.ong = {
-    id:     idOng,
-    nome:   nomeOng,
-    avatar: avatarOng,
-    tipo:   'ong'
-  };
-}
+      
     }
 
+    // 🟢 Aplica os dados do seu perfil logado APENAS se a denúncia for sua
     this.aplicarCriadorSeguranca();
+
+    // 🟢 Validação e formatação final do Avatar do Usuário
     this.tratarAvatarUsuario();
   }
 
@@ -121,6 +125,8 @@ if (nomeOng) {
     if (ongSalva && this.denuncia.usuario) {
       const ongData = JSON.parse(ongSalva);
 
+      // 🚨 ERRO CORRIGIDO: Verifica se o ID de quem postou é IGUAL ao seu ID!
+      // Antes, ele injetava sua foto na postagem dos outros se eles não tivessem foto.
       if (this.denuncia.usuario.id && ongData.id && this.denuncia.usuario.id === ongData.id) {
         this.denuncia.usuario.nome = ongData.nome;
         this.denuncia.usuario.avatar = ongData.avatar;
@@ -130,11 +136,15 @@ if (nomeOng) {
 
   tratarAvatarUsuario() {
     if (this.denuncia.usuario) {
+      // Força a variável a virar string para não quebrar em nulls puros e tira espaços
       let avatar = String(this.denuncia.usuario.avatar).trim();
 
+      // Bloqueia qualquer variação de vazio ou erro do banco
       if (!avatar || avatar === 'null' || avatar === 'undefined' || avatar === '[object Object]' || avatar === '') {
         this.denuncia.usuario.avatar = 'assets/images/default-avatar.png';
-      } else if (!avatar.startsWith('http') && !avatar.startsWith('assets')) {
+      }
+      // Se for uma foto real, mas sem o caminho do servidor, nós adicionamos
+      else if (!avatar.startsWith('http') && !avatar.startsWith('assets')) {
         this.denuncia.usuario.avatar = 'http://localhost:3000/uploads/' + avatar;
       }
     }
@@ -168,19 +178,6 @@ if (nomeOng) {
 
     this.navCtrl.navigateForward('/perfil-publico', {
       state: { usuario_id: criadorId }
-    });
-  }
-
-  irParaPerfilOng() {
-    const ongId = this.denuncia.ong?.id;
-
-    if (!ongId) {
-      console.error('ID da ONG não encontrado.');
-      return;
-    }
-
-    this.navCtrl.navigateForward('/perfil-publico', {
-      state: { usuario_id: ongId }
     });
   }
 }

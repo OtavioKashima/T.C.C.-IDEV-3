@@ -25,36 +25,36 @@
 
   <div class="content-body">
 
-    <!-- CARD DO USUÁRIO QUE POSTOU -->
     <div class="owner-card" (click)="verPerfilUsuario()" *ngIf="denuncia.usuario as usuario">
+
       <img [src]="usuario.avatar" onerror="this.src='https://ionicframework.com/docs/img/demos/avatar.svg'" [alt]="usuario.nome"
         class="owner-avatar">
+
       <div class="owner-info">
         <span class="owner-label">Publicado por</span>
         <span class="owner-name">{{ usuario.nome }}</span>
       </div>
       <ion-icon name="chevron-forward-outline" class="owner-arrow"></ion-icon>
     </div>
+    <div class="owner-card ong-card" *ngIf="denuncia.ong as ong">
 
-    <!-- CARD DA ONG VINCULADA -->
-    <div class="owner-card" (click)="irParaPerfilOng()" *ngIf="denuncia.ong">
+  <img
+    [src]="ong.avatar.startsWith('http') ? ong.avatar : ('http://localhost:3000/uploads/' + ong.avatar)"
+    onerror="this.src='https://ionicframework.com/docs/img/demos/avatar.svg'"
+    [alt]="ong.nome"
+    class="owner-avatar owner-avatar--ong">
 
-      <div class="owner-avatar admin-avatar" *ngIf="denuncia.ong.tipo === 'admin'">
-        <ion-icon name="shield-checkmark"></ion-icon>
-      </div>
+  <div class="owner-info">
+    <span class="owner-label">ONG Responsável</span>
+    <span class="owner-name">{{ ong.nome }}</span>
+  </div>
 
-      <img *ngIf="denuncia.ong.tipo !== 'admin'"
-        [src]="denuncia.ong.avatar?.startsWith('http') ? denuncia.ong.avatar : ('http://localhost:3000/uploads/' + (denuncia.ong.avatar || ''))"
-        onerror="this.src='https://ionicframework.com/docs/img/demos/avatar.svg'"
-        [alt]="denuncia.ong.nome"
-        class="owner-avatar owner-avatar--ong">
+  <ion-icon
+    name="chevron-forward-outline"
+    class="owner-arrow">
+  </ion-icon>
 
-      <div class="owner-info">
-        <span class="owner-label">ONG Responsável</span>
-        <span class="owner-name">{{ denuncia.ong.nome }}</span>
-      </div>
-      <ion-icon name="chevron-forward-outline" class="owner-arrow"></ion-icon>
-    </div>
+</div>
 
     <div class="section">
       <h2 class="section-title">Descrição da Denúncia</h2>
