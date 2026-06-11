@@ -15,7 +15,7 @@ interface Denuncia {
   cidade?: string;
   estado?: string;
   fixado?: number;
-  prioridade?: string;        // 'urgente' | 'alta' | 'normal'
+  prioridade?: string;
   prioridade_score?: number;
 }
 
@@ -42,9 +42,6 @@ export class DenunciasPage implements OnInit {
   denuncias: Denuncia[] = [];
   denunciasFiltradas: Denuncia[] = [];
 
-  cidadesDisponiveis: string[] = [];
-  estadosDisponiveis: string[] = [];
-
   constructor(
     private location: Location,
     private navCtrl: NavController,
@@ -59,9 +56,6 @@ export class DenunciasPage implements OnInit {
     this.http.get<any[]>('http://localhost:3000/api/postagens/tipo/denuncia').subscribe({
       next: (res) => {
         const dadosReais = Array.isArray(res) ? res : [];
-
-        const cidadesSet = new Set<string>();
-        const estadosSet = new Set<string>();
 
         this.denuncias = dadosReais.map((denuncia: any) => {
           if (denuncia.foto) {
@@ -79,18 +73,12 @@ export class DenunciasPage implements OnInit {
             denuncia.localizacao = denuncia.cidade || denuncia.local || '';
           }
 
-          if (denuncia.cidade) cidadesSet.add(denuncia.cidade);
-          if (denuncia.estado) estadosSet.add(denuncia.estado);
-
           denuncia.fixado = Number(denuncia.fixado) || 0;
           denuncia.prioridade = denuncia.prioridade || 'normal';
           denuncia.prioridade_score = Number(denuncia.prioridade_score) || 0;
 
           return denuncia;
         });
-
-        this.cidadesDisponiveis = Array.from(cidadesSet).sort();
-        this.estadosDisponiveis = Array.from(estadosSet).sort();
 
         const prioridadeOrdem: Record<string, number> = { urgente: 1, alta: 2, normal: 3 };
         this.denuncias.sort((a, b) => {
@@ -151,7 +139,7 @@ export class DenunciasPage implements OnInit {
       });
     }
 
-    // --- Filtro de tipo de animal (CORRIGIDO: includes em todos os campos) ---
+    // --- Filtro de tipo de animal ---
     if (this.filtros.tipoAnimal) {
       const animalAlvo = this.filtros.tipoAnimal.toLowerCase();
       resultado = resultado.filter(d =>
@@ -162,19 +150,7 @@ export class DenunciasPage implements OnInit {
       );
     }
 
-    // --- Filtro de cidade (CORRIGIDO: usa includes igual às adoções) ---
-    if (this.filtros.cidade) {
-      const cidadeAlvo = this.filtros.cidade.toLowerCase().trim();
-      resultado = resultado.filter(d => {
-        const cidade = (d.cidade || '').toLowerCase().trim();
-        const localizacao = (d.localizacao || '').toLowerCase();
-        return cidade === cidadeAlvo ||
-               cidade.includes(cidadeAlvo) ||
-               localizacao.includes(cidadeAlvo);
-      });
-    }
-
-    // --- Filtro de estado (CORRIGIDO: usa includes igual às adoções) ---
+    // --- Filtro de estado (igual adoções) ---
     if (this.filtros.estado) {
       const estadoAlvo = this.filtros.estado.toLowerCase().trim();
       resultado = resultado.filter(d => {
@@ -183,6 +159,18 @@ export class DenunciasPage implements OnInit {
         return estado === estadoAlvo ||
                estado.includes(estadoAlvo) ||
                localizacao.includes(estadoAlvo);
+      });
+    }
+
+    // --- Filtro de cidade (igual adoções) ---
+    if (this.filtros.cidade) {
+      const cidadeAlvo = this.filtros.cidade.toLowerCase().trim();
+      resultado = resultado.filter(d => {
+        const cidade = (d.cidade || '').toLowerCase().trim();
+        const localizacao = (d.localizacao || '').toLowerCase();
+        return cidade === cidadeAlvo ||
+               cidade.includes(cidadeAlvo) ||
+               localizacao.includes(cidadeAlvo);
       });
     }
 

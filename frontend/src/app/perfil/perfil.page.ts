@@ -21,7 +21,7 @@ export class PerfilPage implements OnInit {
   tabAtiva: string = 'adocoes';
 
   minhasPostagens: any[] = [];
-  denunciasDirecionadas: any[] = []; // ← NOVO: denúncias que usuários enviaram para esta ONG
+  denunciasDirecionadas: any[] = [];
   postagensFiltradas: any[] = [];
   postagensExibidas: any[] = [];
 
@@ -78,7 +78,6 @@ export class PerfilPage implements OnInit {
             this.tabAtiva = 'denuncias';
           }
 
-          // Se for ONG, carrega também as denúncias direcionadas
           if (this.usuario.admin === 2) {
             this.carregarDenunciasDirecionadas();
           }
@@ -117,7 +116,6 @@ export class PerfilPage implements OnInit {
       });
   }
 
-  // ← NOVO: busca denúncias de usuários direcionadas a esta ONG
   carregarDenunciasDirecionadas() {
     const token = localStorage.getItem('token');
     if (!token || !this.usuario?.id) return;
@@ -175,27 +173,67 @@ export class PerfilPage implements OnInit {
     if (this.usuario?.admin === 2) {
       if (this.tabAtiva === 'adocoes') {
         listaBase = this.minhasPostagens.filter(post => post.tipo_postagem === 'adocao');
+
+        // Ordena adoções: urgente > alta > prioritario > demais (igual ao perfil público)
+        const ordemPrioridade: Record<string, number> = { urgente: 0, alta: 1, prioritario: 2 };
+        listaBase = listaBase.sort((a, b) => {
+          const pa = ordemPrioridade[a.prioridade] ?? 3;
+          const pb = ordemPrioridade[b.prioridade] ?? 3;
+          return pa - pb;
+        });
+
       } else if (this.tabAtiva === 'denuncias') {
-        // ← CORRIGIDO: une as próprias denúncias da ONG com as direcionadas por usuários
         const proprias = this.minhasPostagens.filter(post => post.tipo_postagem === 'denuncia');
-        const direcionadas = this.denunciasDirecionadas;
-        // evita duplicatas pelo id
         const idsJaAdicionados = new Set(proprias.map((p: any) => p.id));
-        const novas = direcionadas.filter((d: any) => !idsJaAdicionados.has(d.id));
-        listaBase = [...proprias, ...novas].sort((a, b) =>
-          new Date(b.data_criacao).getTime() - new Date(a.data_criacao).getTime()
-        );
+        const novas = this.denunciasDirecionadas.filter((d: any) => !idsJaAdicionados.has(d.id));
+        const todas = [...proprias, ...novas];
+
+        // Ordena denúncias: urgente > alta > demais, depois por data desc
+        const ordemPrioridade: Record<string, number> = { urgente: 0, alta: 1 };
+        listaBase = todas.sort((a, b) => {
+          const pa = ordemPrioridade[a.prioridade] ?? 2;
+          const pb = ordemPrioridade[b.prioridade] ?? 2;
+          if (pa !== pb) return pa - pb;
+          return new Date(b.data_criacao).getTime() - new Date(a.data_criacao).getTime();
+        });
+
       } else if (this.tabAtiva === 'doacoes') {
-        listaBase = this.minhasPostagens.filter(post => post.tipo_postagem === 'doacao' || post.tipo === 'doacao');
+        listaBase = this.minhasPostagens.filter(
+          post => post.tipo_postagem === 'doacao' || post.tipo === 'doacao'
+        );
+
+        // Ordena doações do MAIOR valor para o menor
+        listaBase = listaBase.sort((a, b) => {
+          const valorA = parseFloat(a.valor || a.valor_doacao || 0);
+          const valorB = parseFloat(b.valor || b.valor_doacao || 0);
+          return valorB - valorA;
+        });
+
       } else if (this.tabAtiva === 'comunicados') {
         listaBase = this.minhasPostagens.filter(post => post.tipo_postagem === 'comunicado');
+
+        // Ordena comunicados: urgente > alta > demais, depois por data desc
+        const ordemPrioridade: Record<string, number> = { urgente: 0, alta: 1 };
+        listaBase = listaBase.sort((a, b) => {
+          const pa = ordemPrioridade[a.prioridade] ?? 2;
+          const pb = ordemPrioridade[b.prioridade] ?? 2;
+          if (pa !== pb) return pa - pb;
+          return new Date(b.data_criacao).getTime() - new Date(a.data_criacao).getTime();
+        });
       }
+
     } else {
-      // usuário comum: apenas suas próprias denúncias
+      // Usuário comum: mostra denúncias próprias com prioridade
       listaBase = this.minhasPostagens;
+      const ordemPrioridade: Record<string, number> = { urgente: 0, alta: 1 };
+      listaBase = listaBase.sort((a, b) => {
+        const pa = ordemPrioridade[a.prioridade] ?? 2;
+        const pb = ordemPrioridade[b.prioridade] ?? 2;
+        if (pa !== pb) return pa - pb;
+        return new Date(b.data_criacao).getTime() - new Date(a.data_criacao).getTime();
+      });
     }
 
-    // Filtro de busca textual
     const resultado = listaBase.filter(post => {
       const termo = this.termoBusca.toLowerCase().trim();
       if (!termo) return true;
@@ -218,6 +256,24 @@ export class PerfilPage implements OnInit {
 
     this.cdr.detectChanges();
   }
+
+  // =========================================================================
+  // NAVEGAÇÃO
+  // =========================================================================
+
+  abrirAdocao(post: any) {
+    this.router.navigate(['/adocoes-detalhes'], { state: { pet: post, postagemSelecionada: post } });
+  }
+
+  abrirDenuncia(post: any) {
+    this.router.navigate(['/denuncias-detalhes'], { state: { denuncia: post, postagemSelecionada: post } });
+  }
+
+  abrirComunicado(post: any) {
+    this.router.navigate(['/comunicado'], { state: { comunicado: post, postagemSelecionada: post } });
+  }
+
+  // =========================================================================
 
   pesquisarPost(event: any) {
     this.termoBusca = event.target.value || '';

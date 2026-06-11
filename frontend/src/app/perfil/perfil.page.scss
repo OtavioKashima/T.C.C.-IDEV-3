@@ -300,6 +300,7 @@ ion-popover {
   box-shadow: 0 4px 12px rgba(102, 217, 166, 0.08);
   animation: fadeIn 0.3s ease both;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+  cursor: pointer;
 
   &:hover {
     border-color: #2db376;
@@ -324,7 +325,6 @@ ion-popover {
     color: #ffffff;
   }
 
-  // ── Autor externo (denúncias direcionadas) ──────────────────────────────
   .criador-info {
     display: flex;
     align-items: center;
@@ -403,6 +403,9 @@ ion-popover {
   padding: 14px;
 }
 
+// ==========================================================================
+// CONTAINER DE IMAGEM + BADGES DE PRIORIDADE (igual ao perfil público)
+// ==========================================================================
 .post-imagem-container {
   position: relative;
   width: 100%;
@@ -417,9 +420,52 @@ ion-popover {
     object-fit: cover;
     display: block;
   }
+
+  // Badge de prioridade sobreposto à imagem
+  .priority-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 10;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 900;
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: white;
+
+    &--urgente {
+      background: #e53935;
+      box-shadow: 0 2px 8px rgba(229, 57, 53, 0.4);
+    }
+
+    &--alta {
+      background: #fb8c00;
+      box-shadow: 0 2px 8px rgba(251, 140, 0, 0.4);
+    }
+
+    &--senior {
+      background: $verde-mid;
+      box-shadow: 0 2px 8px rgba(46, 175, 122, 0.4);
+    }
+  }
 }
 
 .denuncia-info { width: 100%; }
+
+.denuncia-data {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: $verde-mid;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 6px;
+  ion-icon { font-size: 0.85rem; }
+}
 
 .badge-container {
   display: flex;
@@ -429,7 +475,9 @@ ion-popover {
 }
 
 .denuncia-badge {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   background: #e6f9f0;
   color: #3ecf8e;
   font-family: 'Nunito', sans-serif;
@@ -464,6 +512,15 @@ ion-popover {
   border-left: 6px solid #3ecf8e;
   box-shadow: 0 4px 12px rgba(62, 207, 142, 0.08);
   animation: fadeIn 0.3s ease both;
+  transition: box-shadow 0.2s ease, transform 0.15s ease;
+  cursor: pointer;
+
+  &:hover {
+    box-shadow: 0 6px 20px rgba(62, 207, 142, 0.18);
+    transform: translateY(-2px);
+  }
+
+  &:active { transform: scale(0.99); }
 
   .comunicado-header {
     display: flex;
@@ -522,6 +579,50 @@ ion-popover {
       line-height: 1.4;
     }
   }
+}
+
+// Doação — destaque especial para o valor
+.doacao-card {
+  border-left-color: $verde-mid;
+
+  .doacao-valor {
+    font-size: 1.45rem !important;
+    letter-spacing: -0.01em;
+  }
+
+  .doacao-doador {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.85rem !important;
+    color: #3ecf8e !important;
+    margin-top: 4px !important;
+
+    ion-icon { font-size: 0.9rem; }
+  }
+}
+
+// ==========================================================================
+// TAGS DE PRIORIDADE (comunicados / doações) — igual ao perfil público
+// ==========================================================================
+.prioridade-tag {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 900;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 20px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  &--urgente  { background: #e53935; }
+  &--alta     { background: #fb8c00; }
+
+  // Medalhas para ranking de doações
+  &--ouro     { background: #f59e0b; letter-spacing: 0; font-size: 0.72rem; }
+  &--prata    { background: #94a3b8; letter-spacing: 0; font-size: 0.72rem; }
+  &--bronze   { background: #b45309; letter-spacing: 0; font-size: 0.72rem; }
 }
 
 // ==========================================================================

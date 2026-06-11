@@ -11,51 +11,50 @@
 
   <div class="hero-image-wrapper">
     <img *ngIf="denuncia.fotosArray && denuncia.fotosArray.length > 0"
-      [src]="'http://localhost:3000/uploads/' + denuncia.fotosArray[0]" [alt]="denuncia.titulo" class="hero-image">
+      [src]="'http://localhost:3000/uploads/' + denuncia.fotosArray[0]"
+      [alt]="denuncia.titulo"
+      class="hero-image">
 
     <div *ngIf="!denuncia.fotosArray || denuncia.fotosArray.length === 0" class="sem-foto-hero">
       <ion-icon name="camera-outline"></ion-icon>
     </div>
 
     <div class="hero-overlay">
-      <div class="hero-badge hero-badge--denuncia">Denúncia</div>
       <h1 class="hero-title">{{ denuncia.titulo }}</h1>
     </div>
   </div>
 
   <div class="content-body">
 
+    <!-- Card do usuário que publicou -->
     <div class="owner-card" (click)="verPerfilUsuario()" *ngIf="denuncia.usuario as usuario">
-
-      <img [src]="usuario.avatar" onerror="this.src='https://ionicframework.com/docs/img/demos/avatar.svg'" [alt]="usuario.nome"
+      <img
+        [src]="usuario.avatar"
+        onerror="this.src='https://ionicframework.com/docs/img/demos/avatar.svg'"
+        [alt]="usuario.nome"
         class="owner-avatar">
-
       <div class="owner-info">
         <span class="owner-label">Publicado por</span>
         <span class="owner-name">{{ usuario.nome }}</span>
       </div>
       <ion-icon name="chevron-forward-outline" class="owner-arrow"></ion-icon>
     </div>
-    <div class="owner-card ong-card" *ngIf="denuncia.ong as ong">
 
-  <img
-    [src]="ong.avatar.startsWith('http') ? ong.avatar : ('http://localhost:3000/uploads/' + ong.avatar)"
-    onerror="this.src='https://ionicframework.com/docs/img/demos/avatar.svg'"
-    [alt]="ong.nome"
-    class="owner-avatar owner-avatar--ong">
+    <!-- Card da ONG responsável -->
+    <div class="owner-card" (click)="verPerfilOng()" *ngIf="denuncia.ong as ong">
+      <img
+        [src]="ong.avatar && ong.avatar !== 'null' ? (ong.avatar.startsWith('http') ? ong.avatar : ('http://localhost:3000/uploads/' + ong.avatar)) : 'https://ionicframework.com/docs/img/demos/avatar.svg'"
+        onerror="this.src='https://ionicframework.com/docs/img/demos/avatar.svg'"
+        [alt]="ong.nome"
+        class="owner-avatar owner-avatar--ong">
+      <div class="owner-info">
+        <span class="owner-label">ONG Responsável</span>
+        <span class="owner-name">{{ ong.nome }}</span>
+      </div>
+      <ion-icon name="chevron-forward-outline" class="owner-arrow"></ion-icon>
+    </div>
 
-  <div class="owner-info">
-    <span class="owner-label">ONG Responsável</span>
-    <span class="owner-name">{{ ong.nome }}</span>
-  </div>
-
-  <ion-icon
-    name="chevron-forward-outline"
-    class="owner-arrow">
-  </ion-icon>
-
-</div>
-
+    <!-- Descrição -->
     <div class="section">
       <h2 class="section-title">Descrição da Denúncia</h2>
       <p class="section-text">{{ denuncia.descricaoCompleta || denuncia.descricao }}</p>

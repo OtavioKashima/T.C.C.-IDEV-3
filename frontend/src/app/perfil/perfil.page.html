@@ -75,7 +75,10 @@
   <div class="secao-header">
     <span class="secao-titulo">
       <ion-icon name="document-text-outline"></ion-icon>
-      {{ tabAtiva === 'doacoes' ? 'Doações Recebidas' : (tabAtiva === 'comunicados' ? 'Comunicados Enviados' : 'Minhas Postagens') }}
+      {{ tabAtiva === 'doacoes' ? 'Doações Recebidas' :
+         tabAtiva === 'comunicados' ? 'Comunicados Enviados' :
+         tabAtiva === 'denuncias' ? 'Denúncias Recebidas' :
+         'Minhas Postagens' }}
     </span>
     <span class="secao-count">
       {{ postagensFiltradas.length }} ite{{ postagensFiltradas.length !== 1 ? 'ns' : 'm' }}
@@ -91,7 +94,7 @@
 
     <!-- ADOÇÕES -->
     <ng-container *ngIf="tabAtiva === 'adocoes'">
-      <div class="denuncia-card" *ngFor="let post of postagensExibidas">
+      <div class="denuncia-card" *ngFor="let post of postagensExibidas" (click)="abrirAdocao(post)">
         <div class="denuncia-header">
           <span>{{ post.titulo }}</span>
           <div class="denuncia-acoes">
@@ -105,6 +108,10 @@
         </div>
         <div class="denuncia-content">
           <div class="post-imagem-container">
+            <!-- BADGES DE PRIORIDADE — igual ao perfil público -->
+            <div class="priority-badge priority-badge--urgente" *ngIf="post.prioridade === 'urgente'">URGENTE</div>
+            <div class="priority-badge priority-badge--alta"    *ngIf="post.prioridade === 'alta'">Alta prioridade</div>
+            <div class="priority-badge priority-badge--senior"  *ngIf="post.prioridade === 'prioritario'">Prioritário</div>
             <img *ngIf="post.fotosArray && post.fotosArray.length > 0"
               [src]="'http://localhost:3000/uploads/' + post.fotosArray[0]" class="post-imagem-unica">
             <img *ngIf="!post.fotosArray || post.fotosArray.length === 0" src="assets/img-padrao.png" class="post-imagem-padrao" />
@@ -120,11 +127,10 @@
       </div>
     </ng-container>
 
-    <!-- DENÚNCIAS: próprias da ONG + direcionadas por usuários -->
+    <!-- DENÚNCIAS -->
     <ng-container *ngIf="tabAtiva === 'denuncias'">
-      <div class="denuncia-card" *ngFor="let post of postagensExibidas">
+      <div class="denuncia-card" *ngFor="let post of postagensExibidas" (click)="abrirDenuncia(post)">
         <div class="denuncia-header">
-          <!-- Se vier de um usuário externo, mostra avatar + nome dele; senão mostra só o título -->
           <div class="criador-info" *ngIf="post.autor; else semAutor">
             <img
               [src]="post.avatarAutor || 'https://ionicframework.com/docs/img/demos/avatar.svg'"
@@ -148,11 +154,18 @@
         </div>
         <div class="denuncia-content">
           <div class="post-imagem-container">
+            <!-- BADGES DE PRIORIDADE — igual ao perfil público -->
+            <div class="priority-badge priority-badge--urgente" *ngIf="post.prioridade === 'urgente'">URGENTE</div>
+            <div class="priority-badge priority-badge--alta"    *ngIf="post.prioridade === 'alta'">Alta prioridade</div>
             <img *ngIf="post.fotosArray && post.fotosArray.length > 0"
               [src]="'http://localhost:3000/uploads/' + post.fotosArray[0]" class="post-imagem-unica">
             <img *ngIf="!post.fotosArray || post.fotosArray.length === 0" src="assets/img-padrao.png" class="post-imagem-padrao" />
           </div>
           <div class="denuncia-info">
+            <div class="denuncia-data">
+              <ion-icon name="calendar-outline"></ion-icon>
+              {{ post.data_criacao | date:'dd/MM/yyyy' }}
+            </div>
             <div class="badge-container">
               <span class="denuncia-badge">{{ post.tipo_postagem | uppercase }}</span>
               <span class="denuncia-badge" *ngIf="post.idade">{{ post.idade }}</span>
@@ -165,12 +178,15 @@
 
     <!-- COMUNICADOS -->
     <ng-container *ngIf="tabAtiva === 'comunicados'">
-      <div class="comunicado-card-perfil" *ngFor="let aviso of postagensExibidas">
+      <div class="comunicado-card-perfil" *ngFor="let aviso of postagensExibidas" (click)="abrirComunicado(aviso)">
         <div class="comunicado-header">
           <div class="header-esquerda">
             <ion-icon name="megaphone-outline"></ion-icon>
             <span>{{ aviso.data_criacao | date:'dd/MM/yyyy' }}</span>
           </div>
+          <!-- BADGES DE PRIORIDADE — igual ao perfil público -->
+          <span class="prioridade-tag prioridade-tag--urgente" *ngIf="aviso.prioridade === 'urgente'">URGENTE</span>
+          <span class="prioridade-tag prioridade-tag--alta"    *ngIf="aviso.prioridade === 'alta'">ALTA</span>
           <div class="card-lateral-acoes">
             <button class="card-acao-btn" (click)="editarDenuncia(aviso); $event.stopPropagation()">
               <ion-icon name="create-outline"></ion-icon>
@@ -182,18 +198,20 @@
         </div>
         <div class="comunicado-body">
           <h3>{{ aviso.titulo }}</h3>
+          <p *ngIf="aviso.texto">{{ aviso.texto }}</p>
         </div>
       </div>
     </ng-container>
 
-    <!-- DOAÇÕES -->
+    <!-- DOAÇÕES — ordenadas por maior valor (lógica no .ts) -->
     <ng-container *ngIf="tabAtiva === 'doacoes'">
-      <div class="comunicado-card-perfil" *ngFor="let doacao of postagensExibidas">
+      <div class="comunicado-card-perfil doacao-card" *ngFor="let doacao of postagensExibidas; let i = index">
         <div class="comunicado-header">
           <div class="header-esquerda">
             <ion-icon name="heart-outline"></ion-icon>
             <span>{{ (doacao.data_criacao || doacao.data) | date:'dd/MM/yyyy' }}</span>
           </div>
+     
           <div class="card-lateral-acoes">
             <button class="card-acao-btn" (click)="editarDenuncia(doacao); $event.stopPropagation()">
               <ion-icon name="create-outline"></ion-icon>
@@ -204,7 +222,10 @@
           </div>
         </div>
         <div class="comunicado-body">
-          <h3>Doação: R$ {{ (doacao.valor || doacao.valor_doacao) | number:'1.2-2' }}</h3>
+          <h3 class="doacao-valor">R$ {{ (doacao.valor || doacao.valor_doacao) | number:'1.2-2' }}</h3>
+          <p *ngIf="doacao.nome_doador" class="doacao-doador">
+            <ion-icon name="person-outline"></ion-icon> {{ doacao.nome_doador }}
+          </p>
         </div>
       </div>
     </ng-container>

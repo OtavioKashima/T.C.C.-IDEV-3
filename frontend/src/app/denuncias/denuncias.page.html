@@ -36,16 +36,18 @@
           <select [(ngModel)]="filtros.prioridade" (change)="filtrar()">
             <option value="" disabled selected hidden>Prioridade</option>
             <option value="">Todas</option>
-            <option value="urgente"> Urgente</option>
+            <option value="urgente">Urgente</option>
             <option value="alta">Alta</option>
             <option value="normal">Normal</option>
           </select>
         </div>
 
+        <!-- Filtro de Data -->
         <div class="filtro-pill filtro-pill--input">
           <input type="date" [(ngModel)]="filtros.data" (change)="filtrar()" class="filtro-input-date">
         </div>
 
+        <!-- Filtro de Tipo de Animal -->
         <div class="filtro-pill">
           <select [(ngModel)]="filtros.tipoAnimal" (change)="filtrar()">
             <option value="" disabled selected hidden>Tipo de animal</option>
@@ -57,19 +59,64 @@
           </select>
         </div>
 
-        <div class="filtro-pill">
-          <select [(ngModel)]="filtros.cidade" (change)="filtrar()">
-            <option value="" disabled selected hidden>Cidade</option>
-            <option value="">Todas as cidades</option>
-            <option *ngFor="let c of cidadesDisponiveis" [value]="c">{{ c }}</option>
-          </select>
-        </div>
-
+        <!-- Filtro de Estado -->
         <div class="filtro-pill">
           <select [(ngModel)]="filtros.estado" (change)="filtrar()">
             <option value="" disabled selected hidden>Estado</option>
             <option value="">Todos os estados</option>
-            <option *ngFor="let e of estadosDisponiveis" [value]="e">{{ e }}</option>
+            <option value="AC">AC</option>
+            <option value="AL">AL</option>
+            <option value="AM">AM</option>
+            <option value="BA">BA</option>
+            <option value="CE">CE</option>
+            <option value="DF">DF</option>
+            <option value="ES">ES</option>
+            <option value="GO">GO</option>
+            <option value="MA">MA</option>
+            <option value="MG">MG</option>
+            <option value="MS">MS</option>
+            <option value="MT">MT</option>
+            <option value="PA">PA</option>
+            <option value="PB">PB</option>
+            <option value="PE">PE</option>
+            <option value="PI">PI</option>
+            <option value="PR">PR</option>
+            <option value="RJ">RJ</option>
+            <option value="RN">RN</option>
+            <option value="RO">RO</option>
+            <option value="RR">RR</option>
+            <option value="RS">RS</option>
+            <option value="SC">SC</option>
+            <option value="SE">SE</option>
+            <option value="SP">SP</option>
+            <option value="TO">TO</option>
+          </select>
+        </div>
+
+        <!-- Filtro de Cidade -->
+        <div class="filtro-pill">
+          <select [(ngModel)]="filtros.cidade" (change)="filtrar()">
+            <option value="" disabled selected hidden>Cidade</option>
+            <option value="">Todas as cidades</option>
+            <option value="Pompeia">Pompeia</option>
+            <option value="Tupã">Tupã</option>
+            <option value="Marília">Marília</option>
+            <option value="Oriente">Oriente</option>
+            <option value="Assis">Assis</option>
+            <option value="Adamantina">Adamantina</option>
+            <option value="Bauru">Bauru</option>
+            <option value="Botucatu">Botucatu</option>
+            <option value="Ourinhos">Ourinhos</option>
+            <option value="Osvaldo Cruz">Osvaldo Cruz</option>
+            <option value="Presidente Prudente">Presidente Prudente</option>
+            <option value="São Paulo">São Paulo</option>
+            <option value="Campinas">Campinas</option>
+            <option value="Joinville">Joinville</option>
+            <option value="Florianópolis">Florianópolis</option>
+            <option value="Curitiba">Curitiba</option>
+            <option value="Porto Alegre">Porto Alegre</option>
+            <option value="Belo Horizonte">Belo Horizonte</option>
+            <option value="Rio de Janeiro">Rio de Janeiro</option>
           </select>
         </div>
 
@@ -101,7 +148,7 @@
         <ion-icon name="close-outline" (click)="limparCampo('cidade')"></ion-icon>
       </span>
       <span class="badge-chip" *ngIf="filtros.estado">
-        {{ filtros.estado }}
+        {{ filtros.estado | uppercase }}
         <ion-icon name="close-outline" (click)="limparCampo('estado')"></ion-icon>
       </span>
     </div>
@@ -119,14 +166,12 @@
 
           <div class="image-container">
 
-            <!-- Badge de prioridade urgente -->
             <div class="priority-badge priority-badge--urgente" *ngIf="denuncia.prioridade === 'urgente'">
-               URGENTE
+              URGENTE
             </div>
 
-            <!-- Badge de prioridade alta -->
             <div class="priority-badge priority-badge--alta" *ngIf="denuncia.prioridade === 'alta'">
-               Alta Prioridade
+              Alta Prioridade
             </div>
 
             <img *ngIf="denuncia.fotosArray && denuncia.fotosArray.length > 0"
@@ -153,10 +198,10 @@
 
           <div class="card-footer">
             <span class="footer-priority-label footer-priority-label--urgente" *ngIf="denuncia.prioridade === 'urgente'">
-               Requer atenção imediata
+              Requer atenção imediata
             </span>
             <span class="footer-priority-label footer-priority-label--alta" *ngIf="denuncia.prioridade === 'alta'">
-               Atenção elevada
+              Atenção elevada
             </span>
             <ion-button fill="clear" size="small">Ver Detalhes</ion-button>
           </div>

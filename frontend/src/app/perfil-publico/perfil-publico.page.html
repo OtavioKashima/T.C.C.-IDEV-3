@@ -89,6 +89,9 @@
 
       <div class="denuncia-content">
         <div class="post-imagem-container">
+          <div class="priority-badge priority-badge--senior" *ngIf="post.prioridade === 'prioritario'">
+            Prioritário
+          </div>
           <img *ngIf="post.fotosArray && post.fotosArray.length > 0"
             [src]="'http://localhost:3000/uploads/' + post.fotosArray[0]" alt="Foto da postagem"
             class="post-imagem-unica">
@@ -133,6 +136,12 @@
 
       <div class="denuncia-content">
         <div class="post-imagem-container">
+          <div class="priority-badge priority-badge--urgente" *ngIf="d.prioridade === 'urgente'">
+            URGENTE
+          </div>
+          <div class="priority-badge priority-badge--alta" *ngIf="d.prioridade === 'alta'">
+            Alta prioridade
+          </div>
           <img *ngIf="d.fotosArray && d.fotosArray.length > 0"
             [src]="'http://localhost:3000/uploads/' + d.fotosArray[0]" alt="Foto da denúncia" class="post-imagem-unica">
           <img *ngIf="!d.fotosArray || d.fotosArray.length === 0" src="assets/img-padrao.png" alt="Sem foto"
@@ -162,6 +171,8 @@
           <ion-icon name="megaphone-outline"></ion-icon>
           <span>{{ aviso.data_criacao | date:'dd/MM/yyyy' }}</span>
         </div>
+        <span class="prioridade-tag prioridade-tag--urgente" *ngIf="aviso.prioridade === 'urgente'">URGENTE</span>
+        <span class="prioridade-tag prioridade-tag--alta" *ngIf="aviso.prioridade === 'alta'">ALTA</span>
       </div>
       <div class="comunicado-body">
         <h3>{{ aviso.titulo }}</h3>
@@ -207,6 +218,12 @@
 
       <div class="denuncia-content">
         <div class="post-imagem-container">
+          <div class="priority-badge priority-badge--urgente" *ngIf="d.prioridade === 'urgente'">
+            URGENTE
+          </div>
+          <div class="priority-badge priority-badge--alta" *ngIf="d.prioridade === 'alta'">
+            Alta prioridade
+          </div>
           <img *ngIf="d.fotosArray && d.fotosArray.length > 0"
             [src]="'http://localhost:3000/uploads/' + d.fotosArray[0]" alt="Foto da denúncia" class="post-imagem-unica">
           <img *ngIf="!d.fotosArray || d.fotosArray.length === 0" src="assets/img-padrao.png" alt="Sem foto"
