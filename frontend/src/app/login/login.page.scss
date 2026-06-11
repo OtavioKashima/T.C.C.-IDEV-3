@@ -7,6 +7,8 @@ ion-toolbar.toolbar-transparente {
   --background: transparent;
   --border-style: none;
   --box-shadow: none;
+  position: absolute;
+  z-index: 10;
 }
 
 .btn-voltar {
@@ -31,7 +33,7 @@ ion-toolbar.toolbar-transparente {
 }
 
 // =============================================
-// Container principal
+// Container principal (Centro Óptico Real)
 // =============================================
 .login-container {
   display: flex;
@@ -39,10 +41,23 @@ ion-toolbar.toolbar-transparente {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 2rem;
-  min-height: calc(100vh - 56px);
+  width: 100%;
+  min-height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
   background: #f0f4f2;
   font-family: 'Nunito', sans-serif;
+  box-sizing: border-box;
+}
+
+.center-box {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  margin-top: -30px; /* Sobe levemente para o centro visual perfeito */
 }
 
 .content-wrapper {
@@ -51,7 +66,6 @@ ion-toolbar.toolbar-transparente {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: -120px;
 }
 
 // =============================================
@@ -116,10 +130,11 @@ ion-toolbar.toolbar-transparente {
 }
 
 // =============================================
-// Input wrapper
+// Input wrappers e grupos
 // =============================================
 .input-group {
   margin-bottom: 12px;
+  width: 100%;
 }
 
 .input-wrapper {
@@ -137,10 +152,6 @@ ion-toolbar.toolbar-transparente {
     border-color: #3ecf8e;
     box-shadow: 0 0 0 3px rgba(78, 202, 136, 0.12);
   }
-}
-
-.input-group:first-child .input-wrapper {
-  padding-right: 30px;
 }
 
 .input-icon {
@@ -163,6 +174,15 @@ ion-toolbar.toolbar-transparente {
   }
 }
 
+// Elemento estrutural invisível que equilibra o alinhamento do CPF com a Senha
+.ghost-icon {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+// =============================================
+// Custom Input (Texto e Placeholder Centralizados)
+// =============================================
 .custom-input {
   --background: transparent;
   --border-color: transparent;
@@ -178,10 +198,10 @@ ion-toolbar.toolbar-transparente {
   font-weight: 600;
   flex: 1;
   height: 100%;
-  text-align: center;
 
   &::part(native) {
     text-align: center;
+    padding: 0;
   }
 }
 
@@ -263,7 +283,7 @@ ion-toolbar.toolbar-transparente {
 // Responsividade
 // =============================================
 @media (max-width: 480px) {
-  .login-container {
+  .center-box {
     padding: 1.5rem;
   }
 

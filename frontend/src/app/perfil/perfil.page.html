@@ -72,14 +72,22 @@
     </button>
   </div>
 
-  <div class="secao-header">
+ <div class="secao-header">
     <span class="secao-titulo">
-      <ion-icon name="document-text-outline"></ion-icon>
-      {{ tabAtiva === 'doacoes' ? 'Doações Recebidas' :
-         tabAtiva === 'comunicados' ? 'Comunicados Enviados' :
-         tabAtiva === 'denuncias' ? 'Denúncias Recebidas' :
-         'Minhas Postagens' }}
+      <ion-icon [name]="usuario?.admin === 2 ? 'document-text-outline' : 'person-outline'"></ion-icon>
+      
+      <ng-container *ngIf="usuario?.admin === 2; else perfilUsuarioComum">
+        {{ tabAtiva === 'doacoes' ? 'Doações Recebidas' :
+           tabAtiva === 'comunicados' ? 'Comunicados Enviados' :
+           tabAtiva === 'denuncias' ? 'Denúncias Recebidas' :
+           'Minhas Postagens' }}
+      </ng-container>
+      
+      <ng-template #perfilUsuarioComum>
+        Minhas Postagens
+      </ng-template>
     </span>
+    
     <span class="secao-count">
       {{ postagensFiltradas.length }} ite{{ postagensFiltradas.length !== 1 ? 'ns' : 'm' }}
     </span>
