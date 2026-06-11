@@ -327,3 +327,13 @@ ion-toolbar.custom-toolbar {
   color: #999;
   ion-icon { font-size: 64px; margin-bottom: 10px; }
 }
+/* Remove a barra de rolagem dos selects */
+.filtro-pill select {
+  scrollbar-width: none; /* Firefox */
+}
+
+.filtro-pill select::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
