@@ -1,4 +1,4 @@
-# Back2provisório - API de Denúncias e Postagens
+# API de Denúncias e Postagens
 
 Uma API REST desenvolvida em Node.js que conecta cidadãos a ONGs através de um sistema de denúncias e postagens direcionadas. Projeto acadêmico (TCC).
 
